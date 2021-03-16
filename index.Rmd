@@ -1,0 +1,35 @@
+--- 
+title: "STAT 253: Statistical Machine Learning"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook:
+    config:
+      sharing:
+        facebook: false
+        twitter: false
+documentclass: book
+link-citations: yes
+github-repo: lmyint/253_spring_2021
+description: "This is the class website for Statistical Machine Learning at Macalester College."
+---
+
+# Welcome! {-}
+
+<center>
+![](images/ml_robot.jpg)
+
+[Image source](https://cdn.redshift.autodesk.com/2016/05/Machine-Learning-hero.jpg)
+</center>
+
+<br>
+<br>
+
+This is the class manual for Statistical Machine Learning (STAT 253) at Macalester College. The content here was made by [Leslie Myint](https://lmyint.github.io) and draws upon our class textbook, [An Introduction to Statistical Learning with Applications in R](https://www.statlearning.com/s/ISLR-Seventh-Printing-xwa7.pdf), and on materials prepared by [Alicia Johnson](http://aliciajohnson78.weebly.com/).
+
+<br>
+<br>
+<br>
+
+![](images/cc_license_button.png)
+
+This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).

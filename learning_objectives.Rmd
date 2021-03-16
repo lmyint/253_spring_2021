@@ -1,0 +1,15 @@
+# Learning Objectives {-}
+
+Learning objectives for our course topics are listed below. Use these to guide your synthesis of video and reading material.
+
+**Introduction to Statistical Machine Learning**
+
+- Formulate research questions that align with regression, classification, or unsupervised learning tasks
+
+<br>
+
+**Evaluating Regression Models**
+
+- Create and interpret residuals vs. fitted, residuals vs. predictor plots to identify improvements in modeling and address ethical concerns
+- Interpret MSE, RMSE, MAE, and R-squared in a contextually meaningful way
+
