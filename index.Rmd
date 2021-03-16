@@ -24,7 +24,7 @@ description: "This is the class website for Statistical Machine Learning at Maca
 <br>
 <br>
 
-This is the class manual for Statistical Machine Learning (STAT 253) at Macalester College. The content here was made by [Leslie Myint](https://lmyint.github.io) and draws upon our class textbook, [An Introduction to Statistical Learning with Applications in R](https://www.statlearning.com/s/ISLR-Seventh-Printing-xwa7.pdf), and on materials prepared by [Alicia Johnson](http://aliciajohnson78.weebly.com/).
+This is the class manual for Statistical Machine Learning (STAT 253) at Macalester College. The content here was made by [Leslie Myint](https://lmyint.github.io) and draws upon our class textbook, [An Introduction to Statistical Learning with Applications in R](https://www.statlearning.com/s/ISLR-Seventh-Printing-xwa7.pdf), and on materials prepared by [Alicia Johnson](https://ajohns24.github.io).
 
 <br>
 <br>
