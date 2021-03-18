@@ -1,0 +1,12 @@
+```{r 02_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# (PART) Regression: Evaluation {-}
+
+# Evaluating Regression Models
+
+## Learning Goals {-}
+
+
+

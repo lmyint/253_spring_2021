@@ -1,0 +1,121 @@
+```{r hw1_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# (PART) Homework {-}
+
+# Homework 1 {-}
+
+<center>
+<span style="color: red;">STILL UNDER CONSTRUCTION!</span>
+</center>
+
+<center>
+**Due Friday, March 26 at midnight CST on [Moodle](https://moodle.macalester.edu/mod/assign/view.php?id=46844)**
+
+<!-- **Please turn in a single document containing your responses.** -->
+</center>
+
+## Project Work {-}
+
+**Goal:** Find a dataset (or datasets) to use for your final project and start to get to know the data.
+
+**Details:**
+
+Your dataset(s) should allow you to perform a (1) regression, (2) classification, and (3) unsupervised learning analysis. The following resources are good places to start looking for data:
+
+- [Google Dataset Search](https://datasetsearch.research.google.com/)
+- [Kaggle](https://www.kaggle.com/datasets)
+- [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php)
+- [Harvard Dataverse](https://dataverse.harvard.edu/)
+
+Even if you end up working with a partner on the project, please complete this initial work individually. It's fine if you and a potential/future partner end up using the same dataset and collaborate on the finding of data, but complete the short bit of writing (below) individually.
+
+Check in with the instructor *early* if you need help.
+
+**Deliverables:**
+
+Write 1-2 paragraphs (no more than 350 words) summarizing:
+
+- The information in the dataset(s) and the *context* behind the data. Use the prompts below to guide your thoughts. (Note: in some situations, there may be incomplete information on the data context. That is still ok. Just do your best to summarize what information is available, and acknowledge the lack of information where relevant.)
+    - What are the cases?
+    - Broadly describe the variables contained in the data.
+    - Who collected the data? When, why, and how?
+- 3 research questions
+    - 1 that can be investigated in a regression setting
+    - 1 that can be investigated in a classification setting
+    - 1 that can be investigated in an unsupervised learning setting
+
+Also make sure that you can read the data into R. You don't need to do any analysis in R yet, but making sure that you can read the data will make the next steps go more smoothly.
+
+
+
+<br><br><br>
+
+
+
+## Portfolio Work {-}
+
+**Page maximum:** 1.5 pages **of text**
+
+**Organization:** Your choice! Use titles and section headings that make sense to you. (It probably makes sense to have a separate section for each method.)
+
+**Deliverables:** Put your work in a Google Doc, and update the link sharing so that anyone with the link at Macalester College can edit. Share the URL to the Google Doc in your submission.
+
+<br>
+
+**Concepts to address:**
+
+- **Overfitting:** The video used the analogy of a cat picture model to explain overfitting. Come up with your own analogy to explain overfitting.
+
+- **Evaluating regression models:** <span style="color: red;">TBD</span>
+
+<!-- Summarize class activities -->
+
+- **Cross-validation:** <span style="color: red;">TBD</span>
+
+<!-- Present a situation of a cross-validation mistake. What went wrong? Use this to explain the cross-validation process, its purpose. -->
+
+- **Subset selection:** <span style="color: red;">TBD</span>
+    - Algorithmic understanding
+    - Scaling of variables
+    - Computational time
+    - Interpretation of output
+
+- **Subset selection:** <span style="color: red;">TBD</span>
+    - Algorithmic understanding
+    - Scaling of variables
+    - Computational time
+    - Interpretation of output
+
+
+
+
+<br><br><br>
+
+
+
+## Course Engagement {-}
+
+The **Ethics** component below is the only required piece. The others are optional depending on the modes of engagement you wish to pursue consistently throughout the module.
+
+<br>
+
+**Ethics:** Read the article [Amazon scraps secret AI recruiting tool that showed bias against women](https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G). Write a short (roughly 250 word), thoughtful response about the themes and cautions that the article brings forth.
+
+
+**Reflection:** Write a short, thoughtful reflection about how things went this week. Feel free to use whichever prompts below resonate most with you, but don't feel limited to these prompts.
+
+- How is your understanding of the material? What ideas/topics have stuck out for you?
+- How is group work going? Any strategies for improving collaboration that you want to try out next week?
+- How is your work/life balance going? Any new activities or strategies that you want to try out for next week?
+
+
+**Note-taking:** Share link(s) to file(s) where you keep your notes on videos/readings and on code from class.
+
+
+**Q & A:** In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions
+
+
+
+

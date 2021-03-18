@@ -1,12 +1,57 @@
+# Introductions
 
-Group Agreements
+Slides from today are available [here](https://docs.google.com/presentation/d/1j56a9J51R4QzSy0J3SvxU4ZRA23PG8Kxex6LvtwHFP0/edit?usp=sharing).
 
-- Confidentiality: Take the lesson, not the story
-- Use "I" statements; Speak your truth
-- W.A.I.T. (Why Am I Talking/Why Aren't I Talking) 
-- Listen for understanding
-- Unpack assumptions
-- Extend and receive grace
-- Understand impact vs. intention
-- Breathe and lean into discomfort
-- Accept non-closure
+<br>
+
+## Envisioning an Ideal Module 4 {-}
+
+**Directions:**
+
+- In your breakout rooms, please first introduce yourselves in whatever way you feel appropriate (e.g., preferred name, pronouns, how you're feeling at the moment, things you're looking forward to).
+- When everyone is ready, discuss the 3 prompts below and record thoughts in [this Google Doc](https://docs.google.com/document/d/1E1KQEYtzSJ9lryXM0bHeJmalX6i_QmR-TWNKx2XR_Cg/edit?usp=sharing). The instructor will summarize responses from both sections to create a resource that everyone can use.
+
+<br>
+
+**Prompts:**
+
+1. Wonderful leaders in the Macalester community have complied the following set of agreements to consider when working in small groups. Which of the following do you think are most important to keep in mind for our time together in this course and why?
+
+    - Confidentiality: Take the lesson, not the story
+    - Use "I" statements; Speak your truth
+    - W.A.I.T. (Why Am I Talking/Why Aren't I Talking) 
+    - Listen for understanding
+    - Unpack assumptions
+    - Extend and receive grace
+    - Understand impact vs. intention
+    - Breathe and lean into discomfort
+    - Accept non-closure
+
+2. What strategies have you found work well for you to succeed both in and out of class in these times?
+
+3. What are some things that have contributed to positive experiences in your courses that you would like to see again this module? What has contributed to negative experiences that you would like to prevent?
+
+
+<br><br><br>
+
+
+## Explorations {-}
+
+Each of the data contexts below prompts a broad research goal. For each, sharpen the focus of that goal by coming up with more targeted research questions that:
+
+- Can be studied with a regression exploration
+- Can be studied with a classification exploration
+- Can be studied with an unsupervised learning exploration
+
+Are there harms that you anticipate arising from the collection of data or its analysis?
+
+
+<br>
+
+
+**Context 1:** The New York Times is trying to better understand the popularity of its different articles with the hope of using this understanding to improve hiring of writers and improve their website layout.
+
+**Context 2:** The Minnesota Department of Health is trying to better understand the different health trajectories of people who have contracted a certain illness to improve funding for relevant health services.
+
+**Context 3:** The campaign management team for a political candidate is trying to better understand voter turnout in different regions of the country to run a better campaign in the next election.
+
