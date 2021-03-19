@@ -29,7 +29,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="introductions.html"/>
+<link rel="prev" href="evaluating-regression-models.html"/>
 
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -146,7 +146,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="introductions.html"><a href="introductions.html#envisioning-an-ideal-module-4"><i class="fa fa-check"></i>Envisioning an Ideal Module 4</a></li>
 <li class="chapter" data-level="" data-path="introductions.html"><a href="introductions.html#explorations"><i class="fa fa-check"></i>Explorations</a></li>
 </ul></li>
-<li class="part"><span><b>I Homework</b></span></li>
+<li class="part"><span><b>I Regression: Evaluation</b></span></li>
+<li class="chapter" data-level="2" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html"><i class="fa fa-check"></i><b>2</b> Evaluating Regression Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#learning-goals"><i class="fa fa-check"></i>Learning Goals</a></li>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#exercises"><i class="fa fa-check"></i>Exercises</a>
+<ul>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#context"><i class="fa fa-check"></i>Context</a></li>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#class-investigations"><i class="fa fa-check"></i>Class investigations</a></li>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#exercise-1"><i class="fa fa-check"></i>Exercise 1</a></li>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#exercise-2"><i class="fa fa-check"></i>Exercise 2</a></li>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#exercise-3"><i class="fa fa-check"></i>Exercise 3</a></li>
+<li class="chapter" data-level="" data-path="evaluating-regression-models.html"><a href="evaluating-regression-models.html#exercise-4"><i class="fa fa-check"></i>Exercise 4</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Homework</b></span></li>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html"><i class="fa fa-check"></i>Homework 1</a>
 <ul>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html#project-work"><i class="fa fa-check"></i>Project Work</a></li>
@@ -176,11 +190,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="homework-1" class="section level1 unnumbered">
 <h1>Homework 1</h1>
 <center>
-<span style="color: red;">STILL UNDER CONSTRUCTION!</span>
-</center>
-<center>
 <p><strong>Due Friday, March 26 at midnight CST on <a href="https://moodle.macalester.edu/mod/assign/view.php?id=46844">Moodle</a></strong></p>
-<!-- **Please turn in a single document containing your responses.** -->
+Please turn in a <strong>single PDF document</strong> containing (1) your responses for the Project Work and Course Engagement sections and (2) a LINK to the Google Doc with your responses for the Portfolio Work section.
 </center>
 <div id="project-work" class="section level2 unnumbered">
 <h2>Project Work</h2>
@@ -193,12 +204,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="https://archive.ics.uci.edu/ml/datasets.php">UCI Machine Learning Repository</a></li>
 <li><a href="https://dataverse.harvard.edu/">Harvard Dataverse</a></li>
 </ul>
-<p>Even if you end up working with a partner on the project, please complete this initial work individually. It’s fine if you and a potential/future partner end up using the same dataset and collaborate on the finding of data, but complete the short bit of writing (below) individually.</p>
+<p>Even if you end up working with a partner on the project (which isn’t required - working alone is fine), please complete this initial work individually. It’s fine if you and a potential/future partner end up using the same dataset and collaborate on the finding of data, but complete the short bit of writing (below) individually.</p>
 <p>Check in with the instructor <em>early</em> if you need help.</p>
 <p><strong>Deliverables:</strong></p>
 <p>Write 1-2 paragraphs (no more than 350 words) summarizing:</p>
 <ul>
-<li>The information in the dataset(s) and the <em>context</em> behind the data. Use the prompts below to guide your thoughts. (Note: in some situations, there may be incomplete information on the data context. That is still ok. Just do your best to summarize what information is available, and acknowledge the lack of information where relevant.)
+<li>The information in the dataset(s) and the <em>context</em> behind the data. Use the prompts below to guide your thoughts. (Note: in some situations, there may be incomplete information on the data context. That’s fine. Just do your best to summarize what information is available, and acknowledge the lack of information where relevant.)
 <ul>
 <li>What are the cases?</li>
 <li>Broadly describe the variables contained in the data.</li>
@@ -216,34 +227,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="portfolio-work" class="section level2 unnumbered">
 <h2>Portfolio Work</h2>
-<p><strong>Page maximum:</strong> 1.5 pages <strong>of text</strong></p>
+<p><strong>Page maximum:</strong> 2 pages <strong>of text</strong> (pictures don’t count)</p>
 <p><strong>Organization:</strong> Your choice! Use titles and section headings that make sense to you. (It probably makes sense to have a separate section for each method.)</p>
-<p><strong>Deliverables:</strong> Put your work in a Google Doc, and update the link sharing so that anyone with the link at Macalester College can edit. Share the URL to the Google Doc in your submission.</p>
+<p><strong>Deliverables:</strong> Put your responses for this part in a Google Doc, and update the link sharing so that anyone with the link at Macalester College can edit. Include the URL for the Google Doc in your submission.</p>
+<p><strong>Note:</strong> Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.</p>
 <p><br></p>
 <p><strong>Concepts to address:</strong></p>
 <ul>
 <li><p><strong>Overfitting:</strong> The video used the analogy of a cat picture model to explain overfitting. Come up with your own analogy to explain overfitting.</p></li>
-<li><p><strong>Evaluating regression models:</strong> <span style="color: red;">TBD</span></p></li>
-</ul>
-<!-- Summarize class activities -->
+<li><p><strong>Evaluating regression models:</strong> Describe how residuals are central to the evaluation of regression models. Explain how they arise in quantitative evaluation metrics and how they are used in evaluation plots. Include examples of plots that show desirable and undesirable model behavior (feel free to draw them by hand if you wish) and what steps can be taken to address that undesirable behavior.</p></li>
+<li><p><strong>Cross-validation:</strong> In your own words, explain the rationale for cross-validation in relation to overfitting and model evaluation. Describe the algorithm in your own words in at most 2 sentences.</p></li>
+<li><p><strong>Subset selection:</strong></p>
 <ul>
-<li><strong>Cross-validation:</strong> <span style="color: red;">TBD</span></li>
-</ul>
-<!-- Present a situation of a cross-validation mistake. What went wrong? Use this to explain the cross-validation process, its purpose. -->
-<ul>
-<li><strong>Subset selection:</strong> <span style="color: red;">TBD</span>
-<ul>
-<li>Algorithmic understanding</li>
-<li>Scaling of variables</li>
-<li>Computational time</li>
-<li>Interpretation of output</li>
+<li>Algorithmic understanding: Look at Conceptual exercise 1, parts (a) and (b) in ISLR Section 6.8. <strong>What are the aspects of the subset selection algorithm(s) that are essential to answering these questions, and why?</strong> (Note: you’ll have to try to answer the ISLR questions to respond to this prompt, but the focus of your writing should be on the question in bold here.)</li>
+<li>Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method?</li>
+<li>Computational time: What computational time considerations are relevant for this method?</li>
+<li>Interpretation of output: What parts of the algorithm output have useful interpretations, and what are those interpretations?</li>
 </ul></li>
-<li><strong>Subset selection:</strong> <span style="color: red;">TBD</span>
+<li><p><strong>LASSO:</strong></p>
 <ul>
-<li>Algorithmic understanding</li>
-<li>Scaling of variables</li>
-<li>Computational time</li>
-<li>Interpretation of output</li>
+<li>Algorithmic understanding: Come up with your own analogy for explaining how the penalized least squares criterion works.</li>
+<li>Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method?</li>
+<li>Computational time: What computational time considerations are relevant for this method?</li>
+<li>Interpretation of output: What parts of the algorithm output have useful interpretations, and what are those interpretations?</li>
 </ul></li>
 </ul>
 <p><br><br><br></p>
@@ -252,7 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Course Engagement</h2>
 <p>The <strong>Ethics</strong> component below is the only required piece. The others are optional depending on the modes of engagement you wish to pursue consistently throughout the module.</p>
 <p><br></p>
-<p><strong>Ethics:</strong> Read the article <a href="https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G">Amazon scraps secret AI recruiting tool that showed bias against women</a>. Write a short (roughly 250 word), thoughtful response about the themes and cautions that the article brings forth.</p>
+<p><strong>Ethics: (REQUIRED)</strong> Read the article <a href="https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G">Amazon scraps secret AI recruiting tool that showed bias against women</a>. Write a short (roughly 250 words), thoughtful response about the themes and cautions that the article brings forth.</p>
 <p><strong>Reflection:</strong> Write a short, thoughtful reflection about how things went this week. Feel free to use whichever prompts below resonate most with you, but don’t feel limited to these prompts.</p>
 <ul>
 <li>How is your understanding of the material? What ideas/topics have stuck out for you?</li>
@@ -260,7 +266,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>How is your work/life balance going? Any new activities or strategies that you want to try out for next week?</li>
 </ul>
 <p><strong>Note-taking:</strong> Share link(s) to file(s) where you keep your notes on videos/readings and on code from class.</p>
-<p><strong>Q &amp; A:</strong> In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions</p>
+<p><strong>Q &amp; A:</strong> In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions.</p>
 
 </div>
 </div>
@@ -269,7 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="introductions.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="evaluating-regression-models.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>

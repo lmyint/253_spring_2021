@@ -7,10 +7,6 @@ knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
 # Homework 1 {-}
 
 <center>
-<span style="color: red;">STILL UNDER CONSTRUCTION!</span>
-</center>
-
-<center>
 **Due Friday, March 26 at midnight CST on [Moodle](https://moodle.macalester.edu/mod/assign/view.php?id=46844)**
 
 Please turn in a **single PDF document** containing (1) your responses for the Project Work and Course Engagement sections and (2) a LINK to the Google Doc with your responses for the Portfolio Work section.
