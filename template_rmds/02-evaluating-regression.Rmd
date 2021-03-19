@@ -1,29 +1,12 @@
-```{r 02_setup, include=FALSE}
-knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
-```
+---
+title: "Evaluating Regression Models"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
 
-# (PART) Regression: Evaluation {-}
-
-# Evaluating Regression Models
-
-## Learning Goals {-}
-
-- Create and interpret residuals vs. fitted, residuals vs. predictor plots to identify improvements in modeling and address ethical concerns
-- Interpret MSE, RMSE, MAE, and R-squared in a contextually meaningful way
-
-We'll also start to develop some new ideas relating to our next topics.
-
-<br>
-
-Slides from today are available [here](https://docs.google.com/presentation/d/1i3VayaOluBpsSci6rDT0IiURw5DsEnsp-CS4FZ91BBU/edit?usp=sharing).
-
-<br><br><br>
-
-## Exercises {-}
-
-**You can download a template RMarkdown file to start from [here](template_rmds/02-evaluating-regression.Rmd).**
-
-### Context {-}
+## Context
 
 We'll be working with a dataset containing physical measurements on 80 adult males. These measurements include body fat percentage estimates as well as body circumference measurements.
 
@@ -58,7 +41,7 @@ bodyfat <- bodyfat %>%
     select(-fatBrozek, -density)
 ```
 
-### Class investigations {-}
+## Class investigations
 
 We'll work through this section together to review concepts and code. You'll then work on the remainder of the exercises in your groups.
 
@@ -119,7 +102,7 @@ ggplot(mod1_output, aes(x = height, y = .resid)) +
 ```
 
 
-### Exercise 1 {-}
+## Exercise 1
 
 First decide on what you think would be a good model by picking variables based on context. Fit this model, calling it `mod_initial`. (Remember that you can include several predictors with a `+` in the model formula - like `y ~ x1+x2`.)
 
@@ -141,7 +124,9 @@ Fit your updated model, and call it `model_updated`.
 
 
 
-### Exercise 2 {-}
+
+
+## Exercise 2
 
 Compute and contextually interpret relevant evaluation metrics for your model.
 
@@ -151,7 +136,9 @@ Compute and contextually interpret relevant evaluation metrics for your model.
 
 
 
-### Exercise 3 {-}
+
+
+## Exercise 3
 
 Now that you've selected your best model, deploy it in the real world by applying it to a new set of 172 adult males. You'll need to update the `newdata` argument of the `broom::augment()` code to use `bodyfat_test` instead of `bodyfat`.
 
@@ -165,7 +152,9 @@ b. In general, do you think that models with more or less variables would perfor
 
 
 
-### Exercise 4 {-}
+
+
+## Exercise 4
 
 The code below systematically looks at the same comparison that you made in Exercise 3 but for every possible linear regression model formed from inclusion/exclusion of the predictors (without transformations or interactions).
 

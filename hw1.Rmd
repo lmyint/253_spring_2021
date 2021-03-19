@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
 <center>
 **Due Friday, March 26 at midnight CST on [Moodle](https://moodle.macalester.edu/mod/assign/view.php?id=46844)**
 
-<!-- **Please turn in a single document containing your responses.** -->
+Please turn in a **single PDF document** containing (1) your responses for the Project Work and Course Engagement sections and (2) a LINK to the Google Doc with your responses for the Portfolio Work section.
 </center>
 
 ## Project Work {-}
@@ -29,7 +29,7 @@ Your dataset(s) should allow you to perform a (1) regression, (2) classification
 - [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets.php)
 - [Harvard Dataverse](https://dataverse.harvard.edu/)
 
-Even if you end up working with a partner on the project, please complete this initial work individually. It's fine if you and a potential/future partner end up using the same dataset and collaborate on the finding of data, but complete the short bit of writing (below) individually.
+Even if you end up working with a partner on the project (which isn't required - working alone is fine), please complete this initial work individually. It's fine if you and a potential/future partner end up using the same dataset and collaborate on the finding of data, but complete the short bit of writing (below) individually.
 
 Check in with the instructor *early* if you need help.
 
@@ -37,7 +37,7 @@ Check in with the instructor *early* if you need help.
 
 Write 1-2 paragraphs (no more than 350 words) summarizing:
 
-- The information in the dataset(s) and the *context* behind the data. Use the prompts below to guide your thoughts. (Note: in some situations, there may be incomplete information on the data context. That is still ok. Just do your best to summarize what information is available, and acknowledge the lack of information where relevant.)
+- The information in the dataset(s) and the *context* behind the data. Use the prompts below to guide your thoughts. (Note: in some situations, there may be incomplete information on the data context. That's fine. Just do your best to summarize what information is available, and acknowledge the lack of information where relevant.)
     - What are the cases?
     - Broadly describe the variables contained in the data.
     - Who collected the data? When, why, and how?
@@ -56,11 +56,13 @@ Also make sure that you can read the data into R. You don't need to do any analy
 
 ## Portfolio Work {-}
 
-**Page maximum:** 1.5 pages **of text**
+**Page maximum:** 2 pages **of text** (pictures don't count)
 
 **Organization:** Your choice! Use titles and section headings that make sense to you. (It probably makes sense to have a separate section for each method.)
 
-**Deliverables:** Put your work in a Google Doc, and update the link sharing so that anyone with the link at Macalester College can edit. Share the URL to the Google Doc in your submission.
+**Deliverables:** Put your responses for this part in a Google Doc, and update the link sharing so that anyone with the link at Macalester College can edit. Include the URL for the Google Doc in your submission.
+
+**Note:** Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.
 
 <br>
 
@@ -68,25 +70,21 @@ Also make sure that you can read the data into R. You don't need to do any analy
 
 - **Overfitting:** The video used the analogy of a cat picture model to explain overfitting. Come up with your own analogy to explain overfitting.
 
-- **Evaluating regression models:** <span style="color: red;">TBD</span>
+- **Evaluating regression models:** Describe how residuals are central to the evaluation of regression models. Explain how they arise in quantitative evaluation metrics and how they are used in evaluation plots. Include examples of plots that show desirable and undesirable model behavior (feel free to draw them by hand if you wish) and what steps can be taken to address that undesirable behavior.
 
-<!-- Summarize class activities -->
+- **Cross-validation:** In your own words, explain the rationale for cross-validation in relation to overfitting and model evaluation. Describe the algorithm in your own words in at most 2 sentences.
 
-- **Cross-validation:** <span style="color: red;">TBD</span>
+- **Subset selection:**
+    - Algorithmic understanding: Look at Conceptual exercise 1, parts (a) and (b) in ISLR Section 6.8. **What are the aspects of the subset selection algorithm(s) that are essential to answering these questions, and why?** (Note: you'll have to try to answer the ISLR questions to respond to this prompt, but the focus of your writing should be on the question in bold here.)
+    - Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method?
+    - Computational time: What computational time considerations are relevant for this method?
+    - Interpretation of output: What parts of the algorithm output have useful interpretations, and what are those interpretations?
 
-<!-- Present a situation of a cross-validation mistake. What went wrong? Use this to explain the cross-validation process, its purpose. -->
-
-- **Subset selection:** <span style="color: red;">TBD</span>
-    - Algorithmic understanding
-    - Scaling of variables
-    - Computational time
-    - Interpretation of output
-
-- **Subset selection:** <span style="color: red;">TBD</span>
-    - Algorithmic understanding
-    - Scaling of variables
-    - Computational time
-    - Interpretation of output
+- **LASSO:**
+    - Algorithmic understanding: Come up with your own analogy for explaining how the penalized least squares criterion works.
+    - Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method?
+    - Computational time: What computational time considerations are relevant for this method?
+    - Interpretation of output: What parts of the algorithm output have useful interpretations, and what are those interpretations?
 
 
 
@@ -101,7 +99,7 @@ The **Ethics** component below is the only required piece. The others are option
 
 <br>
 
-**Ethics:** Read the article [Amazon scraps secret AI recruiting tool that showed bias against women](https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G). Write a short (roughly 250 word), thoughtful response about the themes and cautions that the article brings forth.
+**Ethics: (REQUIRED)** Read the article [Amazon scraps secret AI recruiting tool that showed bias against women](https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G). Write a short (roughly 250 words), thoughtful response about the themes and cautions that the article brings forth.
 
 
 **Reflection:** Write a short, thoughtful reflection about how things went this week. Feel free to use whichever prompts below resonate most with you, but don't feel limited to these prompts.
@@ -114,7 +112,7 @@ The **Ethics** component below is the only required piece. The others are option
 **Note-taking:** Share link(s) to file(s) where you keep your notes on videos/readings and on code from class.
 
 
-**Q & A:** In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions
+**Q & A:** In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions.
 
 
 
