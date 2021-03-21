@@ -36,4 +36,30 @@ Learning objectives for our course topics are listed below. Use these to guide y
 - Explain how ordinary and penalized least squares are similar and different with regard to (1) the form of the objective function and (2) the goal of variable selection
 - Explain how the lambda tuning parameter affects model performance and how this is related to overfitting
 
+<br>
+
+**KNN Regression and the Bias-Variance Tradeoff**
+
+- Clearly describe / implement by hand the KNN algorithm for making a regression prediction
+- Explain how the number of neighbors relates to the bias-variance tradeoff
+- Explain the difference between parametric and nonparametric methods
+- Explain how the curse of dimensionality relates to the performance of KNN (not in the video--will be discussed in class)
+
+<br>
+
+**Modeling Nonlinearity: Polynomial Regression and Splines**
+
+- Explain the advantages of splines over global transformations and other types of piecewise polynomials
+- Explain how splines are constructed by drawing connections to variable transformations and least squares
+- Explain how the number of knots relates to the bias-variance tradeoff
+
+<br>
+
+**Local Regression and Generalized Additive Models**
+
+- Clearly describe the local regression algorithm for making a prediction
+- Explain how bandwidth (span) relate to the bias-variance tradeoff
+- Describe some different formulations for a GAM (how the arbitrary functions are represented)
+- Explain how to make a prediction from a GAM
+- Interpret the output from a GAM
 
