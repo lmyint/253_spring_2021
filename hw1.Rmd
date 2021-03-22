@@ -14,7 +14,7 @@ Please turn in a **single PDF document** containing (1) your responses for the P
 
 ## Project Work {-}
 
-**Goal:** Find a dataset (or datasets) to use for your final project and start to get to know the data.
+**Goal:** Find a dataset (or datasets) to use for your [final project](final-project.html), and start to get to know the data.
 
 **Details:**
 

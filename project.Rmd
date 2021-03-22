@@ -1,0 +1,22 @@
+```{r project_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# (PART) Project {-}
+
+# Final Project {-}
+
+## Requirements {-}
+
+You will be analyzing a dataset using a regression, classification, and unsupervised learning analysis.
+
+1. You must complete the Project Work parts of the 4 weekly homework assignments. These are incremental investigations that build from our applied class exercises.
+2. You will synthesize these investigations at the end of the module.
+
+**Collaboration:**
+
+- You may work in teams of up to 3 members. Individual work is fine.
+- The weekly homework assignments will note whether work for that week should be submitted individually or if just one team member should submit work.
+- There will be a required synthesis of the weekly homework investigations at the end of the course (e.g., a final report and/or presentation). If working on a team, this should be done in groups, rather than individually.
+    - Still being determined. Updates will appear on this page later in the course.
+
