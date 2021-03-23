@@ -191,7 +191,7 @@ b. Which model performed best on the test set?
 c. Explain why there's a discrepancy between these 2 answers and why CV, in general, can help prevent overfitting.
 
 
-Model     Training MAE   $\text{CV}_{(10)}$
+Model     Training RMSE   $\text{CV}_{(10)}$
 -------- --------------- --------------------
 `mod1`       3.810712         4.389568
 `mod2`       3.766645         4.438637

@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="evaluating-regression-models.html"/>
-<link rel="next" href="homework-1.html"/>
+<link rel="next" href="variable-subset-selection.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -174,14 +174,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="overfitting-cross-validation.html"><a href="overfitting-cross-validation.html#digging-deeper"><i class="fa fa-check"></i>Digging deeper</a></li>
 </ul></li>
 </ul></li>
-<li class="part"><span><b>II Homework</b></span></li>
+<li class="part"><span><b>II Regression: Building Models</b></span></li>
+<li class="chapter" data-level="4" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html"><i class="fa fa-check"></i><b>4</b> Variable Subset Selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#learning-goals-2"><i class="fa fa-check"></i>Learning Goals</a></li>
+<li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#exercises-2"><i class="fa fa-check"></i>Exercises</a>
+<ul>
+<li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#exercise-1-backward-stepwise-selection-by-hand"><i class="fa fa-check"></i>Exercise 1: Backward stepwise selection: by hand</a></li>
+<li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#exercise-2-interpreting-the-results"><i class="fa fa-check"></i>Exercise 2: Interpreting the results</a></li>
+<li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#exercise-3-planning-forward-selection-using-cv"><i class="fa fa-check"></i>Exercise 3: Planning forward selection using CV</a></li>
+<li><a href="variable-subset-selection.html#exercise-4-stepwise-selection-in-caret">Exercise 4: Stepwise selection in <code>caret</code></a></li>
+<li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#exercise-5-exploring-the-results"><i class="fa fa-check"></i>Exercise 5: Exploring the results</a></li>
+<li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#digging-deeper-1"><i class="fa fa-check"></i>Digging deeper</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Homework</b></span></li>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html"><i class="fa fa-check"></i>Homework 1</a>
 <ul>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html#project-work"><i class="fa fa-check"></i>Project Work</a></li>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html#portfolio-work"><i class="fa fa-check"></i>Portfolio Work</a></li>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html#course-engagement"><i class="fa fa-check"></i>Course Engagement</a></li>
 </ul></li>
-<li class="part"><span><b>III Project</b></span></li>
+<li class="part"><span><b>IV Project</b></span></li>
 <li class="chapter" data-level="" data-path="final-project.html"><a href="final-project.html"><i class="fa fa-check"></i>Final Project</a>
 <ul>
 <li class="chapter" data-level="" data-path="final-project.html"><a href="final-project.html#requirements"><i class="fa fa-check"></i>Requirements</a></li>
@@ -389,30 +403,30 @@ We’re only building one model, not comparing multiple models, so we don’t ne
 <thead>
 <tr class="header">
 <th align="left">Model</th>
-<th align="center">Training MAE</th>
-<th align="left"><span class="math inline">\(\text{CV}_{(10)}\)</span></th>
+<th align="center">Training RMSE</th>
+<th align="center"><span class="math inline">\(\text{CV}_{(10)}\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left"><code>mod1</code></td>
 <td align="center">3.810712</td>
-<td align="left">4.389568</td>
+<td align="center">4.389568</td>
 </tr>
 <tr class="even">
 <td align="left"><code>mod2</code></td>
 <td align="center">3.766645</td>
-<td align="left">4.438637</td>
+<td align="center">4.438637</td>
 </tr>
 <tr class="odd">
 <td align="left"><code>mod3</code></td>
 <td align="center">3.752362</td>
-<td align="left">4.517281</td>
+<td align="center">4.517281</td>
 </tr>
 <tr class="even">
 <td align="left"><code>mod4</code></td>
 <td align="center">3.572299</td>
-<td align="left">4.543343</td>
+<td align="center">4.543343</td>
 </tr>
 </tbody>
 </table>
@@ -450,7 +464,7 @@ We’re only building one model, not comparing multiple models, so we don’t ne
         </div>
       </div>
 <a href="evaluating-regression-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="variable-subset-selection.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
