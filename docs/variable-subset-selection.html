@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="overfitting-cross-validation.html"/>
-<link rel="next" href="homework-1.html"/>
+<link rel="next" href="lasso-shrinkageregularization.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -188,6 +188,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="variable-subset-selection.html"><a href="variable-subset-selection.html#digging-deeper-1"><i class="fa fa-check"></i>Digging deeper</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="5" data-path="lasso-shrinkageregularization.html"><a href="lasso-shrinkageregularization.html"><i class="fa fa-check"></i><b>5</b> LASSO: Shrinkage/Regularization</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso-shrinkageregularization.html"><a href="lasso-shrinkageregularization.html#learning-goals-3"><i class="fa fa-check"></i>Learning Goals</a></li>
+<li><a href="lasso-shrinkageregularization.html#lasso-models-in-caret">LASSO models in <code>caret</code></a></li>
+<li class="chapter" data-level="" data-path="lasso-shrinkageregularization.html"><a href="lasso-shrinkageregularization.html#exercises-3"><i class="fa fa-check"></i>Exercises</a>
+<ul>
+<li class="chapter" data-level="" data-path="lasso-shrinkageregularization.html"><a href="lasso-shrinkageregularization.html#exercise-1-a-least-squares-model"><i class="fa fa-check"></i>Exercise 1: A least squares model</a></li>
+<li><a href="lasso-shrinkageregularization.html#exercise-2-fitting-a-lasso-model-in-caret">Exercise 2: Fitting a LASSO model in <code>caret</code></a></li>
+<li class="chapter" data-level="" data-path="lasso-shrinkageregularization.html"><a href="lasso-shrinkageregularization.html#exercise-3-examining-output-plot-of-coefficient-paths"><i class="fa fa-check"></i>Exercise 3: Examining output: plot of coefficient paths</a></li>
+<li><a href="lasso-shrinkageregularization.html#exercise-4-tuning-lambda">Exercise 4: Tuning <span class="math inline">\(\lambda\)</span></a></li>
+<li class="chapter" data-level="" data-path="lasso-shrinkageregularization.html"><a href="lasso-shrinkageregularization.html#exercise-5-examining-and-evaluating-the-best-lasso-model"><i class="fa fa-check"></i>Exercise 5: Examining and evaluating the best LASSO model</a></li>
+<li class="chapter" data-level="" data-path="lasso-shrinkageregularization.html"><a href="lasso-shrinkageregularization.html#digging-deeper-2"><i class="fa fa-check"></i>Digging deeper</a></li>
+</ul></li>
+</ul></li>
 <li class="part"><span><b>III Homework</b></span></li>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html"><i class="fa fa-check"></i>Homework 1</a>
 <ul>
@@ -260,7 +274,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="exercise-2-interpreting-the-results" class="section level3 unnumbered">
 <h3>Exercise 2: Interpreting the results</h3>
-<p>Examine which predictors remain after the previous exercise. Are you surprised that, for example, <code>Wrist</code> is still in the model but <code>Weight</code> is not? Does this mean that <code>Wrist</code> is a better predictor of body fat percentage than <code>Weight</code> is? What statistical idea is relevant here.</p>
+<p>Examine which predictors remain after the previous exercise. Are you surprised that, for example, <code>Wrist</code> is still in the model but <code>Weight</code> is not? Does this mean that <code>Wrist</code> is a better predictor of body fat percentage than <code>Weight</code> is? What statistical idea is relevant here?</p>
 </div>
 <div id="exercise-3-planning-forward-selection-using-cv" class="section level3 unnumbered">
 <h3>Exercise 3: Planning forward selection using CV</h3>
@@ -296,11 +310,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>There are a number of ways to examine and use the output of the selection algorithm, which we’ll explore here. (It would be useful to make notes along the way - perhaps on your code note sheet.)</p>
 <div id="part-a" class="section level4 unnumbered">
 <h4>Part a</h4>
-<p>Let’s first examine the sequence of models explored. The star in the table at the bottom indicate the variables included in the 1-variable, 2-variable, etc. models.</p>
+<p>Let’s first examine the sequence of models explored. The stars in the table at the bottom indicate the variables included in the 1-variable, 2-variable, etc. models.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="variable-subset-selection.html#cb24-1" aria-hidden="true"></a><span class="kw">summary</span>(back_step_mod)</span></code></pre></div>
 <ul>
 <li><p>Of the 13 models in the sequence, R only prints out the 11 smallest models (since, for reasons we’ll discuss below, it determines the 11 predictor model to be “best”).</p></li>
-<li><p>Which predictor is the last to remain in the model? Second-to-last to remain? How do you think we could use these resutls to identify which predictors were most/least important in predicting the outcome of body fat percentage?</p></li>
+<li><p>Which predictor is the last to remain in the model? Second-to-last to remain? How do you think we could use these results to identify which predictors were most/least important in predicting the outcome of body fat percentage?</p></li>
 </ul>
 </div>
 <div id="part-b" class="section level4 unnumbered">
@@ -366,16 +380,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-
-
-
             </section>
 
           </div>
         </div>
       </div>
 <a href="overfitting-cross-validation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="lasso-shrinkageregularization.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

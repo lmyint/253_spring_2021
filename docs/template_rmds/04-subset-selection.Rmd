@@ -49,7 +49,7 @@ To practice the backward selection algorithm, step through a few steps of the al
 
 ## Exercise 2: Interpreting the results
 
-Examine which predictors remain after the previous exercise. Are you surprised that, for example, `Wrist` is still in the model but `Weight` is not? Does this mean that `Wrist` is a better predictor of body fat percentage than `Weight` is? What statistical idea is relevant here.
+Examine which predictors remain after the previous exercise. Are you surprised that, for example, `Wrist` is still in the model but `Weight` is not? Does this mean that `Wrist` is a better predictor of body fat percentage than `Weight` is? What statistical idea is relevant here?
 
 
 
@@ -95,7 +95,7 @@ There are a number of ways to examine and use the output of the selection algori
 
 ### Part a
 
-Let's first examine the sequence of models explored. The star in the table at the bottom indicate the variables included in the 1-variable, 2-variable, etc. models.
+Let's first examine the sequence of models explored. The stars in the table at the bottom indicate the variables included in the 1-variable, 2-variable, etc. models.
 
 ```{r}
 summary(back_step_mod)
@@ -103,7 +103,7 @@ summary(back_step_mod)
 
 - Of the 13 models in the sequence, R only prints out the 11 smallest models (since, for reasons we’ll discuss below, it determines the 11 predictor model to be "best").
 
-- Which predictor is the last to remain in the model? Second-to-last to remain? How do you think we could use these resutls to identify which predictors were most/least important in predicting the outcome of body fat percentage?
+- Which predictor is the last to remain in the model? Second-to-last to remain? How do you think we could use these results to identify which predictors were most/least important in predicting the outcome of body fat percentage?
 
 ### Part b
 
