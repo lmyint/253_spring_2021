@@ -1,0 +1,189 @@
+```{r hw2_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# Homework 2 {-}
+
+<center>
+**Due Friday, April 2 at midnight CST on [Moodle](https://moodle.macalester.edu/mod/assign/view.php?id=49968)**
+</center>
+
+**Deliverables:** Please use [this template](template_rmds/hw2.Rmd) to knit an HTML document. Convert this HTML document to a PDF by opening the HTML document in your web browser. *Print* the document (Ctrl/Cmd-P) and change the destination to "Save as PDF". Submit this one PDF to Moodle.
+
+Alternatively, you may knit your Rmd directly to PDF if you have LaTeX installed.
+
+
+
+<br><br><br>
+
+
+
+## Project Work {-}
+
+**Goal:** Begin an analysis of your dataset to answer your **regression** research question.
+
+<br>
+
+**Collaboration:** If you have already formed a team (of at most 3 members) for the project, this part can be done as a team. Only one team member should submit a Project Work section.
+
+<br>
+
+**Grading:** Completing this Project Work section is a required part of the final project. Rather than receiving a grade for the analyses below, you will get qualitative feedback from the instructor. It is the **synthesis** of the analyses across homework assignments that will determine the final project grade.
+
+<br>
+
+**Data cleaning:** If your dataset requires any cleaning (e.g., merging datasets, creation of new variables), first consult the [R Resources page](r-resources.html) to see if your questions are answered there. If not, post on the #content-questions channel in our Slack workspace to ask for help. *Please ask for help early and regularly* to avoid stressful workloads.
+
+<br>
+
+**Required Analyses:**
+
+1. **Initial investigation: ignoring nonlinearity (for now)**
+    - Use ordinary least squares (OLS) regression, forward and/or backward selection, and LASSO to build initial models for your quantitative outcome as a function of the predictors of interest. (As part of data cleaning, exclude any variables that you don't want to consider as predictors.)
+        - These models should not include any transformations to deal with nonlinearity. You'll explore this in the next investigation.
+        - Note: If you have highly collinear/redundant variables, you might see the message "Reordering variables and trying again" and associated `warning()`s about linear dependencies being found. Sometimes stepwise selection is able to handle the collinearity/redundancy by modifying the order of the variables tried. If collinearity/redundancy cannot be handled and causes an error, try reducing `nvmax`.
+
+    - Estimate test performance of the models from these different methods. Report and interpret (with units) these estimates along with a measure of uncertainty in the estimate (SD is most readily available from `caret`).
+        - Compare estimated test performance across methods. Which method(s) might you prefer?
+
+    - Use residual plots to evaluate whether some quantitative predictors might be better modeled with nonlinear relationships.
+
+    - Compare insights from variable importance analyses from the different methods (stepwise and LASSO, but not OLS). Are there variables for which the methods reach consensus? What insights are expected? Surprising?
+        - Note that if some (but not all) of the indicator terms for a categorical predictor are selected in the final models, the whole predictor should be treated as selected.
+
+<br>
+
+2. **Accounting for nonlinearity**
+    - Update your stepwise selection model(s) and LASSO model to use natural splines for the quantitative predictors.
+        - You'll need to update the model formula from `y ~ .` to something like `y ~ cat_var1 + ns(quant_var1, df) + ...`.
+        - It's recommended to use few knots (e.g., 2 knots = 3 degrees of freedom).
+        - Note that `ns(x,3)` replaces `x` with 3 transformations of `x`. Keep this in mind when setting `nvmax` in stepwise selection.
+
+    - Compare insights from variable importance analyses here and the corresponding results from Investigation 1. Now after having accounted for nonlinearity, have the most relevant predictors changed?
+        - Note that if some (but not all) of the spline terms are selected in the final models, the whole predictor should be treated as selected.
+
+    - Fit a GAM using LOESS terms using the set of variables deemed to be most relevant based on your investigations so far.
+        - How does test performance of the GAM compare to other models you explored?
+        - Do you gain any insights from the GAM output plots for each predictor?
+
+    - Don't worry about KNN for now.
+
+<br>
+
+3. **Summarize investigations**
+    - Decide on an overall best model based on your investigations so far. To do this, make clear your analysis goals. Predictive accuracy? Interpretability? A combination of both?
+
+<br>
+
+4. **Societal impact**
+    - Are there any harms that may come from your analyses and/or how the data were collected?
+    - What cautions do you want to keep in mind when communicating your work?
+
+
+
+<br><br><br>
+
+
+
+## Portfolio Work {-}
+
+**Length requirements:** Detailed for each section below.
+
+**Organization:** To help the instructor and preceptors grade, please organize your document as shown in [this example](https://docs.google.com/document/d/1lS_7UBmWQkXtS21hd9gb842KV42U24A3QhiifP2nf-E/edit?usp=sharing). Clear section headers and new pages for each method help a lot. Thank you!
+
+**Deliverables:** Continue writing your responses in the same Google Doc that you set up for Homework 1. Include the URL for the Google Doc in your submission.
+
+**Note:** Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.
+
+<br>
+
+**Revisions:**
+
+- Make any revisions desired to previous concepts.
+    - **Important formatting note:** Please use a comment to mark the text that you want to be reread. (Highlight each span of text you want to be reread, and mark it with the comment "REVISION".)
+
+- Rubrics to past homeworks will be available on Moodle (under the Solutions section). Look at these rubrics to guide your revisions. You can always ask for guidance in office hours as well.
+
+<br>
+
+**New concepts to address:**
+
+The following prompts are shared for all methods:
+
+- Bias-variance tradeoff: What tuning parameters control the performance of the method? How do low/high values of the tuning parameters relate to bias and variance of the learned model? (3 sentences max.)
+
+- Parametric / nonparametric: Where (roughly) does this method fall on the parametric-nonparametric spectrum, and why? (3 sentences max.)
+
+- Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method? (3 sentences max.)
+
+
+- **Subset selection:**
+    - Bias-variance tradeoff
+    - Parametric / nonparametric
+
+- **LASSO:**
+    - Bias-variance tradeoff
+    - Parametric / nonparametric
+
+- **KNN:**
+    - Algorithmic understanding: Draw and annotate pictures that show how the KNN (K = 2) regression algorithm would work for a test case in a 2 quantitative predictor setting. Also explain how the curse of dimensionality affects KNN performance. (5 sentences max.)
+    - Bias-variance tradeoff
+    - Parametric / nonparametric
+    - Scaling of variables
+    - Computational time: The KNN algorithm is often called a "lazy" learner. Discuss how this relates to the model training process and the computations that must be performed when predicting on a new test case. (3 sentences max.)
+    - Interpretation of output: The "lazy" learner feature of KNN in relation to model training affects the interpretability of output. How? (3 sentences max.)
+
+- **Splines:**
+    - Algorithmic understanding: Explain the advantages of natural cubic splines over global transformations and piecewise polynomials. Also explain the connection between splines and the ordinary (least squares) regression framework. (5 sentences max.)
+    - Bias-variance tradeoff
+    - Parametric / nonparametric
+    - Scaling of variables
+    - Computational time: When using splines, how does computation time compare to fitting ordinary (least squares) regression models? (1 sentence)
+    - Interpretation of output: SKIP - will be covered in the GAMs section
+
+- **Local regression:**
+    - Algorithmic understanding: Consider the R functions `lm()`, `predict()`, `dist()`, and `dplyr::filter()`. (Look up the documentation for unfamiliar functions in the Help pane of RStudio.) In what order would these functions need to be used in order to make a local regression prediction for a supplied test case? Explain. (5 sentences max.)
+    - Bias-variance tradeoff
+    - Parametric / nonparametric
+    - Scaling of variables
+    - Computational time: In general, local regression is very fast, but how would you expect computation time to vary with span? Explain. (3 sentences max.)
+    - Interpretation of output: SKIP - will be covered in the GAMs section
+
+- **GAMs:**
+    - Algorithmic understanding: How do linear regression, splines, and local regression each relate to GAMs? Why would we want to model with GAMs? (5 sentences max.)
+    - Bias-variance tradeoff
+    - Parametric / nonparametric
+    - Scaling of variables
+    - Computational time: How a GAM is specified affects the time required to fit the model - why? (3 sentences max.)
+    - Interpretation of output: How does the interpretation of ordinary regression coefficients compare to the interpretation of GAM output? (3 sentences max.)
+
+
+
+<br><br><br>
+
+
+
+## Course Engagement {-}
+
+The **Ethics** component below is the only required piece. The others are optional depending on the modes of engagement you wish to pursue consistently throughout the module.
+
+<br>
+
+**Ethics: (REQUIRED)** Read the article [Automated background checks are deciding who’s fit for a home](https://www.theverge.com/platform/amp/2019/2/1/18205174/automation-background-check-criminal-records-corelogic). Write a short (roughly 250 words), thoughtful response about the ideas that the article brings forth. What themes recur from last week's article (on an old Amazon recruiting tool)? What aspects are more particular to the context of equity in housing access?
+
+
+**Reflection:** Write a short, thoughtful reflection about how things went this week. Feel free to use whichever prompts below resonate most with you, but don't feel limited to these prompts.
+
+- How are class-related things going? Is there anything that you need from the instructor? What new strategies for watching videos, reading, reviewing, gaining insights from class work have you tried or would like to try?
+- How is group work going? Did you try out any new collaboration strategies with your new group? How did they go?
+- How is your work/life balance going? Did you try out any new activities or strategies for staying well? How did they go?
+
+
+**Note-taking:** Share link(s) to file(s) where you keep your notes on videos/readings and on code from class.
+
+
+**Q & A:** In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions.
+
+
+
+

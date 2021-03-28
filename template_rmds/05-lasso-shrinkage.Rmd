@@ -52,6 +52,8 @@ Adapt our general LASSO code to fit a set of LASSO models with the following par
 - Select the simplest model for which the metric is within one standard error of the best metric.
 - Use a sequence of 100 $\lambda$ values from 0 to 10.
 
+Before running the code, enter `install.packages("glmnet")` in the Console.
+
 We'll explore output from `lasso_mod` in the next exercises.
 
 ```{r}
