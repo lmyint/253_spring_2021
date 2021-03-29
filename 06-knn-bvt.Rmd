@@ -39,7 +39,7 @@ knn_mod <- train(
     y ~ .,
     data = ___,
     preProcess = "scale",
-    method = "glmnet",
+    method = "knn",
     tuneGrid = data.frame(k = seq(___, ___, by = ___)),
     trControl = trainControl(method = "cv", number = ___, selectionFunction = ___),
     metric = "MAE",
