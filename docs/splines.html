@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>R Resources | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 7 Splines | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="R Resources | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 7 Splines | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="R Resources | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 7 Splines | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="final-project.html"/>
-
+<link rel="prev" href="knn-regression-and-the-bias-variance-tradeoff.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -271,75 +271,127 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="r-resources" class="section level1 unnumbered">
-<h1>R Resources</h1>
-<div id="outside-resources" class="section level2 unnumbered">
-<h2>Outside resources</h2>
+<div id="splines" class="section level1" number="7">
+<h1><span class="header-section-number">Topic 7</span> Splines</h1>
+<div id="learning-goals-5" class="section level2 unnumbered">
+<h2>Learning Goals</h2>
 <ul>
-<li><a href="https://ds112-lendway.netlify.app/">Lisa Lendway’s COMP/STAT 112 website</a> (with code examples and videos)</li>
-<li><a href="https://www.rstudio.com/resources/cheatsheets/">RStudio cheat sheets</a></li>
-<li><a href="http://ggplot2.tidyverse.org/reference/">ggplot2 reference</a></li>
-<li><a href="http://en.wikibooks.org/wiki/R_Programming">R Programming Wikibook</a></li>
-<li>Debugging in R
-<ul>
-<li><a href="https://support.rstudio.com/hc/en-us/articles/205612627-Debugging-with-RStudio">Article</a></li>
-<li><a href="https://vimeo.com/99375765">Video</a></li>
-</ul></li>
-<li><a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">Colors in R</a></li>
-<li><a href="https://www.datacamp.com/community/tutorials/r-data-import-tutorial">Data import tutorial</a></li>
+<li>Explain the advantages of splines over global transformations and other types of piecewise polynomials</li>
+<li>Explain how splines are constructed by drawing connections to variable transformations and least squares</li>
+<li>Explain how the number of knots relates to the bias-variance tradeoff</li>
 </ul>
-<p>Free online textbooks</p>
-<ul>
-<li><a href="https://r4ds.had.co.nz/">R for Data Science</a></li>
-<li><a href="https://bookdown.org/rdpeng/exdata/">Exploratory Data Analysis with R</a></li>
-</ul>
-<p><br><br></p>
+<p><br></p>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1A1QrmwmAXMYSIEwhNGgHRf0GH7vqukcJFemlWLA3yuQ/edit?usp=sharing">here</a>.</p>
+<p><br><br><br></p>
 </div>
-<div id="example-code" class="section level2 unnumbered">
-<h2>Example code</h2>
-<p><strong>Creating new variables</strong></p>
-<p><code>case_when()</code> from the <code>dplyr</code> package is a very versatile function for creating new variables based on existing variables. This can be useful for creating categorical or quantitative variables and for creating indices from multiple variables.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="r-resources.html#cb56-1" aria-hidden="true"></a><span class="co"># Turn quant_var into a Low/Med/High version</span></span>
-<span id="cb56-2"><a href="r-resources.html#cb56-2" aria-hidden="true"></a>data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span></span>
-<span id="cb56-3"><a href="r-resources.html#cb56-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">cat_var =</span> <span class="kw">case_when</span>(</span>
-<span id="cb56-4"><a href="r-resources.html#cb56-4" aria-hidden="true"></a>            quant_var <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span> <span class="op">~</span><span class="st"> &quot;Low&quot;</span>,</span>
-<span id="cb56-5"><a href="r-resources.html#cb56-5" aria-hidden="true"></a>            quant_var <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>quant_var <span class="op">&lt;=</span><span class="st"> </span><span class="dv">20</span> <span class="op">~</span><span class="st"> &quot;Med&quot;</span>,</span>
-<span id="cb56-6"><a href="r-resources.html#cb56-6" aria-hidden="true"></a>            quant_var <span class="op">&gt;</span><span class="st"> </span><span class="dv">20</span> <span class="op">~</span><span class="st"> &quot;High&quot;</span></span>
-<span id="cb56-7"><a href="r-resources.html#cb56-7" aria-hidden="true"></a>        )</span>
-<span id="cb56-8"><a href="r-resources.html#cb56-8" aria-hidden="true"></a>    )</span>
-<span id="cb56-9"><a href="r-resources.html#cb56-9" aria-hidden="true"></a></span>
-<span id="cb56-10"><a href="r-resources.html#cb56-10" aria-hidden="true"></a><span class="co"># Turn cat_var (A, B, C categories) into another categorical variable</span></span>
-<span id="cb56-11"><a href="r-resources.html#cb56-11" aria-hidden="true"></a><span class="co"># (collapse A and B into one category)</span></span>
-<span id="cb56-12"><a href="r-resources.html#cb56-12" aria-hidden="true"></a>data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span></span>
-<span id="cb56-13"><a href="r-resources.html#cb56-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">new_cat_var =</span> <span class="kw">case_when</span>(</span>
-<span id="cb56-14"><a href="r-resources.html#cb56-14" aria-hidden="true"></a>            cat_var <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>) <span class="op">~</span><span class="st"> &quot;A or B&quot;</span></span>
-<span id="cb56-15"><a href="r-resources.html#cb56-15" aria-hidden="true"></a>            cat_var<span class="op">==</span><span class="st">&quot;C&quot;</span> <span class="op">~</span><span class="st"> &quot;C&quot;</span></span>
-<span id="cb56-16"><a href="r-resources.html#cb56-16" aria-hidden="true"></a>        )</span>
-<span id="cb56-17"><a href="r-resources.html#cb56-17" aria-hidden="true"></a>    )</span>
-<span id="cb56-18"><a href="r-resources.html#cb56-18" aria-hidden="true"></a></span>
-<span id="cb56-19"><a href="r-resources.html#cb56-19" aria-hidden="true"></a><span class="co"># Turn a categorical variable (x1) encoded as a numerical 0/1/2 variable into a different quantitative variable</span></span>
-<span id="cb56-20"><a href="r-resources.html#cb56-20" aria-hidden="true"></a><span class="co"># Doing this for multiple variables allows you to create an index</span></span>
-<span id="cb56-21"><a href="r-resources.html#cb56-21" aria-hidden="true"></a>data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span></span>
-<span id="cb56-22"><a href="r-resources.html#cb56-22" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x1_score =</span> <span class="kw">case_when</span>(</span>
-<span id="cb56-23"><a href="r-resources.html#cb56-23" aria-hidden="true"></a>            x1<span class="op">==</span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">10</span>,</span>
-<span id="cb56-24"><a href="r-resources.html#cb56-24" aria-hidden="true"></a>            x1<span class="op">==</span><span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="dv">20</span>,</span>
-<span id="cb56-25"><a href="r-resources.html#cb56-25" aria-hidden="true"></a>            x1<span class="op">==</span><span class="dv">2</span> <span class="op">~</span><span class="st"> </span><span class="dv">50</span></span>
-<span id="cb56-26"><a href="r-resources.html#cb56-26" aria-hidden="true"></a>        )</span>
-<span id="cb56-27"><a href="r-resources.html#cb56-27" aria-hidden="true"></a>    )</span>
-<span id="cb56-28"><a href="r-resources.html#cb56-28" aria-hidden="true"></a></span>
-<span id="cb56-29"><a href="r-resources.html#cb56-29" aria-hidden="true"></a><span class="co"># Add together multiple variables with mutate</span></span>
-<span id="cb56-30"><a href="r-resources.html#cb56-30" aria-hidden="true"></a>data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span></span>
-<span id="cb56-31"><a href="r-resources.html#cb56-31" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">index =</span> x1_score <span class="op">+</span><span class="st"> </span>x2_score <span class="op">+</span><span class="st"> </span>x3_score)</span></code></pre></div>
+<div id="splines-in-caret" class="section level2 unnumbered">
+<h2>Splines in <code>caret</code></h2>
+<p>To build models with splines in <code>caret</code>, we proceed with the same structure for <code>train()</code> as we use for ordinary linear regression models. (Why can we just use least squares?) Refer to code from Topic 3: Overfitting &amp; CV for a refresher.</p>
+<p>To work with splines, we’ll use the <code>splines</code> package. The <code>ns()</code> function in that package creates the transformations needed to create a spline function for a quantitative predictor. This involves a small update to the <em>formula</em>:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="splines.html#cb49-1" aria-hidden="true"></a><span class="co"># Before: all linear terms</span></span>
+<span id="cb49-2"><a href="splines.html#cb49-2" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb49-3"><a href="splines.html#cb49-3" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>quant_x1 <span class="op">+</span><span class="st"> </span>quant_x2,</span>
+<span id="cb49-4"><a href="splines.html#cb49-4" aria-hidden="true"></a>    ...</span>
+<span id="cb49-5"><a href="splines.html#cb49-5" aria-hidden="true"></a>)</span>
+<span id="cb49-6"><a href="splines.html#cb49-6" aria-hidden="true"></a></span>
+<span id="cb49-7"><a href="splines.html#cb49-7" aria-hidden="true"></a><span class="co"># With splines</span></span>
+<span id="cb49-8"><a href="splines.html#cb49-8" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb49-9"><a href="splines.html#cb49-9" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span><span class="kw">ns</span>(quant_x1, <span class="dt">df =</span> <span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(quant_x2, <span class="dt">df =</span> <span class="dv">3</span>),</span>
+<span id="cb49-10"><a href="splines.html#cb49-10" aria-hidden="true"></a>    ...</span>
+<span id="cb49-11"><a href="splines.html#cb49-11" aria-hidden="true"></a>)</span></code></pre></div>
+<ul>
+<li>The <code>df</code> argument in <code>ns()</code> stands for degrees of freedom:
+<ul>
+<li><code>df = # knots + 1</code></li>
+<li>The degrees of freedom are the number of coefficients in the transformation functions that are free to vary (essentially the number of underlying parameters behind the transformations).</li>
+</ul></li>
+</ul>
+<p><br><br><br></p>
+</div>
+<div id="exercises-5" class="section level2 unnumbered">
+<h2>Exercises</h2>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/07-splines.Rmd">here</a>.</strong></p>
+<p>Before proceeding, install the <code>splines</code> package by entering <code>install.packages("splines")</code> in the Console.</p>
+<p>We’ll continue using the <code>College</code> dataset in the <code>ISLR</code> package to explore splines. You can use <code>?College</code> in the Console to look at the data codebook.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="splines.html#cb50-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb50-2"><a href="splines.html#cb50-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb50-3"><a href="splines.html#cb50-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb50-4"><a href="splines.html#cb50-4" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
+<span id="cb50-5"><a href="splines.html#cb50-5" aria-hidden="true"></a><span class="kw">library</span>(ISLR)</span>
+<span id="cb50-6"><a href="splines.html#cb50-6" aria-hidden="true"></a><span class="kw">library</span>(splines)</span>
+<span id="cb50-7"><a href="splines.html#cb50-7" aria-hidden="true"></a></span>
+<span id="cb50-8"><a href="splines.html#cb50-8" aria-hidden="true"></a><span class="kw">data</span>(College)</span>
+<span id="cb50-9"><a href="splines.html#cb50-9" aria-hidden="true"></a></span>
+<span id="cb50-10"><a href="splines.html#cb50-10" aria-hidden="true"></a><span class="co"># A little data cleaning</span></span>
+<span id="cb50-11"><a href="splines.html#cb50-11" aria-hidden="true"></a>college_clean &lt;-<span class="st"> </span>College <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb50-12"><a href="splines.html#cb50-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">school =</span> <span class="kw">rownames</span>(College)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb50-13"><a href="splines.html#cb50-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(Grad.Rate <span class="op">&lt;=</span><span class="st"> </span><span class="dv">100</span>) <span class="co"># Remove one school with grad rate of 118%</span></span>
+<span id="cb50-14"><a href="splines.html#cb50-14" aria-hidden="true"></a><span class="kw">rownames</span>(college_clean) &lt;-<span class="st"> </span><span class="ot">NULL</span> <span class="co"># Remove school names as row names</span></span></code></pre></div>
+<div id="exercise-1-evaluating-a-fully-linear-model" class="section level3 unnumbered">
+<h3>Exercise 1: Evaluating a fully linear model</h3>
+<p>We will model <code>Grad.Rate</code> as a function of 4 predictors: <code>Private</code>, <code>Terminal</code>, <code>Expend</code>, and <code>S.F.Ratio</code>.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Make scatterplots with 2 different smoothing lines to explore potential nonlinearity. Adding the following to the normal scatterplot code will create a smooth (curved) blue trend line and a red linear trend line.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="splines.html#cb51-1" aria-hidden="true"></a><span class="kw">geom_smooth</span>(<span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb51-2"><a href="splines.html#cb51-2" aria-hidden="true"></a><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>)</span></code></pre></div></li>
+<li><p>Use <code>caret</code> to fit an ordinary linear regression model (no splines yet) with the following specifications:</p>
+<ul>
+<li>Use 8-fold CV.</li>
+<li>Use mean absolute error (MAE) to select a final model.</li>
+<li>Select the simplest model for which the metric is within one standard error of the best metric.</li>
+</ul>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="splines.html#cb52-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
+<span id="cb52-2"><a href="splines.html#cb52-2" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb52-3"><a href="splines.html#cb52-3" aria-hidden="true"></a></span>
+<span id="cb52-4"><a href="splines.html#cb52-4" aria-hidden="true"></a>)</span></code></pre></div></li>
+<li><p>Make plots of the residuals vs. the 3 quantitative predictors to evaluate the appropriateness of linear terms.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="splines.html#cb53-1" aria-hidden="true"></a>ls_mod_data &lt;-<span class="st"> </span>college_clean <span class="op">%&gt;%</span></span>
+<span id="cb53-2"><a href="splines.html#cb53-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb53-3"><a href="splines.html#cb53-3" aria-hidden="true"></a>        <span class="dt">pred =</span> <span class="kw">predict</span>(ls_mod, <span class="dt">newdata =</span> college_clean),</span>
+<span id="cb53-4"><a href="splines.html#cb53-4" aria-hidden="true"></a>        <span class="dt">resid =</span> ___</span>
+<span id="cb53-5"><a href="splines.html#cb53-5" aria-hidden="true"></a>    )</span>
+<span id="cb53-6"><a href="splines.html#cb53-6" aria-hidden="true"></a></span>
+<span id="cb53-7"><a href="splines.html#cb53-7" aria-hidden="true"></a><span class="kw">ggplot</span>(ls_mod_data, ???) <span class="op">+</span></span>
+<span id="cb53-8"><a href="splines.html#cb53-8" aria-hidden="true"></a><span class="st">    </span>___ <span class="op">+</span></span>
+<span id="cb53-9"><a href="splines.html#cb53-9" aria-hidden="true"></a><span class="st">    </span>___ <span class="op">+</span></span>
+<span id="cb53-10"><a href="splines.html#cb53-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div></li>
+</ol>
+</div>
+<div id="exercise-2-evaluating-a-spline-model" class="section level3 unnumbered">
+<h3>Exercise 2: Evaluating a spline model</h3>
+<p>We’ll extend our linear regression model with spline functions of the quantitative predictors (leave <code>Private</code> as is).</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>What tuning parameter is associated with splines? How do high/low values of this parameter relate to bias and variance?</p></li>
+<li><p>Update your code from Exercise 1 to model the 3 quantitative predictors with natural splines that have 2 knots (= 3 degrees of freedom).</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="splines.html#cb54-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
+<span id="cb54-2"><a href="splines.html#cb54-2" aria-hidden="true"></a>spline_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb54-3"><a href="splines.html#cb54-3" aria-hidden="true"></a></span>
+<span id="cb54-4"><a href="splines.html#cb54-4" aria-hidden="true"></a>)</span></code></pre></div></li>
+<li><p>Make plots of the residuals vs. the 3 quantitative predictors to evaluate if splines improved the model.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="splines.html#cb55-1" aria-hidden="true"></a>spline_mod_data &lt;-<span class="st"> </span>___</span>
+<span id="cb55-2"><a href="splines.html#cb55-2" aria-hidden="true"></a></span>
+<span id="cb55-3"><a href="splines.html#cb55-3" aria-hidden="true"></a><span class="co"># Residual plots</span></span></code></pre></div></li>
+</ol>
+</div>
+<div id="extra-variable-scaling" class="section level3 unnumbered">
+<h3>Extra! Variable scaling</h3>
+<p>What is your intuition about whether variable scaling matters for the performance of splines?</p>
+<p>Check you intuition by reusing code from Exercise 2, except with <code>preProcess = "scale"</code> inside <code>train()</code>. Call this <code>spline_mod2</code>.</p>
+<p>How do the predictions from <code>spline_mod</code> and <code>spline_mod2</code> compare? You could use a plot to compare or check out the <code>all.equal()</code> function.</p>
 
 </div>
 </div>
+</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="final-project.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="knn-regression-and-the-bias-variance-tradeoff.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
