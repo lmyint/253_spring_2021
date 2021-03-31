@@ -1,6 +1,6 @@
 book_filename: "stat253_manual"
 output_dir: docs
-rmd_files: ["index.Rmd", "schedule.Rmd", "learning_objectives.Rmd", "r_rstudio.Rmd", "01-introductions.Rmd", "02-evaluating-regression.Rmd", "03-overfitting-cv.Rmd", "04-subset-selection.Rmd", "05-lasso-shrinkage.Rmd", "06-knn-bvt.Rmd", "07-splines.Rmd", "hw1.Rmd", "hw2.Rmd", "project.Rmd", "r_resources.Rmd"]
+rmd_files: ["index.Rmd", "schedule.Rmd", "learning_objectives.Rmd", "r_rstudio.Rmd", "01-introductions.Rmd", "02-evaluating-regression.Rmd", "03-overfitting-cv.Rmd", "04-subset-selection.Rmd", "05-lasso-shrinkage.Rmd", "06-knn-bvt.Rmd", "07-splines.Rmd", "08-loess-gams.Rmd", "hw1.Rmd", "hw2.Rmd", "project.Rmd", "r_resources.Rmd"]
 language:
   ui:
     chapter_name: "Topic "

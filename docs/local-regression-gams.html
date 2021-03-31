@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Schedule | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 8 Local Regression &amp; GAMs | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Schedule | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 8 Local Regression &amp; GAMs | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Schedule | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 8 Local Regression &amp; GAMs | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="index.html"/>
-<link rel="next" href="learning-objectives.html"/>
+<link rel="prev" href="splines.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -285,180 +285,211 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="schedule" class="section level1 unnumbered">
-<h1>Schedule</h1>
-<p>The schedule below is a tentative outline of our plans for the module.</p>
-<p><strong>Before each class period, please watch the indicated videos and check on your understanding by actively reviewing the associated <a href="learning-objectives.html">Learning Objectives</a>.</strong> The readings listed below are optional but serve as a nice complement to the videos and class activities. Readings refer to chapters/sections in the Introduction to Statistical Learning (ISLR) textbook (available online <a href="https://www.statlearning.com/s/ISLR-Seventh-Printing-xwa7.pdf">here</a>).</p>
+<div id="local-regression-gams" class="section level1" number="8">
+<h1><span class="header-section-number">Topic 8</span> Local Regression &amp; GAMs</h1>
+<div id="learning-goals-6" class="section level2 unnumbered">
+<h2>Learning Goals</h2>
+<ul>
+<li>Clearly describe the local regression algorithm for making a prediction</li>
+<li>Explain how bandwidth (span) relate to the bias-variance tradeoff</li>
+<li>Describe some different formulations for a GAM (how the arbitrary functions are represented)</li>
+<li>Explain how to make a prediction from a GAM</li>
+<li>Interpret the output from a GAM</li>
+</ul>
 <p><br></p>
-<!-------------------------------- Week 1 -------------------------------->
-<table class="tg">
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1D8M2hAWKjOwzY120_JEOuAfd52s9MHdeMDR8DLvgeX8/edit?usp=sharing">here</a>.</p>
+<p><br><br><br></p>
+</div>
+<div id="gams-in-caret" class="section level2 unnumbered">
+<h2>GAMs in <code>caret</code></h2>
+<p>To build GAMs in <code>caret</code>, first load the package and set the seed for the random number generator to ensure reproducible results:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="local-regression-gams.html#cb56-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb56-2"><a href="local-regression-gams.html#cb56-2" aria-hidden="true"></a><span class="kw">set.seed</span>(___) <span class="co"># Pick your favorite number to fill in the parentheses</span></span></code></pre></div>
+<p>Then adapt the following code:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="local-regression-gams.html#cb57-1" aria-hidden="true"></a>gam_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb57-2"><a href="local-regression-gams.html#cb57-2" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>x,</span>
+<span id="cb57-3"><a href="local-regression-gams.html#cb57-3" aria-hidden="true"></a>    <span class="dt">data =</span> ___,</span>
+<span id="cb57-4"><a href="local-regression-gams.html#cb57-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;gamLoess&quot;</span>,</span>
+<span id="cb57-5"><a href="local-regression-gams.html#cb57-5" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">degree =</span> <span class="dv">1</span>, <span class="dt">span =</span> <span class="kw">seq</span>(___, ___, <span class="dt">by =</span> ___)),</span>
+<span id="cb57-6"><a href="local-regression-gams.html#cb57-6" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> ___, <span class="dt">selectionFunction =</span> ___),</span>
+<span id="cb57-7"><a href="local-regression-gams.html#cb57-7" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;MAE&quot;</span>,</span>
+<span id="cb57-8"><a href="local-regression-gams.html#cb57-8" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
+<span id="cb57-9"><a href="local-regression-gams.html#cb57-9" aria-hidden="true"></a>)</span></code></pre></div>
+<table>
 <thead>
-  <tr>
-    <th class="tg-0pky" colspan="4"><b>Week 1: 3/18 - 3/19<b></th>
-  </tr>
+<tr class="header">
+<th align="left">Argument</th>
+<th align="left">Meaning</th>
+</tr>
 </thead>
 <tbody>
-  <tr>
-    <td class="tg-0pky"><b>Day(s)</b></td>
-    <td class="tg-0pky"><b>Topic</b></td>
-    <td class="tg-0pky"><b>Videos/Readings</b></td>
-    <td class="tg-0pky"><b>Slides</b></td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/18</td>
-    <td class="tg-0pky">Introductions</td>
-    <td class="tg-0pky">
-      ISLR: Chap 1, Chap 2 - Section 2.1 (Skip 2.1.2, 2.1.3 for now.)
-    </td>
-    <td class="tg-0pky"></td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/19</td>
-    <td class="tg-0pky">Evaluating Regression Models</td>
-    <td class="tg-0pky">
-      <a href="https://youtu.be/eVivMkxlS6M" target="_blank">Evaluating Regression Models</a><br>
-      ISLR: 2.2
-    </td>
-    <td class="tg-0pky">
-      <a href="https://drive.google.com/file/d/1i0FqsakvWvLvKJcBwJpUaR4QIVKAyN2c/view?usp=sharing" target="_blank">PDF</a><br>
-    </td>
-  </tr>
-  <tr>
-    <td class="hw" colspan="6">
-      <b><a href="homework-1.html">Homework 1</a> due Friday, 3/26 at midnight CST</b>
-    </td>
-  </tr>
+<tr class="odd">
+<td align="left"><code>y ~ x</code></td>
+<td align="left">Model formula for specifying response and predictors</td>
+</tr>
+<tr class="even">
+<td align="left"><code>data</code></td>
+<td align="left">Sample data</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>method</code></td>
+<td align="left"><code>"gamLoess"</code> builds GAMs with LOESS components</td>
+</tr>
+<tr class="even">
+<td align="left"><code>tuneGrid</code></td>
+<td align="left">A mini-dataset (<code>data.frame</code>) of tuning parameters. <code>degree</code> is the degree of the local polynomial fit (1 = linear is just fine). <code>span</code> is the fraction of data used in the local fit: supply a sequence as <code>seq(begin, end, by = size of step)</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>trControl</code></td>
+<td align="left">Use cross-validation to estimate test performance for each model fit. The process used to pick a final model from among these is indicated by <code>selectionFunction</code>, with options including <code>"best"</code> and <code>"oneSE"</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>metric</code></td>
+<td align="left">Evaluate and compare competing models with respect to their CV-MAE.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>na.action</code></td>
+<td align="left">Set <code>na.action = na.omit</code> to prevent errors if the data has missing values.</td>
+</tr>
 </tbody>
 </table>
-
-<!-------------------------------- Week 2 -------------------------------->
-<table class="tg">
-<thead>
-  <tr>
-    <th class="tg-0pky" colspan="4"><b>Week 2: 3/22 - 3/25<b></th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td class="tg-0pky"><b>Day(s)</b></td>
-    <td class="tg-0pky"><b>Topic</b></td>
-    <td class="tg-0pky"><b>Videos/Readings</b></td>
-    <td class="tg-0pky"><b>Slides</b></td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/22</td>
-    <td class="tg-0pky">Overfitting and Cross-validation</td>
-    <td class="tg-0pky">
-      <a href="https://youtu.be/fLnnq0UXnRY" target="_blank">Overfitting</a><br>
-      <a href="https://youtu.be/9ABqT6QvQ48" target="_blank">Cross-validation</a><br>
-      ISLR: 5.1
-    </td>
-    <td class="tg-0pky">
-      <a href="https://drive.google.com/file/d/1DTgE2h25PgnkZM-9Sq8ni_cvf6jM-RHJ/view?usp=sharing" target="_blank">PDF</a><br>
-      <a href="https://drive.google.com/file/d/15Cu-Pmyvnm5Tobyc9LMqcMisR-PRqsIi/view?usp=sharing" target="_blank">PDF</a><br>
-    </td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/23</td>
-    <td class="tg-0pky">Subset Selection</td>
-    <td class="tg-0pky">
-      <a href="https://youtu.be/QDhmwc-owAE" target="_blank">Variable Subset Selection</a><br>
-      ISLR: 6.1
-    </td>
-    <td class="tg-0pky">
-      <a href="https://drive.google.com/file/d/1IUwpQddzU4xm1L7q2JrJq-RS966DST1V/view?usp=sharing" target="_blank">PDF</a>
-    </td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/24-3/25</td>
-    <td class="tg-0pky">LASSO (Shrinkage/Regularization)</td>
-    <td class="tg-0pky">
-      <a href="https://youtu.be/Ouw_AF_8mX0" target="_blank">LASSO (Shrinkage/Regularization)</a><br>
-      ISLR: 6.2
-    </td>
-    <td class="tg-0pky">
-      <a href="https://drive.google.com/file/d/1yrqZnns7K1oSGh5EfNeueRASsMAHAxD5/view?usp=sharing" target="_blank">PDF</a>
-    </td>
-  </tr>
-  <tr>
-    <td class="hw" colspan="6">
-      <b><a href="homework-1.html">Homework 1</a> due Friday, 3/26 at midnight CST</b>
-    </td>
-  </tr>
-</tbody>
-</table>
-
-
-<!-------------------------------- Week 3 -------------------------------->
-<table class="tg">
-<thead>
-  <tr>
-    <th class="tg-0pky" colspan="4"><b>Week 3: 3/29 - 4/1<b></th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td class="tg-0pky"><b>Day(s)</b></td>
-    <td class="tg-0pky"><b>Topic</b></td>
-    <td class="tg-0pky"><b>Videos/Readings</b></td>
-    <td class="tg-0pky"><b>Slides</b></td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/29</td>
-    <td class="tg-0pky">KNN Regression and the Bias-Variance Tradeoff</td>
-    <td class="tg-0pky">
-      <a href="https://youtu.be/XClnbOTRQmA" target="_blank">KNN Regression and the Bias-Variance Tradeoff</a><br>
-      ISLR: 2.2.2 for the bias-variance tradeoff; 3.5 for KNN regression
-    </td>
-    <td class="tg-0pky">
-      <a href="https://drive.google.com/file/d/1nYqQXgAwu4fWze2kCBQHTed3-dXc8QXs/view?usp=sharing" target="_blank">PDF</a>
-    </td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/30</td>
-    <td class="tg-0pky">Modeling Nonlinearity: Polynomial Regression and Splines</td>
-    <td class="tg-0pky">
-      <a href="https://youtu.be/G7Gm3sZbM-4" target="_blank">Modeling Nonlinearity: Polynomial Regression and Splines</a><br>
-      ISLR: 7.1-7.4
-    </td>
-    <td class="tg-0pky">
-      <a href="https://drive.google.com/file/d/1MaGTobY2nfPgAjcZGi9_-Op5iC_EQr81/view?usp=sharing" target="_blank">PDF</a>
-    </td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">3/31</td>
-    <td class="tg-0pky">Local Regression and Generalized Additive Models</td>
-    <td class="tg-0pky">
-      <a href="https://youtu.be/5xOnFZxFKiI" target="_blank">Local Regression and Generalized Additive Models</a><br>
-      ISLR: 7.6-7.7
-    </td>
-    <td class="tg-0pky">
-      <a href="https://drive.google.com/file/d/1tSLhe1reRzhNag6MuYJdF9_SsFzJuxTV/view?usp=sharing" target="_blank">PDF</a>
-    </td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">4/1</td>
-    <td class="tg-0pky">Review: Regression</td>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky"></td>
-  </tr>
-  <tr>
-    <td class="hw" colspan="6">
-      <b><a href="homework-2.html">Homework 2</a> due Friday, 4/2 at midnight CST</b>
-    </td>
-  </tr>
-</tbody>
-</table>
-
+<p><br></p>
+<p><strong>Identifying the “best” GAM</strong></p>
+<p>The “best” model in the sequence of models fit is defined relative to the chosen <code>selectionFunction</code> and <code>metric</code>.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="local-regression-gams.html#cb58-1" aria-hidden="true"></a><span class="co"># Plot CV-estimated test performance versus the tuning parameter</span></span>
+<span id="cb58-2"><a href="local-regression-gams.html#cb58-2" aria-hidden="true"></a><span class="kw">plot</span>(gam_mod)</span>
+<span id="cb58-3"><a href="local-regression-gams.html#cb58-3" aria-hidden="true"></a></span>
+<span id="cb58-4"><a href="local-regression-gams.html#cb58-4" aria-hidden="true"></a><span class="co"># CV metrics for each model</span></span>
+<span id="cb58-5"><a href="local-regression-gams.html#cb58-5" aria-hidden="true"></a>gam_mod<span class="op">$</span>results</span>
+<span id="cb58-6"><a href="local-regression-gams.html#cb58-6" aria-hidden="true"></a></span>
+<span id="cb58-7"><a href="local-regression-gams.html#cb58-7" aria-hidden="true"></a><span class="co"># Identify which tuning parameter is &quot;best&quot;</span></span>
+<span id="cb58-8"><a href="local-regression-gams.html#cb58-8" aria-hidden="true"></a>gam_mod<span class="op">$</span>bestTune</span>
+<span id="cb58-9"><a href="local-regression-gams.html#cb58-9" aria-hidden="true"></a></span>
+<span id="cb58-10"><a href="local-regression-gams.html#cb58-10" aria-hidden="true"></a><span class="co"># Get information from all CV iterations for the &quot;best&quot; model</span></span>
+<span id="cb58-11"><a href="local-regression-gams.html#cb58-11" aria-hidden="true"></a>gam_mod<span class="op">$</span>resample</span>
+<span id="cb58-12"><a href="local-regression-gams.html#cb58-12" aria-hidden="true"></a></span>
+<span id="cb58-13"><a href="local-regression-gams.html#cb58-13" aria-hidden="true"></a><span class="co"># Use the best model to make predictions</span></span>
+<span id="cb58-14"><a href="local-regression-gams.html#cb58-14" aria-hidden="true"></a><span class="co"># newdata should be a data.frame with required predictors</span></span>
+<span id="cb58-15"><a href="local-regression-gams.html#cb58-15" aria-hidden="true"></a><span class="kw">predict</span>(gam_mod, <span class="dt">newdata =</span> ___)</span></code></pre></div>
+<p><br></p>
+<p><strong>Inspecting the “best” GAM</strong></p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="local-regression-gams.html#cb59-1" aria-hidden="true"></a><span class="co"># Plot functions for each predictor</span></span>
+<span id="cb59-2"><a href="local-regression-gams.html#cb59-2" aria-hidden="true"></a><span class="co"># Dashed lines are +/- 2 SEs</span></span>
+<span id="cb59-3"><a href="local-regression-gams.html#cb59-3" aria-hidden="true"></a><span class="kw">plot</span>(gam_mod<span class="op">$</span>finalModel, <span class="dt">se =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb59-4"><a href="local-regression-gams.html#cb59-4" aria-hidden="true"></a></span>
+<span id="cb59-5"><a href="local-regression-gams.html#cb59-5" aria-hidden="true"></a><span class="co"># Plot functions for each predictor in case the functions are splines with plot.Gam</span></span>
+<span id="cb59-6"><a href="local-regression-gams.html#cb59-6" aria-hidden="true"></a><span class="kw">library</span>(splines)</span>
+<span id="cb59-7"><a href="local-regression-gams.html#cb59-7" aria-hidden="true"></a>gam_mod_spline &lt;-<span class="st"> </span><span class="kw">lm</span>(</span>
+<span id="cb59-8"><a href="local-regression-gams.html#cb59-8" aria-hidden="true"></a>    Grad.Rate <span class="op">~</span><span class="st"> </span><span class="kw">ns</span>(quant_x1,df) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(quant_x2,df) <span class="op">+</span><span class="st"> </span>...,</span>
+<span id="cb59-9"><a href="local-regression-gams.html#cb59-9" aria-hidden="true"></a>    <span class="dt">data =</span> ___</span>
+<span id="cb59-10"><a href="local-regression-gams.html#cb59-10" aria-hidden="true"></a>)</span>
+<span id="cb59-11"><a href="local-regression-gams.html#cb59-11" aria-hidden="true"></a><span class="kw">plot.Gam</span>(gam_mod_spline, <span class="dt">se =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><br><br><br></p>
+</div>
+<div id="exercises-6" class="section level2 unnumbered">
+<h2>Exercises</h2>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/08-loess-gams.Rmd">here</a>.</strong></p>
+<p>Before proceeding, install the <code>gam</code> package by entering <code>install.packages("gam")</code> in the Console.</p>
+<p>We’ll continue using the <code>College</code> dataset in the <code>ISLR</code> package to explore splines. You can use <code>?College</code> in the Console to look at the data codebook.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="local-regression-gams.html#cb60-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb60-2"><a href="local-regression-gams.html#cb60-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb60-3"><a href="local-regression-gams.html#cb60-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb60-4"><a href="local-regression-gams.html#cb60-4" aria-hidden="true"></a><span class="kw">library</span>(ISLR)</span>
+<span id="cb60-5"><a href="local-regression-gams.html#cb60-5" aria-hidden="true"></a><span class="kw">library</span>(splines)</span>
+<span id="cb60-6"><a href="local-regression-gams.html#cb60-6" aria-hidden="true"></a><span class="kw">library</span>(gam)</span>
+<span id="cb60-7"><a href="local-regression-gams.html#cb60-7" aria-hidden="true"></a></span>
+<span id="cb60-8"><a href="local-regression-gams.html#cb60-8" aria-hidden="true"></a><span class="kw">data</span>(College)</span>
+<span id="cb60-9"><a href="local-regression-gams.html#cb60-9" aria-hidden="true"></a></span>
+<span id="cb60-10"><a href="local-regression-gams.html#cb60-10" aria-hidden="true"></a><span class="co"># A little data cleaning</span></span>
+<span id="cb60-11"><a href="local-regression-gams.html#cb60-11" aria-hidden="true"></a>college_clean &lt;-<span class="st"> </span>College <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb60-12"><a href="local-regression-gams.html#cb60-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">school =</span> <span class="kw">rownames</span>(College)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb60-13"><a href="local-regression-gams.html#cb60-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(Grad.Rate <span class="op">&lt;=</span><span class="st"> </span><span class="dv">100</span>) <span class="co"># Remove one school with grad rate of 118%</span></span>
+<span id="cb60-14"><a href="local-regression-gams.html#cb60-14" aria-hidden="true"></a><span class="kw">rownames</span>(college_clean) &lt;-<span class="st"> </span><span class="ot">NULL</span> <span class="co"># Remove school names as row names</span></span></code></pre></div>
+<div id="exercise-1-conceptual-warmup" class="section level3 unnumbered">
+<h3>Exercise 1: Conceptual warmup</h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>Do you think that at GAM with all possible predictors will have better or worse performance than an ordinary (fully linear) least squares model with all possible predictors? Explain your thoughts.</p></li>
+<li><p>How does high/low span relate to bias and variance of a LOESS model?</p></li>
+<li><p>How should we choose predictors to be in a GAM? How could forward and backward stepwise selection and LASSO help with variable selection before a GAM?</p></li>
+</ol>
+</div>
+<div id="exercise-2-building-a-gam-in-caret" class="section level3 unnumbered">
+<h3>Exercise 2: Building a GAM in <code>caret</code></h3>
+<p>Suppose that our initial variable selection investigations lead us to using the predictors indicated below in our GAM. Fit a GAM with the following specifications:</p>
+<ul>
+<li>Use 8-fold CV.</li>
+<li>Select the model which has the lowest MAE. (Hint: options are “oneSE” or “best”).</li>
+<li>Use the sequence of <code>span</code> values: 0.1, 0.2, …, 0.9.</li>
+</ul>
+<p>What do you expect that the plot of test MAE versus span will look like, and why?</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="local-regression-gams.html#cb61-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
+<span id="cb61-2"><a href="local-regression-gams.html#cb61-2" aria-hidden="true"></a>gam_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb61-3"><a href="local-regression-gams.html#cb61-3" aria-hidden="true"></a>    Grad.Rate <span class="op">~</span><span class="st"> </span>Private <span class="op">+</span><span class="st"> </span>Apps <span class="op">+</span><span class="st"> </span>Top10perc <span class="op">+</span><span class="st"> </span>Top25perc <span class="op">+</span><span class="st"> </span>P.Undergrad <span class="op">+</span><span class="st"> </span>Outstate <span class="op">+</span><span class="st"> </span>Room.Board <span class="op">+</span><span class="st"> </span>Books <span class="op">+</span><span class="st"> </span>Personal <span class="op">+</span><span class="st"> </span>PhD <span class="op">+</span><span class="st"> </span>perc.alumni,</span>
+<span id="cb61-4"><a href="local-regression-gams.html#cb61-4" aria-hidden="true"></a>    ___</span>
+<span id="cb61-5"><a href="local-regression-gams.html#cb61-5" aria-hidden="true"></a>)</span></code></pre></div>
+</div>
+<div id="exercise-3-identifying-the-best-gam" class="section level3 unnumbered">
+<h3>Exercise 3: Identifying the “best” GAM</h3>
+<p>The code below has been common to all of our methods below, so it is provided for convenience.</p>
+<ul>
+<li>Inspect the output to identify the “best” <code>span</code> for our GAM. (Was your prediction from Exercise 2 about the plot correct?)</li>
+<li>Contextually interpret the CV MAE with units.</li>
+</ul>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="local-regression-gams.html#cb62-1" aria-hidden="true"></a><span class="co"># Plot CV-estimated test performance versus the tuning parameter</span></span>
+<span id="cb62-2"><a href="local-regression-gams.html#cb62-2" aria-hidden="true"></a><span class="kw">plot</span>(gam_mod)</span>
+<span id="cb62-3"><a href="local-regression-gams.html#cb62-3" aria-hidden="true"></a></span>
+<span id="cb62-4"><a href="local-regression-gams.html#cb62-4" aria-hidden="true"></a><span class="co"># Identify which tuning parameter is &quot;best&quot;</span></span>
+<span id="cb62-5"><a href="local-regression-gams.html#cb62-5" aria-hidden="true"></a>gam_mod<span class="op">$</span>bestTune</span>
+<span id="cb62-6"><a href="local-regression-gams.html#cb62-6" aria-hidden="true"></a></span>
+<span id="cb62-7"><a href="local-regression-gams.html#cb62-7" aria-hidden="true"></a><span class="co"># CV metrics for each model</span></span>
+<span id="cb62-8"><a href="local-regression-gams.html#cb62-8" aria-hidden="true"></a>gam_mod<span class="op">$</span>results</span>
+<span id="cb62-9"><a href="local-regression-gams.html#cb62-9" aria-hidden="true"></a></span>
+<span id="cb62-10"><a href="local-regression-gams.html#cb62-10" aria-hidden="true"></a><span class="co"># CV metrics for just the &quot;best&quot; model</span></span>
+<span id="cb62-11"><a href="local-regression-gams.html#cb62-11" aria-hidden="true"></a>gam_mod<span class="op">$</span>results <span class="op">%&gt;%</span></span>
+<span id="cb62-12"><a href="local-regression-gams.html#cb62-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(span<span class="op">==</span>gam_mod<span class="op">$</span>bestTune<span class="op">$</span>span)</span></code></pre></div>
+</div>
+<div id="exercise-4-interpreting-the-gam" class="section level3 unnumbered">
+<h3>Exercise 4: Interpreting the GAM</h3>
+<p>We can plot the function for each predictor as below.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="local-regression-gams.html#cb63-1" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">4</span>)) <span class="co"># Sets up a grid of plots</span></span>
+<span id="cb63-2"><a href="local-regression-gams.html#cb63-2" aria-hidden="true"></a><span class="kw">plot</span>(gam_mod<span class="op">$</span>finalModel, <span class="dt">se =</span> <span class="ot">TRUE</span>) <span class="co"># Dashed lines are +/- 2 SEs</span></span></code></pre></div>
+<ol style="list-style-type: lower-alpha">
+<li>What about these plots indicates that using GAM instead of ordinary linear regression was probably a good choice?</li>
+<li>Pick 1 or 2 of these plots, and interpret your findings. Anything surprising or interesting?</li>
+<li>The <code>PrivateYes</code> plot might look odd. Not to worry - the GAM is treating this as a categorical (indicator) variable. What do you learn from this plot?</li>
+</ol>
+<p>In case you find it useful, you can also build a GAM using spline components with <code>lm()</code> and plot the nonlinear functions for each predictor with <code>plot.Gam()</code> from the <code>gam</code> package.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="local-regression-gams.html#cb64-1" aria-hidden="true"></a><span class="kw">library</span>(splines)</span>
+<span id="cb64-2"><a href="local-regression-gams.html#cb64-2" aria-hidden="true"></a>gam_mod_spline &lt;-<span class="st"> </span><span class="kw">lm</span>(</span>
+<span id="cb64-3"><a href="local-regression-gams.html#cb64-3" aria-hidden="true"></a>    Grad.Rate <span class="op">~</span><span class="st"> </span>Private <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(Apps,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(Top10perc,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(Top25perc,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(P.Undergrad,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(Outstate,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(Room.Board,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(Books,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(Personal,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(PhD,<span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(perc.alumni,<span class="dv">3</span>),</span>
+<span id="cb64-4"><a href="local-regression-gams.html#cb64-4" aria-hidden="true"></a>    <span class="dt">data =</span> college_clean</span>
+<span id="cb64-5"><a href="local-regression-gams.html#cb64-5" aria-hidden="true"></a>)</span>
+<span id="cb64-6"><a href="local-regression-gams.html#cb64-6" aria-hidden="true"></a></span>
+<span id="cb64-7"><a href="local-regression-gams.html#cb64-7" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">4</span>))</span>
+<span id="cb64-8"><a href="local-regression-gams.html#cb64-8" aria-hidden="true"></a><span class="kw">plot.Gam</span>(gam_mod_spline, <span class="dt">se =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="exercise-5-comparison-of-methods" class="section level3 unnumbered">
+<h3>Exercise 5: Comparison of methods</h3>
+<p>Brainstorm the pros/cons of the different methods that we’ve explored. You may find it helpful to refer to the portfolio themes for each method.</p>
+<p>(Soon, as part of the Portfolio, you’ll be doing a similar synthesis of our regression unit, so this brainstorming session might help!)</p>
+</div>
+<div id="just-for-fun" class="section level3 unnumbered">
+<h3>Just for fun!</h3>
+<p>In case you want a (silly!) take on the curse of dimensionality, check out <a href="https://www.youtube.com/watch?v=SDOnfGPIqkU&amp;t=28s">this video</a>. (“Relevant” parts are from 0:28 - 4:16.)</p>
 
 </div>
+</div>
+</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="learning-objectives.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="splines.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

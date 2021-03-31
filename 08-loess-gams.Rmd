@@ -1,0 +1,236 @@
+```{r 08_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# Local Regression & GAMs
+
+## Learning Goals {-}
+
+- Clearly describe the local regression algorithm for making a prediction
+- Explain how bandwidth (span) relate to the bias-variance tradeoff
+- Describe some different formulations for a GAM (how the arbitrary functions are represented)
+- Explain how to make a prediction from a GAM
+- Interpret the output from a GAM
+
+<br>
+
+Slides from today are available [here](https://docs.google.com/presentation/d/1D8M2hAWKjOwzY120_JEOuAfd52s9MHdeMDR8DLvgeX8/edit?usp=sharing).
+
+
+
+<br><br><br>
+
+
+
+## GAMs in `caret` {-}
+
+To build GAMs in `caret`, first load the package and set the seed for the random number generator to ensure reproducible results:
+
+```{r}
+library(caret)
+set.seed(___) # Pick your favorite number to fill in the parentheses
+```
+
+Then adapt the following code:
+
+```{r}
+gam_mod <- train(
+    y ~ x,
+    data = ___,
+    method = "gamLoess",
+    tuneGrid = data.frame(degree = 1, span = seq(___, ___, by = ___)),
+    trControl = trainControl(method = "cv", number = ___, selectionFunction = ___),
+    metric = "MAE",
+    na.action = na.omit
+)
+```
+
+Argument      Meaning
+------------- -----------------
+`y ~ x`       Model formula for specifying response and predictors
+`data`        Sample data
+`method`      `"gamLoess"` builds GAMs with LOESS components
+`tuneGrid`    A mini-dataset (`data.frame`) of tuning parameters. `degree` is the degree of the local polynomial fit (1 = linear is just fine). `span` is the fraction of data used in the local fit: supply a sequence as `seq(begin, end, by = size of step)`.
+`trControl`   Use cross-validation to estimate test performance for each model fit. The process used to pick a final model from among these is indicated by `selectionFunction`, with options including `"best"` and `"oneSE"`.
+`metric`      Evaluate and compare competing models with respect to their CV-MAE.
+`na.action`   Set `na.action = na.omit` to prevent errors if the data has missing values.
+
+<br>
+
+**Identifying the "best" GAM**
+
+The "best" model in the sequence of models fit is defined relative to the chosen `selectionFunction` and `metric`.
+
+```{r}
+# Plot CV-estimated test performance versus the tuning parameter
+plot(gam_mod)
+
+# CV metrics for each model
+gam_mod$results
+
+# Identify which tuning parameter is "best"
+gam_mod$bestTune
+
+# Get information from all CV iterations for the "best" model
+gam_mod$resample
+
+# Use the best model to make predictions
+# newdata should be a data.frame with required predictors
+predict(gam_mod, newdata = ___)
+```
+
+<br>
+
+**Inspecting the "best" GAM**
+
+```{r}
+# Plot functions for each predictor
+# Dashed lines are +/- 2 SEs
+plot(gam_mod$finalModel, se = TRUE)
+
+# Plot functions for each predictor in case the functions are splines with plot.Gam
+library(splines)
+gam_mod_spline <- lm(
+    Grad.Rate ~ ns(quant_x1,df) + ns(quant_x2,df) + ...,
+    data = ___
+)
+plot.Gam(gam_mod_spline, se = TRUE)
+```
+
+
+
+<br><br><br>
+
+
+
+## Exercises {-}
+
+**You can download a template RMarkdown file to start from [here](template_rmds/08-loess-gams.Rmd).**
+
+Before proceeding, install the `gam` package by entering `install.packages("gam")` in the Console.
+
+We'll continue using the `College` dataset in the `ISLR` package to explore splines. You can use `?College` in the Console to look at the data codebook.
+
+```{r}
+library(caret)
+library(ggplot2)
+library(dplyr)
+library(ISLR)
+library(splines)
+library(gam)
+
+data(College)
+
+# A little data cleaning
+college_clean <- College %>% 
+    mutate(school = rownames(College)) %>% 
+    filter(Grad.Rate <= 100) # Remove one school with grad rate of 118%
+rownames(college_clean) <- NULL # Remove school names as row names
+```
+
+
+### Exercise 1: Conceptual warmup {-}
+
+a. Do you think that at GAM with all possible predictors will have better or worse performance than an ordinary (fully linear) least squares model with all possible predictors? Explain your thoughts.
+
+b. How does high/low span relate to bias and variance of a LOESS model?
+
+c. How should we choose predictors to be in a GAM? How could forward and backward stepwise selection and LASSO help with variable selection before a GAM?
+
+
+
+### Exercise 2: Building a GAM in `caret` {-}
+
+Suppose that our initial variable selection investigations lead us to using the predictors indicated below in our GAM. Fit a GAM with the following specifications:
+
+- Use 8-fold CV.
+- Select the model which has the lowest MAE. (Hint: options are "oneSE" or "best").
+- Use the sequence of `span` values: 0.1, 0.2, ..., 0.9.
+
+What do you expect that the plot of test MAE versus span will look like, and why?
+
+```{r}
+set.seed(___)
+gam_mod <- train(
+    Grad.Rate ~ Private + Apps + Top10perc + Top25perc + P.Undergrad + Outstate + Room.Board + Books + Personal + PhD + perc.alumni,
+    ___
+)
+```
+
+
+
+### Exercise 3: Identifying the "best" GAM {-}
+
+The code below has been common to all of our methods below, so it is provided for convenience.
+
+- Inspect the output to identify the "best" `span` for our GAM. (Was your prediction from Exercise 2 about the plot correct?)
+- Contextually interpret the CV MAE with units.
+
+```{r}
+# Plot CV-estimated test performance versus the tuning parameter
+plot(gam_mod)
+
+# Identify which tuning parameter is "best"
+gam_mod$bestTune
+
+# CV metrics for each model
+gam_mod$results
+
+# CV metrics for just the "best" model
+gam_mod$results %>%
+    filter(span==gam_mod$bestTune$span)
+```
+
+
+
+### Exercise 4: Interpreting the GAM {-}
+
+We can plot the function for each predictor as below.
+
+```{r}
+par(mfrow = c(3,4)) # Sets up a grid of plots
+plot(gam_mod$finalModel, se = TRUE) # Dashed lines are +/- 2 SEs
+```
+
+a. What about these plots indicates that using GAM instead of ordinary linear regression was probably a good choice?
+b. Pick 1 or 2 of these plots, and interpret your findings. Anything surprising or interesting?
+c. The `PrivateYes` plot might look odd. Not to worry - the GAM is treating this as a categorical (indicator) variable. What do you learn from this plot?
+
+
+
+In case you find it useful, you can also build a GAM using spline components with `lm()` and plot the nonlinear functions for each predictor with `plot.Gam()` from the `gam` package.
+
+```{r}
+library(splines)
+gam_mod_spline <- lm(
+    Grad.Rate ~ Private + ns(Apps,3) + ns(Top10perc,3) + ns(Top25perc,3) + ns(P.Undergrad,3) + ns(Outstate,3) + ns(Room.Board,3) + ns(Books,3) + ns(Personal,3) + ns(PhD,3) + ns(perc.alumni,3),
+    data = college_clean
+)
+
+par(mfrow = c(3,4))
+plot.Gam(gam_mod_spline, se = TRUE)
+```
+
+
+
+### Exercise 5: Comparison of methods {-}
+
+Brainstorm the pros/cons of the different methods that we've explored. You may find it helpful to refer to the portfolio themes for each method.
+
+(Soon, as part of the Portfolio, you'll be doing a similar synthesis of our regression unit, so this brainstorming session might help!)
+
+
+
+### Just for fun! {-}
+
+In case you want a (silly!) take on the curse of dimensionality, check out [this video](https://www.youtube.com/watch?v=SDOnfGPIqkU&t=28s). ("Relevant" parts are from 0:28 - 4:16.)
+
+
+
+
+
+
+
+
+
+
