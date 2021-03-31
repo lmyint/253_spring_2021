@@ -16,6 +16,10 @@ Alternatively, you may knit your Rmd directly to PDF if you have LaTeX installed
 
 <br><br><br>
 
+<span style="color: red; font-size: 30px; font-weight: bold; text-align: center;">
+If you don't have time to work on Project Work, work on it for HW3. I won't include a Project Work section on HW3 (only Portfolio + CE).
+</span>
+
 
 
 ## Project Work {-}
@@ -169,7 +173,7 @@ The **Ethics** component below is the only required piece. The others are option
 
 <br>
 
-**Ethics: (REQUIRED)** Read the article [Automated background checks are deciding who’s fit for a home](https://www.theverge.com/platform/amp/2019/2/1/18205174/automation-background-check-criminal-records-corelogic). Write a short (roughly 250 words), thoughtful response about the ideas that the article brings forth. What themes recur from last week's article (on an old Amazon recruiting tool)? What aspects are more particular to the context of equity in housing access?
+**Ethics: (REQUIRED)** Read the article [Automated background checks are deciding who's fit for a home](https://www.theverge.com/platform/amp/2019/2/1/18205174/automation-background-check-criminal-records-corelogic). Write a short (roughly 250 words), thoughtful response about the ideas that the article brings forth. What themes recur from last week's article (on an old Amazon recruiting tool)? What aspects are more particular to the context of equity in housing access?
 
 
 **Reflection:** Write a short, thoughtful reflection about how things went this week. Feel free to use whichever prompts below resonate most with you, but don't feel limited to these prompts.
