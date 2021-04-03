@@ -1,0 +1,165 @@
+```{r hw3_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# Homework 3 {-}
+
+<center>
+**Due Friday, April 9 at midnight CST on [Moodle](https://moodle.macalester.edu/mod/assign/view.php?id=51221)**
+</center>
+
+**Deliverables:** Please use [this template](template_rmds/hw3.Rmd) to knit an HTML document. Convert this HTML document to a PDF by opening the HTML document in your web browser. *Print* the document (Ctrl/Cmd-P) and change the destination to "Save as PDF". Submit this one PDF to Moodle.
+
+Alternatively, you may knit your Rmd directly to PDF if you have LaTeX installed.
+
+
+
+<br><br><br>
+
+
+
+## Project Work {-}
+
+(Note: This is a repeat of the [Homework 2] investigations.)
+
+**Goal:** Begin an analysis of your dataset to answer your **regression** research question.
+
+<br>
+
+**Collaboration:** If you have already formed a team (of at most 3 members) for the project, this part can be done as a team. *Only one team member should submit a Project Work section.*
+
+<br>
+
+**Grading:** Completing this Project Work section is a required part of the final project. Rather than receiving a grade for the analyses below, you will get qualitative feedback from the instructor. It is the **synthesis** of the analyses across homework assignments that will determine the final project grade.
+
+<br>
+
+**Data cleaning:** If your dataset requires any cleaning (e.g., merging datasets, creation of new variables), first consult the [R Resources page](r-resources.html) to see if your questions are answered there. If not, post on the `#rcode-questions` channel in our Slack workspace to ask for help. *Please ask for help early and regularly* to avoid stressful workloads.
+
+<br>
+
+**Required Analyses:**
+
+1. **Initial investigation: ignoring nonlinearity (for now)**
+    - Use ordinary least squares (OLS) regression, forward and/or backward selection, and LASSO to build initial models for your quantitative outcome as a function of the predictors of interest. (As part of data cleaning, exclude any variables that you don't want to consider as predictors.)
+        - These models should not include any transformations to deal with nonlinearity. You'll explore this in the next investigation.
+        - Note: If you have highly collinear/redundant variables, you might see the message "Reordering variables and trying again" and associated `warning()`s about linear dependencies being found. Sometimes stepwise selection is able to handle the collinearity/redundancy by modifying the order of the variables tried. If collinearity/redundancy cannot be handled and causes an error, try reducing `nvmax`.
+
+    - Estimate test performance of the models from these different methods. Report and interpret (with units) these estimates along with a measure of uncertainty in the estimate (SD is most readily available from `caret`).
+        - Compare estimated test performance across methods. Which method(s) might you prefer?
+
+    - Use residual plots to evaluate whether some quantitative predictors might be better modeled with nonlinear relationships.
+
+    - Compare insights from variable importance analyses from the different methods (stepwise and LASSO, but not OLS). Are there variables for which the methods reach consensus? What insights are expected? Surprising?
+        - Note that if some (but not all) of the indicator terms for a categorical predictor are selected in the final models, the whole predictor should be treated as selected.
+
+<br>
+
+2. **Accounting for nonlinearity**
+    - Update your stepwise selection model(s) and LASSO model to use natural splines for the quantitative predictors.
+        - You'll need to update the model formula from `y ~ .` to something like `y ~ cat_var1 + ns(quant_var1, df) + ...`.
+        - It's recommended to use few knots (e.g., 2 knots = 3 degrees of freedom).
+        - Note that `ns(x,3)` replaces `x` with 3 transformations of `x`. Keep this in mind when setting `nvmax` in stepwise selection.
+
+    - Compare insights from variable importance analyses here and the corresponding results from Investigation 1. Now after having accounted for nonlinearity, have the most relevant predictors changed?
+        - Note that if some (but not all) of the spline terms are selected in the final models, the whole predictor should be treated as selected.
+
+    - Fit a GAM using LOESS terms using the set of variables deemed to be most relevant based on your investigations so far.
+        - How does test performance of the GAM compare to other models you explored?
+        - Do you gain any insights from the GAM output plots for each predictor?
+
+    - Don't worry about KNN for now.
+
+<br>
+
+3. **Summarize investigations**
+    - Decide on an overall best model based on your investigations so far. To do this, make clear your analysis goals. Predictive accuracy? Interpretability? A combination of both?
+
+<br>
+
+4. **Societal impact**
+    - Are there any harms that may come from your analyses and/or how the data were collected?
+    - What cautions do you want to keep in mind when communicating your work?
+
+
+
+<br><br><br>
+
+
+
+## Portfolio Work {-}
+
+**Length requirements:** Detailed for each section below.
+
+<span style="color: red;">
+**Organization:** To help the instructor and preceptors grade, please organize your document as shown in [this example](https://docs.google.com/document/d/1lS_7UBmWQkXtS21hd9gb842KV42U24A3QhiifP2nf-E/edit?usp=sharing). Clear section headers and new pages for each method help a lot. Thank you!
+</span>
+
+**Deliverables:** Continue writing your responses in the same Google Doc that you set up for Homework 1. We have recorded the URL from past HWs - you don't need to supply it again.
+
+**Note:** Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.
+
+<br>
+
+**Revisions:**
+
+- Make any revisions desired to previous concepts.
+    - **Important formatting note:** Please use a comment to mark the text that you want to be reread. (Highlight each span of text you want to be reread, and mark it with the comment "REVISION".)
+
+- Rubrics to past homeworks will be available on Moodle (under the Solutions section). Look at these rubrics to guide your revisions. You can always ask for guidance in office hours as well.
+
+<br>
+
+**New concepts to address:**
+
+**Evaluating classification models:** Consider [this xkcd comic](https://xkcd.com/2236/). Write a paragraph (around 250 words) that addresses the following questions. Craft this pargraph so it flows nicely and does not read like a disconnected list of answers. (Include transitions between sentences.)
+
+- What is the classification model here?
+- How do the ideas in this comic emphasize comparisons between overall accuracy and class-specific accuracy measures?
+- What are the names of the relevant class-specific accuracy measures here, and what are there values?
+- How does this comic connect to the no-information rate?
+
+
+**Logistic regression:**
+
+- Algorithmic understanding: Write your own example of a logistic regression model formula. (Don't use the example from the video.) Using this example, show how to use the model to make both a soft and a hard prediction.
+
+- Bias-variance tradeoff: What tuning parameters control the performance of the method? How do low/high values of the tuning parameters relate to bias and variance of the learned model? (3 sentences max.)
+
+- Parametric / nonparametric: Where (roughly) does this method fall on the parametric-nonparametric spectrum, and why? (3 sentences max.)
+
+- Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method? (3 sentences max.)
+
+- Computational time: SKIP
+
+- Interpretation of output: In general, how can the coefficient for a quantitative predictor be interpreted? How can the coefficient for a categorical predictor (an indicator variable) be interpreted?
+
+
+
+<br><br><br>
+
+
+
+## Course Engagement {-}
+
+The **Ethics** component below is the only required piece. The others are optional depending on the modes of engagement you wish to pursue consistently throughout the module.
+
+<br>
+
+**Ethics: (REQUIRED)** Read the article [Getting Past Identity to What You Really Want](https://weallcount.com/2021/02/19/getting-past-identity-to-what-you-really-want/). Write a short (roughly 250 words), thoughtful response about the ideas that the article brings forth. What skills do you think are essential for the leaders and data analysts of organizations to have to handle these issues with care?
+
+
+**Reflection:** Write a short, thoughtful reflection about how things went this week. Feel free to use whichever prompts below resonate most with you, but don't feel limited to these prompts.
+
+- What's going well? In school, work, other areas? What do you think would help sustain the things that are going well?
+- What's not going well? In school, work, other areas? What do you think would help improve the things that aren't going as well? Anything that the instructor can do?
+
+
+**Note-taking:** Share link(s) to file(s) where you keep your notes on videos/readings and on code from class.
+
+
+**Q & A:** In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions.
+
+
+
+
