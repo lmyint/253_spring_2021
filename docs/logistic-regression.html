@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>STAT 253: Statistical Machine Learning</title>
+  <title>Topic 9 Logistic Regression | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 9 Logistic Regression | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 9 Logistic Regression | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="schedule.html"/>
+<link rel="prev" href="local-regression-gams.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -306,32 +306,169 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">STAT 253: Statistical Machine Learning</h1>
+<div id="logistic-regression" class="section level1" number="9">
+<h1><span class="header-section-number">Topic 9</span> Logistic Regression</h1>
+<div id="learning-goals-7" class="section level2 unnumbered">
+<h2>Learning Goals</h2>
+<ul>
+<li>Use a logistic regression model to make hard (class) and soft (probability) predictions</li>
+<li>Interpret non-intercept coefficients from logistic regression models in the data context</li>
+</ul>
+<p><br></p>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1_i_iDhSdVTbGm6Tw4z-gnJ6kN0qEC0HZ3F8R_Nl83zw/edit?usp=sharing">here</a>.</p>
+<p><br><br><br></p>
 </div>
-<div id="welcome" class="section level1 unnumbered">
-<h1>Welcome!</h1>
-<center>
-<p><img src="images/ml_robot.jpg" /></p>
-<a href="https://cdn.redshift.autodesk.com/2016/05/Machine-Learning-hero.jpg">Image source</a>
-</center>
-<p><br>
-<br></p>
-<p>This is the class manual for Statistical Machine Learning (STAT 253) at Macalester College for Spring 2021. The content here was made by <a href="https://lmyint.github.io">Leslie Myint</a> and draws upon our class textbook, <a href="https://www.statlearning.com/s/ISLR-Seventh-Printing-xwa7.pdf">An Introduction to Statistical Learning with Applications in R</a>, and on materials prepared by <a href="https://ajohns24.github.io">Alicia Johnson</a>.</p>
-<p><br>
-<br>
-<br></p>
-<p><img src="images/cc_license_button.png" /></p>
-<p>This work is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</p>
+<div id="gams-in-caret-1" class="section level2 unnumbered">
+<h2>GAMs in <code>caret</code></h2>
+<p>To build GAMs in <code>caret</code>, first load the package and set the seed for the random number generator to ensure reproducible results:</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="logistic-regression.html#cb65-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb65-2"><a href="logistic-regression.html#cb65-2" aria-hidden="true"></a><span class="kw">set.seed</span>(___) <span class="co"># Pick your favorite number to fill in the parentheses</span></span></code></pre></div>
+<p>Then adapt the following code:</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="logistic-regression.html#cb66-1" aria-hidden="true"></a>logistic_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb66-2"><a href="logistic-regression.html#cb66-2" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>x,</span>
+<span id="cb66-3"><a href="logistic-regression.html#cb66-3" aria-hidden="true"></a>    <span class="dt">data =</span> ___,</span>
+<span id="cb66-4"><a href="logistic-regression.html#cb66-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;glm&quot;</span>,</span>
+<span id="cb66-5"><a href="logistic-regression.html#cb66-5" aria-hidden="true"></a>    <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb66-6"><a href="logistic-regression.html#cb66-6" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> ___),</span>
+<span id="cb66-7"><a href="logistic-regression.html#cb66-7" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;Accuracy&quot;</span>,</span>
+<span id="cb66-8"><a href="logistic-regression.html#cb66-8" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
+<span id="cb66-9"><a href="logistic-regression.html#cb66-9" aria-hidden="true"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Argument</th>
+<th align="left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>y ~ x</code></td>
+<td align="left"><code>y</code> must be a <code>character</code> or <code>factor</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>data</code></td>
+<td align="left">Sample data</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>method</code> &amp; <code>family</code></td>
+<td align="left">The <code>glm</code> method implements various “generalized” linear models. When we specify <code>family = "binomial"</code>, <code>glm</code> performs logistic regression. (BTW: <code>glm</code> with <code>family = "gaussian"</code> is equivalent to using <code>lm</code>!)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>trControl</code> Use cross-</td>
+<td align="left">validation to estimate test performance for each model fit.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>metric</code> Evaluate a</td>
+<td align="left">nd compare competing models with respect to their CV-<code>Accuracy</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>na.action</code> Set `na.ac</td>
+<td align="left">tion = na.omit` to prevent errors if the data has missing values.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Examining the logistic model</strong></p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="logistic-regression.html#cb67-1" aria-hidden="true"></a><span class="co"># Model summary table</span></span>
+<span id="cb67-2"><a href="logistic-regression.html#cb67-2" aria-hidden="true"></a><span class="kw">summary</span>(logistic_mod)</span>
+<span id="cb67-3"><a href="logistic-regression.html#cb67-3" aria-hidden="true"></a></span>
+<span id="cb67-4"><a href="logistic-regression.html#cb67-4" aria-hidden="true"></a><span class="co"># Coefficients</span></span>
+<span id="cb67-5"><a href="logistic-regression.html#cb67-5" aria-hidden="true"></a><span class="kw">coef</span>(logistic_mod<span class="op">$</span>finalModel)</span>
+<span id="cb67-6"><a href="logistic-regression.html#cb67-6" aria-hidden="true"></a></span>
+<span id="cb67-7"><a href="logistic-regression.html#cb67-7" aria-hidden="true"></a><span class="co"># Exponentiated coefficients</span></span>
+<span id="cb67-8"><a href="logistic-regression.html#cb67-8" aria-hidden="true"></a><span class="kw">coef</span>(logistic_mod<span class="op">$</span>finalModel) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">exp</span>()</span>
+<span id="cb67-9"><a href="logistic-regression.html#cb67-9" aria-hidden="true"></a></span>
+<span id="cb67-10"><a href="logistic-regression.html#cb67-10" aria-hidden="true"></a><span class="co"># CV accuracy metrics</span></span>
+<span id="cb67-11"><a href="logistic-regression.html#cb67-11" aria-hidden="true"></a>logistic_mod<span class="op">$</span>results</span>
+<span id="cb67-12"><a href="logistic-regression.html#cb67-12" aria-hidden="true"></a>logistic_mod<span class="op">$</span>resample</span></code></pre></div>
+<p><strong>Making predictions from the logistic model</strong></p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="logistic-regression.html#cb68-1" aria-hidden="true"></a><span class="co"># Make soft (probability) predictions</span></span>
+<span id="cb68-2"><a href="logistic-regression.html#cb68-2" aria-hidden="true"></a><span class="kw">predict</span>(logistic_mod, <span class="dt">newdata =</span> ___, <span class="dt">type =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb68-3"><a href="logistic-regression.html#cb68-3" aria-hidden="true"></a></span>
+<span id="cb68-4"><a href="logistic-regression.html#cb68-4" aria-hidden="true"></a><span class="co"># Make hard (class) predictions (using a default 0.5 probability threshold)</span></span>
+<span id="cb68-5"><a href="logistic-regression.html#cb68-5" aria-hidden="true"></a><span class="kw">predict</span>(logistic_mod, <span class="dt">newdata =</span> ___, <span class="dt">type =</span> <span class="st">&quot;raw&quot;</span>)</span></code></pre></div>
+<p><br><br><br></p>
+</div>
+<div id="exercises-7" class="section level2 unnumbered">
+<h2>Exercises</h2>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/09-logistic-regression.Rmd">here</a>.</strong></p>
+<div id="context-2" class="section level3 unnumbered">
+<h3>Context</h3>
+<p>Before proceeding, install the <code>e1071</code> package (utilities for evaluating classification models) by entering <code>install.packages("e1071")</code> in the Console.</p>
+<p>We’ll be working with a <a href="https://archive.ics.uci.edu/ml/datasets/Spambase">spam dataset</a> that contains information on different features of emails and whether or not the email was spam. The variables are as follows:</p>
+<ul>
+<li><code>spam</code>: Either <code>spam</code> or <code>not spam</code></li>
+<li><code>word_freq_WORD</code>: percentage of words in the e-mail that match <code>WORD</code> (0-100)</li>
+<li><code>char_freq_CHAR</code>: percentage of characters in the e-mail that match <code>CHAR</code> (e.g., exclamation points, dollar signs)</li>
+<li><code>capital_run_length_average</code>: average length of uninterrupted sequences of capital letters</li>
+<li><code>capital_run_length_longest</code>: length of longest uninterrupted sequence of capital letters</li>
+<li><code>capital_run_length_total</code>: sum of length of uninterrupted sequences of capital letters</li>
+</ul>
+<p>Our goal will be to use email features to predict whether or not an email is spam - essentially, to build a spam filter!</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="logistic-regression.html#cb69-1" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
+<span id="cb69-2"><a href="logistic-regression.html#cb69-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb69-3"><a href="logistic-regression.html#cb69-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb69-4"><a href="logistic-regression.html#cb69-4" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb69-5"><a href="logistic-regression.html#cb69-5" aria-hidden="true"></a></span>
+<span id="cb69-6"><a href="logistic-regression.html#cb69-6" aria-hidden="true"></a>spam &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://www.dropbox.com/s/leurr6a30f4l32a/spambase.csv?dl=1&quot;</span>)</span></code></pre></div>
+</div>
+<div id="hello-how-are-things-1" class="section level3 unnumbered">
+<h3>Hello, how are things?</h3>
+<p>We’re nearing the halfway point of the module - how are you holding up?</p>
+</div>
+<div id="exercise-1-visualization-warmup" class="section level3 unnumbered">
+<h3>Exercise 1: Visualization warmup</h3>
+<p>Let’s take a look at the frequency of the word “George” (the email recipient’s name is George) (<code>word_freq_george</code>) and the frequency of exclamation points (<code>char_freq_exclam</code>).</p>
+<p>Create appropriate visualizations to assess the predictive ability of these two predictors.</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="logistic-regression.html#cb70-1" aria-hidden="true"></a><span class="co"># If you want to adjust the axis limits, you can add the following to your plot:</span></span>
+<span id="cb70-2"><a href="logistic-regression.html#cb70-2" aria-hidden="true"></a><span class="co"># + coord_cartesian(ylim = c(0,1))</span></span>
+<span id="cb70-3"><a href="logistic-regression.html#cb70-3" aria-hidden="true"></a><span class="co"># + coord_cartesian(xlim = c(0,1))</span></span>
+<span id="cb70-4"><a href="logistic-regression.html#cb70-4" aria-hidden="true"></a></span>
+<span id="cb70-5"><a href="logistic-regression.html#cb70-5" aria-hidden="true"></a><span class="kw">ggplot</span>(spam, <span class="kw">aes</span>(<span class="dt">x =</span> ___, <span class="dt">y =</span> ___)) <span class="op">+</span></span>
+<span id="cb70-6"><a href="logistic-regression.html#cb70-6" aria-hidden="true"></a><span class="st">    </span>geom_???()</span></code></pre></div>
+</div>
+<div id="exercise-2-implementing-logistic-regression-in-caret" class="section level3 unnumbered">
+<h3>Exercise 2: Implementing logistic regression in <code>caret</code></h3>
+<p>Our goal is to fit a logistic regression model with <code>word_freq_george</code> and <code>char_freq_exclam</code> as predictors.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Write down the corresponding logistic regression model formula using general notation.</p></li>
+<li><p>Use <code>caret</code> to fit this logistic regression model. Use 10-fold CV to estimate test accuracy. (We’ll focus more on interpreting model evaluation metrics next time.)</p></li>
+</ol>
+<p><em>Note:</em> If you get warning (not error) messages like <code>fitted probabilities numerically 0 or 1 occurred</code>, this means that in some of the CV iterations, one or more of the predictors perfectly predicted spam classification.</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="logistic-regression.html#cb71-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
+<span id="cb71-2"><a href="logistic-regression.html#cb71-2" aria-hidden="true"></a>logistic_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb71-3"><a href="logistic-regression.html#cb71-3" aria-hidden="true"></a>    </span>
+<span id="cb71-4"><a href="logistic-regression.html#cb71-4" aria-hidden="true"></a>)</span></code></pre></div>
+</div>
+<div id="exercise-3-interpreting-the-model" class="section level3 unnumbered">
+<h3>Exercise 3: Interpreting the model</h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>Take a look at the log-scale coefficients with <code>summary(logistic_mod)</code>. Do the signs of the coefficients for the 2 predictors agree with your visual inspection from Exercise 1?</p></li>
+<li><p>Display the exponentiated coefficients, and provide contextual interpretations for them (not the intercept).</p></li>
+</ol>
+</div>
+<div id="exercise-4-making-predictions" class="section level3 unnumbered">
+<h3>Exercise 4: Making predictions</h3>
+<p>Consider a new email where the frequency of “George” is 0.25% and the frequency of exclamation points is 1%.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Use the model summary to make both a soft (probability) and hard (class) prediction for this test case <strong>by hand</strong>. Use a default probability threshold of 0.5. (You can use math expressions to use R as a calculator. The <code>exp()</code> function exponentiates a number.)</p></li>
+<li><p>Check your work from part a by using <code>predict()</code>.</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="logistic-regression.html#cb72-1" aria-hidden="true"></a><span class="kw">predict</span>(___, <span class="dt">newdata =</span> <span class="kw">data.frame</span>(<span class="dt">word_freq_george =</span> <span class="fl">0.25</span>, <span class="dt">char_freq_exclam =</span> <span class="dv">1</span>), ___)</span></code></pre></div></li>
+</ol>
 
 </div>
+</div>
+</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="schedule.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="local-regression-gams.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

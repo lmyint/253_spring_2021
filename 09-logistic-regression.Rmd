@@ -1,0 +1,180 @@
+```{r 09_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# (PART) Classification {-}
+
+# Logistic Regression
+
+## Learning Goals {-}
+
+- Use a logistic regression model to make hard (class) and soft (probability) predictions
+- Interpret non-intercept coefficients from logistic regression models in the data context
+
+<br>
+
+Slides from today are available [here](https://docs.google.com/presentation/d/1_i_iDhSdVTbGm6Tw4z-gnJ6kN0qEC0HZ3F8R_Nl83zw/edit?usp=sharing).
+
+
+
+<br><br><br>
+
+
+
+## GAMs in `caret` {-}
+
+To build GAMs in `caret`, first load the package and set the seed for the random number generator to ensure reproducible results:
+
+```{r}
+library(caret)
+set.seed(___) # Pick your favorite number to fill in the parentheses
+```
+
+Then adapt the following code:
+
+```{r}
+logistic_mod <- train(
+    y ~ x,
+    data = ___,
+    method = "glm",
+    family = "binomial",
+    trControl = trainControl(method = "cv", number = ___),
+    metric = "Accuracy",
+    na.action = na.omit
+)
+```
+
+Argument                Meaning
+----------------------- -----------------
+`y ~ x`                 `y` must be a `character` or `factor`
+`data`                  Sample data
+`method` & `family`     The `glm` method implements various "generalized" linear models. When we specify `family = "binomial"`, `glm` performs logistic regression. (BTW: `glm` with `family = "gaussian"` is equivalent to using `lm`!)
+`trControl`   Use cross-validation to estimate test performance for each model fit.
+`metric`      Evaluate and compare competing models with respect to their CV-`Accuracy`.
+`na.action`   Set `na.action = na.omit` to prevent errors if the data has missing values.
+
+<br>
+
+**Examining the logistic model**
+
+```{r}
+# Model summary table
+summary(logistic_mod)
+
+# Coefficients
+coef(logistic_mod$finalModel)
+
+# Exponentiated coefficients
+coef(logistic_mod$finalModel) %>% exp()
+
+# CV accuracy metrics
+logistic_mod$results
+logistic_mod$resample
+```
+
+**Making predictions from the logistic model**
+
+```{r}
+# Make soft (probability) predictions
+predict(logistic_mod, newdata = ___, type = "prob")
+
+# Make hard (class) predictions (using a default 0.5 probability threshold)
+predict(logistic_mod, newdata = ___, type = "raw")
+```
+
+
+
+<br><br><br>
+
+
+
+## Exercises {-}
+
+**You can download a template RMarkdown file to start from [here](template_rmds/09-logistic-regression.Rmd).**
+
+### Context {-}
+
+Before proceeding, install the `e1071` package (utilities for evaluating classification models) by entering `install.packages("e1071")` in the Console. 
+
+We'll be working with a [spam dataset](https://archive.ics.uci.edu/ml/datasets/Spambase) that contains information on different features of emails and whether or not the email was spam. The variables are as follows:
+
+- `spam`: Either `spam` or `not spam`
+- `word_freq_WORD`: percentage of words in the e-mail that match `WORD` (0-100)
+- `char_freq_CHAR`: percentage of characters in the e-mail that match `CHAR` (e.g., exclamation points, dollar signs)
+- `capital_run_length_average`: average length of uninterrupted sequences of capital letters
+- `capital_run_length_longest`: length of longest uninterrupted sequence of capital letters
+- `capital_run_length_total`: sum of length of uninterrupted sequences of capital letters
+
+Our goal will be to use email features to predict whether or not an email is spam - essentially, to build a spam filter!
+
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(caret)
+
+spam <- read_csv("https://www.dropbox.com/s/leurr6a30f4l32a/spambase.csv?dl=1")
+```
+
+
+### Hello, how are things? {-}
+
+We're nearing the halfway point of the module - how are you holding up?
+
+
+### Exercise 1: Visualization warmup {-}
+
+Let's take a look at the frequency of the word "George" (the email recipient's name is George) (`word_freq_george`) and the frequency of exclamation points (`char_freq_exclam`). 
+
+Create appropriate visualizations to assess the predictive ability of these two predictors. 
+
+```{r}
+# If you want to adjust the axis limits, you can add the following to your plot:
+# + coord_cartesian(ylim = c(0,1))
+# + coord_cartesian(xlim = c(0,1))
+
+ggplot(spam, aes(x = ___, y = ___)) +
+    geom_???()
+```
+
+
+
+### Exercise 2: Implementing logistic regression in `caret` {-}
+
+Our goal is to fit a logistic regression model with `word_freq_george` and `char_freq_exclam` as predictors.
+
+a. Write down the corresponding logistic regression model formula using general notation.
+
+b. Use `caret` to fit this logistic regression model. Use 10-fold CV to estimate test accuracy. (We'll focus more on interpreting model evaluation metrics next time.)
+
+*Note:* If you get warning (not error) messages like `fitted probabilities numerically 0 or 1 occurred`, this means that in some of the CV iterations, one or more of the predictors perfectly predicted spam classification.
+
+```{r}
+set.seed(___)
+logistic_mod <- train(
+    
+)
+```
+
+
+### Exercise 3: Interpreting the model {-}
+
+a. Take a look at the log-scale coefficients with `summary(logistic_mod)`. Do the signs of the coefficients for the 2 predictors agree with your visual inspection from Exercise 1?
+
+b. Display the exponentiated coefficients, and provide contextual interpretations for them (not the intercept).
+
+
+### Exercise 4: Making predictions {-}
+
+Consider a new email where the frequency of "George" is 0.25% and the frequency of exclamation points is 1%.
+
+a. Use the model summary to make both a soft (probability) and hard (class) prediction for this test case **by hand**. Use a default probability threshold of 0.5. (You can use math expressions to use R as a calculator. The `exp()` function exponentiates a number.)
+
+b. Check your work from part a by using `predict()`.
+    ```{r}
+    predict(___, newdata = data.frame(word_freq_george = 0.25, char_freq_exclam = 1), ___)
+    ```
+
+
+
+

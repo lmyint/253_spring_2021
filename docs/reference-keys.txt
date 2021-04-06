@@ -6,3 +6,4 @@ lasso-shrinkageregularization
 knn-regression-and-the-bias-variance-tradeoff
 splines
 local-regression-gams
+logistic-regression
