@@ -21,9 +21,9 @@ Slides from today are available [here](https://docs.google.com/presentation/d/1_
 
 
 
-## GAMs in `caret` {-}
+## Logistic regression in `caret` {-}
 
-To build GAMs in `caret`, first load the package and set the seed for the random number generator to ensure reproducible results:
+To build logistic regression models in `caret`, first load the package and set the seed for the random number generator to ensure reproducible results:
 
 ```{r}
 library(caret)
@@ -49,9 +49,9 @@ Argument                Meaning
 `y ~ x`                 `y` must be a `character` or `factor`
 `data`                  Sample data
 `method` & `family`     The `glm` method implements various "generalized" linear models. When we specify `family = "binomial"`, `glm` performs logistic regression. (BTW: `glm` with `family = "gaussian"` is equivalent to using `lm`!)
-`trControl`   Use cross-validation to estimate test performance for each model fit.
-`metric`      Evaluate and compare competing models with respect to their CV-`Accuracy`.
-`na.action`   Set `na.action = na.omit` to prevent errors if the data has missing values.
+`trControl`             Use cross-validation to estimate test performance for each model fit.
+`metric`                Evaluate and compare competing models with respect to their CV-`Accuracy`.
+`na.action`             Set `na.action = na.omit` to prevent errors if the data has missing values.
 
 <br>
 

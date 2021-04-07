@@ -46,7 +46,7 @@ Argument      Meaning
 `y ~ .`       Shorthand for the model of `y` by all possible predictors `x` in the data (every other variable in the dataset except `y`)
 `data`        Sample data which only includes `y` and potential predictors `x`. (Make sure to remove unneeded variables with `select(-variable)` first.)
 `method`      `"glmnet"` implements the LASSO and other regularization methods
-`tuneGrid`    A mini-dataset (`data.frame`) of tuning parameters. `alpha = 1` specifies that we're interested in the LASSO (not a different regularization method, like ridge regression). `lambda = seq(___, ___, length.out = ___)` specifies that LASSO should be run for each tuning parameter value in the specified sequence.
+`tuneGrid`    A mini-dataset (`data.frame`) of tuning parameters. `alpha = 1` specifies that we're interested in the LASSO (not a different regularization method, like ridge regression). `lambda = seq(begin, end, length.out = # values in sequence)` specifies that LASSO should be run for each tuning parameter value in the specified sequence.
 `trControl`   Use cross-validation to estimate test performance for each LASSO model fit (corresponding to each tuning parameter in `tuneGrid`). The process used to pick a final model from among these is indicated by the `selectionFunction` argument, options including `"best"` and `"oneSE"`. The `best` option will pick the model with the best metric. The `oneSE` option will pick the simplest model for which the metric is within one standard error of the best metric.
 `metric`      Evaluate and compare competing LASSO models with respect to their CV-MAE.
 `na.action`   Set `na.action = na.omit` to prevent errors if the data has missing values.

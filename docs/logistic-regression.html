@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="local-regression-gams.html"/>
-<link rel="next" href="homework-1.html"/>
+<link rel="next" href="evaluating-classification-models.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -246,7 +246,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i><b>9</b> Logistic Regression</a>
 <ul>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#learning-goals-7"><i class="fa fa-check"></i>Learning Goals</a></li>
-<li><a href="logistic-regression.html#gams-in-caret-1">GAMs in <code>caret</code></a></li>
+<li><a href="logistic-regression.html#logistic-regression-in-caret">Logistic regression in <code>caret</code></a></li>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#exercises-7"><i class="fa fa-check"></i>Exercises</a>
 <ul>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#context-2"><i class="fa fa-check"></i>Context</a></li>
@@ -255,6 +255,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="logistic-regression.html#exercise-2-implementing-logistic-regression-in-caret">Exercise 2: Implementing logistic regression in <code>caret</code></a></li>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#exercise-3-interpreting-the-model"><i class="fa fa-check"></i>Exercise 3: Interpreting the model</a></li>
 <li class="chapter" data-level="" data-path="logistic-regression.html"><a href="logistic-regression.html#exercise-4-making-predictions"><i class="fa fa-check"></i>Exercise 4: Making predictions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html"><i class="fa fa-check"></i><b>10</b> Evaluating Classification Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html#learning-goals-8"><i class="fa fa-check"></i>Learning Goals</a></li>
+<li><a href="evaluating-classification-models.html#lasso-for-logistic-regression-in-caret">LASSO for logistic regression in <code>caret</code></a></li>
+<li class="chapter" data-level="" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html#exercises-8"><i class="fa fa-check"></i>Exercises</a>
+<ul>
+<li class="chapter" data-level="" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html#context-3"><i class="fa fa-check"></i>Context</a></li>
+<li class="chapter" data-level="" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html#exercise-1-conceptual-warmup-1"><i class="fa fa-check"></i>Exercise 1: Conceptual warmup</a></li>
+<li><a href="evaluating-classification-models.html#exercise-2-implementing-lasso-logistic-regression-in-caret">Exercise 2: Implementing LASSO logistic regression in <code>caret</code></a></li>
+<li class="chapter" data-level="" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html#exercise-3-inspecting-the-model"><i class="fa fa-check"></i>Exercise 3: Inspecting the model</a></li>
+<li class="chapter" data-level="" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html#exercise-4-interpreting-evaluation-metrics"><i class="fa fa-check"></i>Exercise 4: Interpreting evaluation metrics</a></li>
+<li class="chapter" data-level="" data-path="evaluating-classification-models.html"><a href="evaluating-classification-models.html#exercise-5-algorithmic-understanding-for-evaluation-metrics"><i class="fa fa-check"></i>Exercise 5: Algorithmic understanding for evaluation metrics</a></li>
 </ul></li>
 </ul></li>
 <li class="part"><span><b>V Homework</b></span></li>
@@ -318,9 +332,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Slides from today are available <a href="https://docs.google.com/presentation/d/1_i_iDhSdVTbGm6Tw4z-gnJ6kN0qEC0HZ3F8R_Nl83zw/edit?usp=sharing">here</a>.</p>
 <p><br><br><br></p>
 </div>
-<div id="gams-in-caret-1" class="section level2 unnumbered">
-<h2>GAMs in <code>caret</code></h2>
-<p>To build GAMs in <code>caret</code>, first load the package and set the seed for the random number generator to ensure reproducible results:</p>
+<div id="logistic-regression-in-caret" class="section level2 unnumbered">
+<h2>Logistic regression in <code>caret</code></h2>
+<p>To build logistic regression models in <code>caret</code>, first load the package and set the seed for the random number generator to ensure reproducible results:</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="logistic-regression.html#cb65-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
 <span id="cb65-2"><a href="logistic-regression.html#cb65-2" aria-hidden="true"></a><span class="kw">set.seed</span>(___) <span class="co"># Pick your favorite number to fill in the parentheses</span></span></code></pre></div>
 <p>Then adapt the following code:</p>
@@ -354,16 +368,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">The <code>glm</code> method implements various “generalized” linear models. When we specify <code>family = "binomial"</code>, <code>glm</code> performs logistic regression. (BTW: <code>glm</code> with <code>family = "gaussian"</code> is equivalent to using <code>lm</code>!)</td>
 </tr>
 <tr class="even">
-<td align="left"><code>trControl</code> Use cross-</td>
-<td align="left">validation to estimate test performance for each model fit.</td>
+<td align="left"><code>trControl</code></td>
+<td align="left">Use cross-validation to estimate test performance for each model fit.</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>metric</code> Evaluate a</td>
-<td align="left">nd compare competing models with respect to their CV-<code>Accuracy</code>.</td>
+<td align="left"><code>metric</code></td>
+<td align="left">Evaluate and compare competing models with respect to their CV-<code>Accuracy</code>.</td>
 </tr>
 <tr class="even">
-<td align="left"><code>na.action</code> Set `na.ac</td>
-<td align="left">tion = na.omit` to prevent errors if the data has missing values.</td>
+<td align="left"><code>na.action</code></td>
+<td align="left">Set <code>na.action = na.omit</code> to prevent errors if the data has missing values.</td>
 </tr>
 </tbody>
 </table>
@@ -459,16 +473,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-
-
-
             </section>
 
           </div>
         </div>
       </div>
 <a href="local-regression-gams.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="evaluating-classification-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

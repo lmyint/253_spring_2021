@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Topic 4 Variable Subset Selection | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 10 Evaluating Classification Models | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Topic 4 Variable Subset Selection | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 10 Evaluating Classification Models | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Topic 4 Variable Subset Selection | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 10 Evaluating Classification Models | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="overfitting-cross-validation.html"/>
-<link rel="next" href="lasso-shrinkageregularization.html"/>
+<link rel="prev" href="logistic-regression.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -320,159 +320,211 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="variable-subset-selection" class="section level1" number="4">
-<h1><span class="header-section-number">Topic 4</span> Variable Subset Selection</h1>
-<div id="learning-goals-2" class="section level2 unnumbered">
+<div id="evaluating-classification-models" class="section level1" number="10">
+<h1><span class="header-section-number">Topic 10</span> Evaluating Classification Models</h1>
+<div id="learning-goals-8" class="section level2 unnumbered">
 <h2>Learning Goals</h2>
 <ul>
-<li>Clearly describe the forward and backward stepwise selection algorithm and why they are examples of greedy algorithms</li>
-<li>Compare best subset and stepwise algorithms in terms of optimality of output and computational time</li>
-<li>Describe how selection algorithms can give a measure of <em>variable importance</em></li>
+<li>Calculate (by hand from confusion matrices) and contextually interpret overall accuracy, sensitivity, and specificity</li>
+<li>Construct and interpret plots of predicted probabilities across classes</li>
+<li>Explain how a ROC curve is constructed and the rationale behind AUC as an evaluation metric</li>
+<li>Appropriately use and interpret the no-information rate to evaluate accuracy metrics</li>
 </ul>
+<p><br></p>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1Ssof1lK7yOwh3b0Xuu2FTw6Rmw0rccFrRsDXwV56ZFo/edit?usp=sharing">here</a>.</p>
 <p><br><br><br></p>
 </div>
-<div id="exercises-2" class="section level2 unnumbered">
+<div id="lasso-for-logistic-regression-in-caret" class="section level2 unnumbered">
+<h2>LASSO for logistic regression in <code>caret</code></h2>
+<p>To build LASSO models for logistic regression in <code>caret</code>, first load the package and set the seed for the random number generator to ensure reproducible results:</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="evaluating-classification-models.html#cb73-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb73-2"><a href="evaluating-classification-models.html#cb73-2" aria-hidden="true"></a><span class="kw">set.seed</span>(___) <span class="co"># Pick your favorite number to fill in the parentheses</span></span></code></pre></div>
+<p>If we would like to use estimates of test (overall) accuracy to choose our final model (based on a probability threshold of 0.5), we can adapt the following:</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="evaluating-classification-models.html#cb74-1" aria-hidden="true"></a>lasso_logistic_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb74-2"><a href="evaluating-classification-models.html#cb74-2" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>x,</span>
+<span id="cb74-3"><a href="evaluating-classification-models.html#cb74-3" aria-hidden="true"></a>    <span class="dt">data =</span> ___,</span>
+<span id="cb74-4"><a href="evaluating-classification-models.html#cb74-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;glmnet&quot;</span>,</span>
+<span id="cb74-5"><a href="evaluating-classification-models.html#cb74-5" aria-hidden="true"></a>    <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb74-6"><a href="evaluating-classification-models.html#cb74-6" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">alpha =</span> <span class="dv">1</span>, <span class="dt">lambda =</span> <span class="kw">seq</span>(___, ___, <span class="dt">length.out =</span> ___)),</span>
+<span id="cb74-7"><a href="evaluating-classification-models.html#cb74-7" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> ___, <span class="dt">selectionFunction =</span> ___),</span>
+<span id="cb74-8"><a href="evaluating-classification-models.html#cb74-8" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;Accuracy&quot;</span>,</span>
+<span id="cb74-9"><a href="evaluating-classification-models.html#cb74-9" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
+<span id="cb74-10"><a href="evaluating-classification-models.html#cb74-10" aria-hidden="true"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Argument</th>
+<th align="left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>y ~ x</code></td>
+<td align="left"><code>y</code> must be a <code>character</code> or <code>factor</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>data</code></td>
+<td align="left">Sample data</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>method</code> &amp; <code>family</code></td>
+<td align="left">The <code>glm</code> method implements various “generalized” linear models. When we specify <code>family = "binomial"</code>, <code>glm</code> performs logistic regression.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>trControl</code></td>
+<td align="left">Use cross-validation to estimate test performance for each model fit. <code>selectionFunction</code> can be <code>"best"</code> or <code>"oneSE"</code> as before.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tuneGrid</code></td>
+<td align="left">Tuning parameters for LASSO: <code>alpha = 1</code> indicates LASSO (as opposed to another regularization method). Specify a sequence of <code>lambda</code> values for the penalty.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>metric</code></td>
+<td align="left">Evaluate and compare competing models with respect to their CV-<code>Accuracy</code>. (Uses a default probability threshold of 0.5 to make hard predictions.)</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>na.action</code></td>
+<td align="left">Set <code>na.action = na.omit</code> to prevent errors if the data has missing values.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>If we would like to choose our final model based on estimates of test sensitivity, specificity, or AUC, we can adapt the following:</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="evaluating-classification-models.html#cb75-1" aria-hidden="true"></a>lasso_logistic_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb75-2"><a href="evaluating-classification-models.html#cb75-2" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>x,</span>
+<span id="cb75-3"><a href="evaluating-classification-models.html#cb75-3" aria-hidden="true"></a>    <span class="dt">data =</span> ___,</span>
+<span id="cb75-4"><a href="evaluating-classification-models.html#cb75-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;glmnet&quot;</span>,</span>
+<span id="cb75-5"><a href="evaluating-classification-models.html#cb75-5" aria-hidden="true"></a>    <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb75-6"><a href="evaluating-classification-models.html#cb75-6" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">alpha =</span> <span class="dv">1</span>, <span class="dt">lambda =</span> <span class="kw">seq</span>(___, ___, <span class="dt">length.out =</span> ___)),</span>
+<span id="cb75-7"><a href="evaluating-classification-models.html#cb75-7" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> ___, <span class="dt">selectionFunction =</span> ___, <span class="dt">classProbs =</span> <span class="ot">TRUE</span>, <span class="dt">summaryFunction =</span> twoClassSummaryCustom),</span>
+<span id="cb75-8"><a href="evaluating-classification-models.html#cb75-8" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;AUC&quot;</span>,</span>
+<span id="cb75-9"><a href="evaluating-classification-models.html#cb75-9" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
+<span id="cb75-10"><a href="evaluating-classification-models.html#cb75-10" aria-hidden="true"></a>)</span></code></pre></div>
+<p>The two new arguments to <code>trainControl()</code> are as follows:</p>
+<ul>
+<li><code>classProbs</code>: Set to true if soft (probability) predictions should be computed</li>
+<li><code>summaryFunction</code>: Use <code>twoClassSummaryCustom</code> in order to compute overall accuracy, sensitivity, and specificity (based on a threshold of 0.5) and to compute AUC</li>
+</ul>
+<p>The <code>metric</code> now has 4 options:</p>
+<ul>
+<li><code>"AUC"</code>: Compute AUC</li>
+<li><code>"Sens"</code>: Compute sensitivity</li>
+<li><code>"Spec"</code>: Compute specificity</li>
+<li><code>"Accuracy"</code>: Compute overall accuracy</li>
+</ul>
+<p>You’ll need to run the code below to create the <code>twoClassSummaryCustom</code> function (don’t worry about how this is written):</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="evaluating-classification-models.html#cb76-1" aria-hidden="true"></a>twoClassSummaryCustom &lt;-<span class="st"> </span><span class="cf">function</span> (data, <span class="dt">lev =</span> <span class="ot">NULL</span>, <span class="dt">model =</span> <span class="ot">NULL</span>) {</span>
+<span id="cb76-2"><a href="evaluating-classification-models.html#cb76-2" aria-hidden="true"></a>    <span class="cf">if</span> (<span class="kw">length</span>(lev) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) {</span>
+<span id="cb76-3"><a href="evaluating-classification-models.html#cb76-3" aria-hidden="true"></a>        <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;Your outcome has&quot;</span>, <span class="kw">length</span>(lev), <span class="st">&quot;levels. The twoClassSummary() function isn&#39;t appropriate.&quot;</span>))</span>
+<span id="cb76-4"><a href="evaluating-classification-models.html#cb76-4" aria-hidden="true"></a>    }</span>
+<span id="cb76-5"><a href="evaluating-classification-models.html#cb76-5" aria-hidden="true"></a>    caret<span class="op">:::</span><span class="kw">requireNamespaceQuietStop</span>(<span class="st">&quot;pROC&quot;</span>)</span>
+<span id="cb76-6"><a href="evaluating-classification-models.html#cb76-6" aria-hidden="true"></a>    <span class="cf">if</span> (<span class="op">!</span><span class="kw">all</span>(<span class="kw">levels</span>(data[, <span class="st">&quot;pred&quot;</span>]) <span class="op">==</span><span class="st"> </span>lev)) {</span>
+<span id="cb76-7"><a href="evaluating-classification-models.html#cb76-7" aria-hidden="true"></a>        <span class="kw">stop</span>(<span class="st">&quot;levels of observed and predicted data do not match&quot;</span>)</span>
+<span id="cb76-8"><a href="evaluating-classification-models.html#cb76-8" aria-hidden="true"></a>    }</span>
+<span id="cb76-9"><a href="evaluating-classification-models.html#cb76-9" aria-hidden="true"></a>    rocObject &lt;-<span class="st"> </span><span class="kw">try</span>(pROC<span class="op">::</span><span class="kw">roc</span>(data<span class="op">$</span>obs, data[, lev[<span class="dv">1</span>]], <span class="dt">direction =</span> <span class="st">&quot;&gt;&quot;</span>, </span>
+<span id="cb76-10"><a href="evaluating-classification-models.html#cb76-10" aria-hidden="true"></a>        <span class="dt">quiet =</span> <span class="ot">TRUE</span>), <span class="dt">silent =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb76-11"><a href="evaluating-classification-models.html#cb76-11" aria-hidden="true"></a>    rocAUC &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">inherits</span>(rocObject, <span class="st">&quot;try-error&quot;</span>)) </span>
+<span id="cb76-12"><a href="evaluating-classification-models.html#cb76-12" aria-hidden="true"></a>        <span class="ot">NA</span></span>
+<span id="cb76-13"><a href="evaluating-classification-models.html#cb76-13" aria-hidden="true"></a>    <span class="cf">else</span> rocObject<span class="op">$</span>auc</span>
+<span id="cb76-14"><a href="evaluating-classification-models.html#cb76-14" aria-hidden="true"></a>    out &lt;-<span class="st"> </span><span class="kw">c</span>(rocAUC, <span class="kw">sensitivity</span>(data[, <span class="st">&quot;pred&quot;</span>], data[, <span class="st">&quot;obs&quot;</span>], </span>
+<span id="cb76-15"><a href="evaluating-classification-models.html#cb76-15" aria-hidden="true"></a>        lev[<span class="dv">1</span>]), <span class="kw">specificity</span>(data[, <span class="st">&quot;pred&quot;</span>], data[, <span class="st">&quot;obs&quot;</span>], lev[<span class="dv">2</span>]))</span>
+<span id="cb76-16"><a href="evaluating-classification-models.html#cb76-16" aria-hidden="true"></a>    out2 &lt;-<span class="st"> </span><span class="kw">postResample</span>(data[, <span class="st">&quot;pred&quot;</span>], data[, <span class="st">&quot;obs&quot;</span>])</span>
+<span id="cb76-17"><a href="evaluating-classification-models.html#cb76-17" aria-hidden="true"></a>    out &lt;-<span class="st"> </span><span class="kw">c</span>(out, out2[<span class="dv">1</span>])</span>
+<span id="cb76-18"><a href="evaluating-classification-models.html#cb76-18" aria-hidden="true"></a>    <span class="kw">names</span>(out) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AUC&quot;</span>, <span class="st">&quot;Sens&quot;</span>, <span class="st">&quot;Spec&quot;</span>, <span class="st">&quot;Accuracy&quot;</span>)</span>
+<span id="cb76-19"><a href="evaluating-classification-models.html#cb76-19" aria-hidden="true"></a>    out</span>
+<span id="cb76-20"><a href="evaluating-classification-models.html#cb76-20" aria-hidden="true"></a>}</span></code></pre></div>
+<p><br><br><br></p>
+</div>
+<div id="exercises-8" class="section level2 unnumbered">
 <h2>Exercises</h2>
-<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/04-subset-selection.Rmd">here</a>.</strong></p>
-<p>We’ll continue using the body fat dataset to explore subset selection methods.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="variable-subset-selection.html#cb21-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
-<span id="cb21-2"><a href="variable-subset-selection.html#cb21-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb21-3"><a href="variable-subset-selection.html#cb21-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb21-4"><a href="variable-subset-selection.html#cb21-4" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
-<span id="cb21-5"><a href="variable-subset-selection.html#cb21-5" aria-hidden="true"></a>bodyfat &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;http://www.macalester.edu/~ajohns24/data/bodyfatsub.csv&quot;</span>)</span>
-<span id="cb21-6"><a href="variable-subset-selection.html#cb21-6" aria-hidden="true"></a></span>
-<span id="cb21-7"><a href="variable-subset-selection.html#cb21-7" aria-hidden="true"></a><span class="co"># Take out the redundant Density and HeightFt variables</span></span>
-<span id="cb21-8"><a href="variable-subset-selection.html#cb21-8" aria-hidden="true"></a>bodyfat &lt;-<span class="st"> </span>bodyfat <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-9"><a href="variable-subset-selection.html#cb21-9" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>Density, <span class="op">-</span>HeightFt)</span></code></pre></div>
-<div id="exercise-1-backward-stepwise-selection-by-hand" class="section level3 unnumbered">
-<h3>Exercise 1: Backward stepwise selection: by hand</h3>
-<p>In the backward stepwise procedure, we start with the full model, <code>full_model</code>, with <em>all</em> predictors:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="variable-subset-selection.html#cb22-1" aria-hidden="true"></a>full_model &lt;-<span class="st"> </span><span class="kw">lm</span>(BodyFat <span class="op">~</span><span class="st"> </span>Age <span class="op">+</span><span class="st"> </span>Weight <span class="op">+</span><span class="st"> </span>Height <span class="op">+</span><span class="st"> </span>Neck <span class="op">+</span><span class="st"> </span>Chest <span class="op">+</span><span class="st"> </span>Abdomen <span class="op">+</span><span class="st"> </span>Hip <span class="op">+</span><span class="st"> </span>Thigh <span class="op">+</span><span class="st"> </span>Knee <span class="op">+</span><span class="st"> </span>Ankle <span class="op">+</span><span class="st"> </span>Biceps <span class="op">+</span><span class="st"> </span>Forearm <span class="op">+</span><span class="st"> </span>Wrist, <span class="dt">data =</span> bodyfat)</span></code></pre></div>
-<p>To practice the backward selection algorithm, step through a few steps of the algorithm using p-values as a selection criterion:</p>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/10-evaluating-classification.Rmd">here</a>.</strong></p>
+<div id="context-3" class="section level3 unnumbered">
+<h3>Context</h3>
+<p>Before proceeding, install the <code>pROC</code> package (utilities for evaluating classification models with ROC curves) by entering <code>install.packages("pROC")</code> in the Console.</p>
+<p>We’ll continue working with the <a href="https://archive.ics.uci.edu/ml/datasets/Spambase">spam dataset</a> from last time.</p>
 <ul>
-<li><p>Identify which predictor contributes the <em>least</em> to the model. One (problematic) approach is to identify the least significant predictor.</p></li>
-<li><p>Fit a new model which eliminates this predictor.</p></li>
-<li><p>Identify the least significant predictor in this model.</p></li>
-<li><p>Fit a new model which eliminates this predictor.</p></li>
-<li><p>Repeat 1 more time to get the hang of it.</p></li>
+<li><code>spam</code>: Either <code>spam</code> or <code>not spam</code> (outcome)</li>
+<li><code>word_freq_WORD</code>: percentage of words in the e-mail that match <code>WORD</code> (0-100)</li>
+<li><code>char_freq_CHAR</code>: percentage of characters in the e-mail that match <code>CHAR</code> (e.g., exclamation points, dollar signs)</li>
+<li><code>capital_run_length_average</code>: average length of uninterrupted sequences of capital letters</li>
+<li><code>capital_run_length_longest</code>: length of longest uninterrupted sequence of capital letters</li>
+<li><code>capital_run_length_total</code>: sum of length of uninterrupted sequences of capital letters</li>
 </ul>
-<p>(We discussed in the video how the use of p-values for selection is problematic, but for now you’re just getting a handle on the algorithm. You’ll think about the problems with p-values in the next exercise.)</p>
+<p>Our goal will be to use email features to predict whether or not an email is spam - essentially, to build a spam filter!</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="evaluating-classification-models.html#cb77-1" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
+<span id="cb77-2"><a href="evaluating-classification-models.html#cb77-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb77-3"><a href="evaluating-classification-models.html#cb77-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb77-4"><a href="evaluating-classification-models.html#cb77-4" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb77-5"><a href="evaluating-classification-models.html#cb77-5" aria-hidden="true"></a></span>
+<span id="cb77-6"><a href="evaluating-classification-models.html#cb77-6" aria-hidden="true"></a>spam &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://www.dropbox.com/s/leurr6a30f4l32a/spambase.csv?dl=1&quot;</span>)</span>
+<span id="cb77-7"><a href="evaluating-classification-models.html#cb77-7" aria-hidden="true"></a></span>
+<span id="cb77-8"><a href="evaluating-classification-models.html#cb77-8" aria-hidden="true"></a><span class="co"># A little data cleaning to remove the space in &quot;not spam&quot;</span></span>
+<span id="cb77-9"><a href="evaluating-classification-models.html#cb77-9" aria-hidden="true"></a>spam &lt;-<span class="st"> </span>spam <span class="op">%&gt;%</span></span>
+<span id="cb77-10"><a href="evaluating-classification-models.html#cb77-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">spam =</span> <span class="kw">ifelse</span>(spam<span class="op">==</span><span class="st">&quot;spam&quot;</span>, <span class="st">&quot;spam&quot;</span>, <span class="st">&quot;not_spam&quot;</span>))</span></code></pre></div>
 </div>
-<div id="exercise-2-interpreting-the-results" class="section level3 unnumbered">
-<h3>Exercise 2: Interpreting the results</h3>
-<p>Examine which predictors remain after the previous exercise. Are you surprised that, for example, <code>Wrist</code> is still in the model but <code>Weight</code> is not? Does this mean that <code>Wrist</code> is a better predictor of body fat percentage than <code>Weight</code> is? What statistical idea is relevant here?</p>
+<div id="exercise-1-conceptual-warmup-1" class="section level3 unnumbered">
+<h3>Exercise 1: Conceptual warmup</h3>
+<p>LASSO for the logistic regression setting works analogously to the regression setting. How would you expect a plot of test <strong>accuracy</strong> vs. <span class="math inline">\(\lambda\)</span> to look, and why? (Draw it!)</p>
 </div>
-<div id="exercise-3-planning-forward-selection-using-cv" class="section level3 unnumbered">
-<h3>Exercise 3: Planning forward selection using CV</h3>
-<p>Using p-values to perform stepwise selection has problems, as was discussed in the video. A better alternative to target predictive accuracy is to evaluate the models using cross-validation.</p>
-<p>Fully outline the steps required to use cross-validation to perform <strong>forward</strong> selection. Make sure to provide enough detail such that the stepwise selection and CV algorithms are made clear.</p>
-</div>
-<div id="exercise-4-stepwise-selection-in-caret" class="section level3 unnumbered">
-<h3>Exercise 4: Stepwise selection in <code>caret</code></h3>
-<p>Run <code>install.packages("leaps")</code> in the Console to install the <code>leaps</code> package before proceeding.</p>
-<p>Complete the <code>caret</code> code below to perform backward stepwise selection with cross-validation. The following points will help you complete the code:</p>
+<div id="exercise-2-implementing-lasso-logistic-regression-in-caret" class="section level3 unnumbered">
+<h3>Exercise 2: Implementing LASSO logistic regression in <code>caret</code></h3>
+<p>Fit a LASSO logistic regression model for the <code>spam</code> outcome, and allow all possible predictors to be considered (<code>~ .</code> in the model formula).</p>
 <ul>
-<li>In R model formulas, <code>y ~ .</code> sets <code>y</code> as the outcome and all other predictors in the dataset as predictors.</li>
-<li>The specific method name for backward selection is <code>"leapBackward"</code>.</li>
-<li>The <code>tuneGrid</code> argument is already filled in. It allows us to input <strong>tuning parameters</strong> into the fitting process. The tuning parameters for subset selection are the number of variables included in the models explored (<code>nvmax</code>). This can vary from 1 to 13 (the maximum number of predictors possible).</li>
-<li>Use 10-fold CV to estimate test performance of the models.</li>
-<li>Use <code>"MAE"</code> as the evaluation <code>metric</code> to choose how the best of the 1-variable, 2-variable, etc. models will be chosen.</li>
+<li>Use 10-fold CV.</li>
+<li>Choose a final model whose test AUC is within one standard error of the overall best metric.</li>
+<li>Initially try a sequence of 100 <span class="math inline">\(\lambda\)</span>’s from 0 to 10.
+<ul>
+<li>Diagnose whether this sequence should be updated by looking at the plot of test AUC vs. <span class="math inline">\(\lambda\)</span> (<code>plot(lasso_logistic_mod)</code>).</li>
+<li>If needed, adjust the max value in the sequence up or down by a factor of 10. (You’ll be able to determine from the plot whether to adjust up or down.)</li>
+</ul></li>
 </ul>
-<p>(<strong>Note:</strong> CV is only used to pick among the best 1, 2, 3, …, and 13 variable models. To find the best 1, 2, 3, …, and 13 variable models, training MSE is used. <code>caret</code> uses training MSE because within a subset size, all models have the same number of coefficients, which makes both ordinary R-squared and training MSE ok for comparing models.)</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="variable-subset-selection.html#cb23-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">23</span>)</span>
-<span id="cb23-2"><a href="variable-subset-selection.html#cb23-2" aria-hidden="true"></a></span>
-<span id="cb23-3"><a href="variable-subset-selection.html#cb23-3" aria-hidden="true"></a>back_step_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb23-4"><a href="variable-subset-selection.html#cb23-4" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>x,</span>
-<span id="cb23-5"><a href="variable-subset-selection.html#cb23-5" aria-hidden="true"></a>    <span class="dt">data =</span> bodyfat,</span>
-<span id="cb23-6"><a href="variable-subset-selection.html#cb23-6" aria-hidden="true"></a>    <span class="dt">method =</span> ___,</span>
-<span id="cb23-7"><a href="variable-subset-selection.html#cb23-7" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">nvmax =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">13</span>),</span>
-<span id="cb23-8"><a href="variable-subset-selection.html#cb23-8" aria-hidden="true"></a>    <span class="dt">trControl =</span> ___,</span>
-<span id="cb23-9"><a href="variable-subset-selection.html#cb23-9" aria-hidden="true"></a>    <span class="dt">metric =</span> ___,</span>
-<span id="cb23-10"><a href="variable-subset-selection.html#cb23-10" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
-<span id="cb23-11"><a href="variable-subset-selection.html#cb23-11" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="evaluating-classification-models.html#cb78-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
+<span id="cb78-2"><a href="evaluating-classification-models.html#cb78-2" aria-hidden="true"></a>lasso_logistic_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb78-3"><a href="evaluating-classification-models.html#cb78-3" aria-hidden="true"></a>    </span>
+<span id="cb78-4"><a href="evaluating-classification-models.html#cb78-4" aria-hidden="true"></a>)</span></code></pre></div>
 </div>
-<div id="exercise-5-exploring-the-results" class="section level3 unnumbered">
-<h3>Exercise 5: Exploring the results</h3>
-<p>There are a number of ways to examine and use the output of the selection algorithm, which we’ll explore here. (It would be useful to make notes along the way - perhaps on your code note sheet.)</p>
-<div id="part-a" class="section level4 unnumbered">
-<h4>Part a</h4>
-<p>Let’s first examine the sequence of models explored. The stars in the table at the bottom indicate the variables included in the 1-variable, 2-variable, etc. models.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="variable-subset-selection.html#cb24-1" aria-hidden="true"></a><span class="kw">summary</span>(back_step_mod)</span></code></pre></div>
-<ul>
-<li><p>Of the 13 models in the sequence, R only prints out the 11 smallest models (since, for reasons we’ll discuss below, it determines the 11 predictor model to be “best”).</p></li>
-<li><p>Which predictor is the last to remain in the model? Second-to-last to remain? How do you think we could use these results to identify which predictors were most/least important in predicting the outcome of body fat percentage?</p></li>
-</ul>
+<div id="exercise-3-inspecting-the-model" class="section level3 unnumbered">
+<h3>Exercise 3: Inspecting the model</h3>
+<p>Inspect the <code>$bestTune</code> part of your fitted <code>lasso_logistic_mod</code> in conjunction with the plot of test AUC vs. <span class="math inline">\(\lambda\)</span>.</p>
+<p>Is anything surprising about the results relative to your expectations from Exercise 1? Brainstorm some possible explanations in consideration of the data context.</p>
 </div>
-<div id="part-b" class="section level4 unnumbered">
-<h4>Part b</h4>
-<p>Examine the 10-fold CV MAE for each of the 13 models in the backward stepwise sequence:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="variable-subset-selection.html#cb25-1" aria-hidden="true"></a><span class="co"># Plot metrics for each model in the sequence</span></span>
-<span id="cb25-2"><a href="variable-subset-selection.html#cb25-2" aria-hidden="true"></a><span class="kw">plot</span>(back_step_mod)</span>
-<span id="cb25-3"><a href="variable-subset-selection.html#cb25-3" aria-hidden="true"></a></span>
-<span id="cb25-4"><a href="variable-subset-selection.html#cb25-4" aria-hidden="true"></a><span class="co"># Look at accuracy/error metrics for the different subset sizes</span></span>
-<span id="cb25-5"><a href="variable-subset-selection.html#cb25-5" aria-hidden="true"></a>back_step_mod<span class="op">$</span>results</span></code></pre></div>
+<div id="exercise-4-interpreting-evaluation-metrics" class="section level3 unnumbered">
+<h3>Exercise 4: Interpreting evaluation metrics</h3>
+<p>Inspect the overall CV results for the “best” <span class="math inline">\(\lambda\)</span>, and compute the no-information rate (NIR):</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="evaluating-classification-models.html#cb79-1" aria-hidden="true"></a><span class="co"># CV results for &quot;best lambda&quot;</span></span>
+<span id="cb79-2"><a href="evaluating-classification-models.html#cb79-2" aria-hidden="true"></a>lasso_logistic_mod<span class="op">$</span>results <span class="op">%&gt;%</span></span>
+<span id="cb79-3"><a href="evaluating-classification-models.html#cb79-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(lambda<span class="op">==</span>lasso_logistic_mod<span class="op">$</span>bestTune<span class="op">$</span>lambda)</span>
+<span id="cb79-4"><a href="evaluating-classification-models.html#cb79-4" aria-hidden="true"></a></span>
+<span id="cb79-5"><a href="evaluating-classification-models.html#cb79-5" aria-hidden="true"></a><span class="co"># Count up number of spam and not_spam emails in the training data</span></span>
+<span id="cb79-6"><a href="evaluating-classification-models.html#cb79-6" aria-hidden="true"></a>spam <span class="op">%&gt;%</span></span>
+<span id="cb79-7"><a href="evaluating-classification-models.html#cb79-7" aria-hidden="true"></a><span class="st">    </span><span class="kw">count</span>(spam) <span class="co"># Name of the outcome variable goes inside count()</span></span>
+<span id="cb79-8"><a href="evaluating-classification-models.html#cb79-8" aria-hidden="true"></a></span>
+<span id="cb79-9"><a href="evaluating-classification-models.html#cb79-9" aria-hidden="true"></a><span class="co"># Compute the NIR</span></span></code></pre></div>
 <ul>
-<li>Which size model has the lowest CV MAE?</li>
-<li>Which size model would you pick? Why?</li>
+<li>Interpret the estimates of test sensitivity and specificity - what do these numbers mean? Do you think higher sensitivity or specificity would be more important in designing a spam filter?</li>
+<li>Interpret overall accuracy - does this seem high? How can the no-information rate (NIR) help us interpret the overall accuracy?</li>
+<li>Why is an AUC of 1 the best possible value for this metric? How does the AUC for our spam model look relative to this best value?</li>
 </ul>
 </div>
-<div id="part-c" class="section level4 unnumbered">
-<h4>Part c</h4>
-<p>In our model code, we used <code>selectionFunction = "best"</code> by default inside <code>trainControl()</code>. By doing so, we indicated that we wanted to find which model minimizes the CV MAE (i.e., has the “best” MAE). With respect to this criterion:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="variable-subset-selection.html#cb26-1" aria-hidden="true"></a><span class="co"># What tuning parameter gave the best performance?</span></span>
-<span id="cb26-2"><a href="variable-subset-selection.html#cb26-2" aria-hidden="true"></a><span class="co"># i.e. What subset size gave the best model?</span></span>
-<span id="cb26-3"><a href="variable-subset-selection.html#cb26-3" aria-hidden="true"></a>back_step_mod<span class="op">$</span>bestTune</span>
-<span id="cb26-4"><a href="variable-subset-selection.html#cb26-4" aria-hidden="true"></a></span>
-<span id="cb26-5"><a href="variable-subset-selection.html#cb26-5" aria-hidden="true"></a><span class="co"># Obtain the coefficients for the best model</span></span>
-<span id="cb26-6"><a href="variable-subset-selection.html#cb26-6" aria-hidden="true"></a><span class="kw">coef</span>(back_step_mod<span class="op">$</span>finalModel, <span class="dt">id =</span> back_step_mod<span class="op">$</span>bestTune<span class="op">$</span>nvmax)</span>
-<span id="cb26-7"><a href="variable-subset-selection.html#cb26-7" aria-hidden="true"></a></span>
-<span id="cb26-8"><a href="variable-subset-selection.html#cb26-8" aria-hidden="true"></a><span class="co"># Obtain the coefficients of any size model with at most as many variables as the overall best model (e.g., the 2-predictor model)</span></span>
-<span id="cb26-9"><a href="variable-subset-selection.html#cb26-9" aria-hidden="true"></a><span class="kw">coef</span>(back_step_mod<span class="op">$</span>finalModel, <span class="dt">id =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p>Another sensible choice for the selection function is to not choose the model with the lowest estimated error but to account for the uncertainty in the estimation of that test error by picking the smallest model for which the CV MAE is within one standard error of the minimum CV MAE. What do you think the rationale for this is?</p>
-<p>(We’ll explore the code for this formally later, or you can try it out below in the Digging Deeper section.)</p>
-</div>
-<div id="part-d" class="section level4 unnumbered">
-<h4>Part d</h4>
-<p>We should end by evaluating our final chosen model.</p>
-<ul>
-<li>Contextually interpret (with units) the CV MAE for the model.</li>
-<li>Make residual plots for the chosen model in one of 2 ways: (1) use <code>lm()</code> to fit the model with the chosen predictors or (2) use the following code to create a dataset called <code>back_step_mod_out</code> which contains the original data as well as predicted values and residuals (<code>fitted</code> and <code>resid</code>).</li>
-</ul>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="variable-subset-selection.html#cb27-1" aria-hidden="true"></a>back_step_mod_out &lt;-<span class="st"> </span>bodyfat <span class="op">%&gt;%</span></span>
-<span id="cb27-2"><a href="variable-subset-selection.html#cb27-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
-<span id="cb27-3"><a href="variable-subset-selection.html#cb27-3" aria-hidden="true"></a>        <span class="dt">fitted =</span> <span class="kw">predict</span>(back_step_mod, <span class="dt">newdata =</span> bodyfat),</span>
-<span id="cb27-4"><a href="variable-subset-selection.html#cb27-4" aria-hidden="true"></a>        <span class="dt">resid =</span> BodyFat <span class="op">-</span><span class="st"> </span>fitted</span>
-<span id="cb27-5"><a href="variable-subset-selection.html#cb27-5" aria-hidden="true"></a>    )</span></code></pre></div>
-</div>
-</div>
-<div id="digging-deeper-1" class="section level3 unnumbered">
-<h3>Digging deeper</h3>
-<ol style="list-style-type: decimal">
-<li>As mentioned in Exercise 5c, we have another choice for the <code>selectionFunction</code> used to choose from many possible models. The use of <code>selectionFunction = "oneSE"</code> below picks the simplest model for which the CV MAE is within one standard error of the minimum CV MAE. Compare the output you obtain here with your best model from Exercise 5.</li>
-</ol>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="variable-subset-selection.html#cb28-1" aria-hidden="true"></a>back_step_mod_1se &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb28-2"><a href="variable-subset-selection.html#cb28-2" aria-hidden="true"></a>    BodyFat <span class="op">~</span><span class="st"> </span>.,</span>
-<span id="cb28-3"><a href="variable-subset-selection.html#cb28-3" aria-hidden="true"></a>    <span class="dt">data =</span> bodyfat,</span>
-<span id="cb28-4"><a href="variable-subset-selection.html#cb28-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;leapBackward&quot;</span>,</span>
-<span id="cb28-5"><a href="variable-subset-selection.html#cb28-5" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">nvmax =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">13</span>),</span>
-<span id="cb28-6"><a href="variable-subset-selection.html#cb28-6" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> <span class="dv">10</span>, <span class="dt">selectionFunction =</span> <span class="st">&quot;oneSE&quot;</span>),</span>
-<span id="cb28-7"><a href="variable-subset-selection.html#cb28-7" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;MAE&quot;</span>,</span>
-<span id="cb28-8"><a href="variable-subset-selection.html#cb28-8" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
-<span id="cb28-9"><a href="variable-subset-selection.html#cb28-9" aria-hidden="true"></a>)</span></code></pre></div>
-<ol start="2" style="list-style-type: decimal">
-<li>Forward selection can be implemented in <code>caret</code> with analogous code, except that the method name is <code>"leapForward"</code>. Try implementing forward selection and comparing your results.</li>
-</ol>
+<div id="exercise-5-algorithmic-understanding-for-evaluation-metrics" class="section level3 unnumbered">
+<h3>Exercise 5: Algorithmic understanding for evaluation metrics</h3>
+<p>Inspect the iteration specific information from CV for the “best” <span class="math inline">\(\lambda\)</span>:</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="evaluating-classification-models.html#cb80-1" aria-hidden="true"></a>lasso_logistic_mod<span class="op">$</span>resample</span></code></pre></div>
+<p>How is one row of information computed? Carefully describe the CV process for a single iteration to estimate each of <code>AUC</code>, <code>Sens</code>, <code>Spec</code>, and <code>Accuracy</code> (overall accuracy). Use a generic confusion matrix (filled with variables instead of hard numbers) to illustrate the underlying computations.</p>
 
 </div>
 </div>
 </div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="overfitting-cross-validation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="lasso-shrinkageregularization.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="logistic-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
