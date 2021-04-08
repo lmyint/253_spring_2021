@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Topic 7 Splines | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 11 Trees (Part 1) | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Topic 7 Splines | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 11 Trees (Part 1) | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Topic 7 Splines | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 11 Trees (Part 1) | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="knn-regression-and-the-bias-variance-tradeoff.html"/>
-<link rel="next" href="local-regression-gams.html"/>
+<link rel="prev" href="evaluating-classification-models.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -333,124 +333,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="splines" class="section level1" number="7">
-<h1><span class="header-section-number">Topic 7</span> Splines</h1>
-<div id="learning-goals-5" class="section level2 unnumbered">
+<div id="trees-part-1" class="section level1" number="11">
+<h1><span class="header-section-number">Topic 11</span> Trees (Part 1)</h1>
+<div id="learning-goals-9" class="section level2 unnumbered">
 <h2>Learning Goals</h2>
 <ul>
-<li>Explain the advantages of splines over global transformations and other types of piecewise polynomials</li>
-<li>Explain how splines are constructed by drawing connections to variable transformations and least squares</li>
-<li>Explain how the number of knots relates to the bias-variance tradeoff</li>
+<li>Clearly describe the recursive binary splitting algorithm for tree building for both regression and classification</li>
+<li>Compute the weighted average Gini index to measure the quality of a classification tree split</li>
+<li>Compute the sum of squared residuals to measure the quality of a regression tree split</li>
+<li>Explain how recursive binary splitting is a greedy algorithm</li>
+<li>Explain how different tree parameters relate to the bias-variance tradeoff</li>
 </ul>
 <p><br></p>
-<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1A1QrmwmAXMYSIEwhNGgHRf0GH7vqukcJFemlWLA3yuQ/edit?usp=sharing">here</a>.</p>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1h7Abe8JVxKvTcpPFo5OdR8XuWkiVU4mevYtZao00VJ0/edit?usp=sharing">here</a>.</p>
 <p><br><br><br></p>
 </div>
-<div id="splines-in-caret" class="section level2 unnumbered">
-<h2>Splines in <code>caret</code></h2>
-<p>To build models with splines in <code>caret</code>, we proceed with the same structure for <code>train()</code> as we use for ordinary linear regression models. (Why can we just use least squares?) Refer to code from Topic 3: Overfitting &amp; CV for a refresher.</p>
-<p>To work with splines, we’ll use the <code>splines</code> package. The <code>ns()</code> function in that package creates the transformations needed to create a spline function for a quantitative predictor. This involves a small update to the <em>formula</em>:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="splines.html#cb49-1" aria-hidden="true"></a><span class="co"># Before: all linear terms</span></span>
-<span id="cb49-2"><a href="splines.html#cb49-2" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb49-3"><a href="splines.html#cb49-3" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>quant_x1 <span class="op">+</span><span class="st"> </span>quant_x2,</span>
-<span id="cb49-4"><a href="splines.html#cb49-4" aria-hidden="true"></a>    ...</span>
-<span id="cb49-5"><a href="splines.html#cb49-5" aria-hidden="true"></a>)</span>
-<span id="cb49-6"><a href="splines.html#cb49-6" aria-hidden="true"></a></span>
-<span id="cb49-7"><a href="splines.html#cb49-7" aria-hidden="true"></a><span class="co"># With splines</span></span>
-<span id="cb49-8"><a href="splines.html#cb49-8" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb49-9"><a href="splines.html#cb49-9" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span><span class="kw">ns</span>(quant_x1, <span class="dt">df =</span> <span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(quant_x2, <span class="dt">df =</span> <span class="dv">3</span>),</span>
-<span id="cb49-10"><a href="splines.html#cb49-10" aria-hidden="true"></a>    ...</span>
-<span id="cb49-11"><a href="splines.html#cb49-11" aria-hidden="true"></a>)</span></code></pre></div>
-<ul>
-<li>The <code>df</code> argument in <code>ns()</code> stands for degrees of freedom:
-<ul>
-<li><code>df = # knots + 1</code></li>
-<li>The degrees of freedom are the number of coefficients in the transformation functions that are free to vary (essentially the number of underlying parameters behind the transformations).</li>
-</ul></li>
-</ul>
+<div id="trees-in-caret" class="section level2 unnumbered">
+<h2>Trees in <code>caret</code></h2>
+<p>To build tree models in <code>caret</code>, first load the package and set the seed for the random number generator to ensure reproducible results:</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="trees-part-1.html#cb81-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb81-2"><a href="trees-part-1.html#cb81-2" aria-hidden="true"></a><span class="kw">set.seed</span>(___) <span class="co"># Pick your favorite number to fill in the parentheses</span></span></code></pre></div>
+<p>If we would like to use estimates of test (overall) accuracy to choose our final model (based on a hard predictions resulting from majority classification), we can adapt the following:</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="trees-part-1.html#cb82-1" aria-hidden="true"></a>tree_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb82-2"><a href="trees-part-1.html#cb82-2" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>x,</span>
+<span id="cb82-3"><a href="trees-part-1.html#cb82-3" aria-hidden="true"></a>    <span class="dt">data =</span> ___,</span>
+<span id="cb82-4"><a href="trees-part-1.html#cb82-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;rpart&quot;</span>,</span>
+<span id="cb82-5"><a href="trees-part-1.html#cb82-5" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">cp =</span> <span class="kw">seq</span>(___, ___, <span class="dt">length.out =</span> ___)),</span>
+<span id="cb82-6"><a href="trees-part-1.html#cb82-6" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> ___, <span class="dt">selectionFunction =</span> ___),</span>
+<span id="cb82-7"><a href="trees-part-1.html#cb82-7" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;Accuracy&quot;</span>,</span>
+<span id="cb82-8"><a href="trees-part-1.html#cb82-8" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
+<span id="cb82-9"><a href="trees-part-1.html#cb82-9" aria-hidden="true"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Argument</th>
+<th align="left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>y ~ x</code></td>
+<td align="left"><code>y</code> must be a <code>character</code> or <code>factor</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>data</code></td>
+<td align="left">Sample data</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>method</code></td>
+<td align="left"><code>"rpart"</code> builds trees (through <strong>r</strong>ecursive <strong>part</strong>itioning)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>trControl</code></td>
+<td align="left">Use cross-validation to estimate test performance for each model fit. <code>selectionFunction</code> can be <code>"best"</code> or <code>"oneSE"</code>, as before.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>tuneGrid</code></td>
+<td align="left">The <code>cp</code> “complexity” tuning parameter indicates the degree to which a new split must improve purity. We can stop splitting branches if they don’t improve purity by at least <code>cp</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>metric</code></td>
+<td align="left">Evaluate and compare competing models with respect to their CV-<code>Accuracy</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>na.action</code></td>
+<td align="left">Set <code>na.action = na.omit</code> to prevent errors if the data has missing values.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>If we would like to choose our final model based on estimates of test sensitivity, specificity, or AUC, we can amend the arguments of <code>trainControl()</code> as described in <a href="evaluating-classification-models.html#evaluating-classification-models">Evaluating Classification Models</a>.</p>
+<p><br></p>
+<p><strong>Visualizing and interpreting the “best” tree</strong></p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="trees-part-1.html#cb83-1" aria-hidden="true"></a><span class="co"># Plot the tree (make sure to load the rpart.plot package first)</span></span>
+<span id="cb83-2"><a href="trees-part-1.html#cb83-2" aria-hidden="true"></a><span class="kw">rpart.plot</span>(tree_mod<span class="op">$</span>finalModel)</span>
+<span id="cb83-3"><a href="trees-part-1.html#cb83-3" aria-hidden="true"></a></span>
+<span id="cb83-4"><a href="trees-part-1.html#cb83-4" aria-hidden="true"></a><span class="co"># Get variable importance metrics </span></span>
+<span id="cb83-5"><a href="trees-part-1.html#cb83-5" aria-hidden="true"></a>tree_mod<span class="op">$</span>finalModel<span class="op">$</span>variable.importance</span></code></pre></div>
 <p><br><br><br></p>
 </div>
-<div id="exercises-5" class="section level2 unnumbered">
+<div id="exercises-9" class="section level2 unnumbered">
 <h2>Exercises</h2>
-<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/07-splines.Rmd">here</a>.</strong></p>
-<p>Before proceeding, install the <code>splines</code> package by entering <code>install.packages("splines")</code> in the Console.</p>
-<p>We’ll continue using the <code>College</code> dataset in the <code>ISLR</code> package to explore splines. You can use <code>?College</code> in the Console to look at the data codebook.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="splines.html#cb50-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
-<span id="cb50-2"><a href="splines.html#cb50-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb50-3"><a href="splines.html#cb50-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb50-4"><a href="splines.html#cb50-4" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
-<span id="cb50-5"><a href="splines.html#cb50-5" aria-hidden="true"></a><span class="kw">library</span>(ISLR)</span>
-<span id="cb50-6"><a href="splines.html#cb50-6" aria-hidden="true"></a><span class="kw">library</span>(splines)</span>
-<span id="cb50-7"><a href="splines.html#cb50-7" aria-hidden="true"></a></span>
-<span id="cb50-8"><a href="splines.html#cb50-8" aria-hidden="true"></a><span class="kw">data</span>(College)</span>
-<span id="cb50-9"><a href="splines.html#cb50-9" aria-hidden="true"></a></span>
-<span id="cb50-10"><a href="splines.html#cb50-10" aria-hidden="true"></a><span class="co"># A little data cleaning</span></span>
-<span id="cb50-11"><a href="splines.html#cb50-11" aria-hidden="true"></a>college_clean &lt;-<span class="st"> </span>College <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb50-12"><a href="splines.html#cb50-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">school =</span> <span class="kw">rownames</span>(College)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb50-13"><a href="splines.html#cb50-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(Grad.Rate <span class="op">&lt;=</span><span class="st"> </span><span class="dv">100</span>) <span class="co"># Remove one school with grad rate of 118%</span></span>
-<span id="cb50-14"><a href="splines.html#cb50-14" aria-hidden="true"></a><span class="kw">rownames</span>(college_clean) &lt;-<span class="st"> </span><span class="ot">NULL</span> <span class="co"># Remove school names as row names</span></span></code></pre></div>
-<div id="exercise-1-evaluating-a-fully-linear-model" class="section level3 unnumbered">
-<h3>Exercise 1: Evaluating a fully linear model</h3>
-<p>We will model <code>Grad.Rate</code> as a function of 4 predictors: <code>Private</code>, <code>Terminal</code>, <code>Expend</code>, and <code>S.F.Ratio</code>.</p>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/11-trees-part1.Rmd">here</a>.</strong></p>
+<div id="context-4" class="section level3 unnumbered">
+<h3>Context</h3>
+<p>Before proceeding, install the <code>rpart</code> and <code>rpart.plot</code> packages (for building and plotting decision trees) by entering <code>install.packages(c("rpart", "rpart.plot"))</code> in the Console.</p>
+<p>Our goal will be to classify types of urban land cover in small subregions within a high resolution aerial image of a land region. Data from the <a href="https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover">UCI Machine Learning Repository</a> include the observed type of land cover (determined by human eye) and “spectral, size, shape, and texture information” computed from the image. See <a href="https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover">this page</a> for the data codebook.</p>
+<center>
+<img src="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg">
+Source: <a href="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg" class="uri">https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg</a>
+</center>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="trees-part-1.html#cb84-1" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
+<span id="cb84-2"><a href="trees-part-1.html#cb84-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb84-3"><a href="trees-part-1.html#cb84-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb84-4"><a href="trees-part-1.html#cb84-4" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb84-5"><a href="trees-part-1.html#cb84-5" aria-hidden="true"></a><span class="kw">library</span>(rpart.plot)</span>
+<span id="cb84-6"><a href="trees-part-1.html#cb84-6" aria-hidden="true"></a></span>
+<span id="cb84-7"><a href="trees-part-1.html#cb84-7" aria-hidden="true"></a><span class="co"># Read in the data</span></span>
+<span id="cb84-8"><a href="trees-part-1.html#cb84-8" aria-hidden="true"></a>land &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://www.macalester.edu/~ajohns24/data/land_cover.csv&quot;</span>)</span>
+<span id="cb84-9"><a href="trees-part-1.html#cb84-9" aria-hidden="true"></a></span>
+<span id="cb84-10"><a href="trees-part-1.html#cb84-10" aria-hidden="true"></a><span class="co"># There are 9 land types, but we&#39;ll focus on 3 of them</span></span>
+<span id="cb84-11"><a href="trees-part-1.html#cb84-11" aria-hidden="true"></a>land &lt;-<span class="st"> </span>land <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb84-12"><a href="trees-part-1.html#cb84-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(class <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;asphalt&quot;</span>, <span class="st">&quot;grass&quot;</span>, <span class="st">&quot;tree&quot;</span>))</span></code></pre></div>
+</div>
+<div id="exercise-1-core-theme-parametricnonparametric" class="section level3 unnumbered">
+<h3>Exercise 1: Core theme: parametric/nonparametric</h3>
 <ol style="list-style-type: lower-alpha">
-<li><p>Make scatterplots with 2 different smoothing lines to explore potential nonlinearity. Adding the following to the normal scatterplot code will create a smooth (curved) blue trend line and a red linear trend line.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="splines.html#cb51-1" aria-hidden="true"></a><span class="kw">geom_smooth</span>(<span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
-<span id="cb51-2"><a href="splines.html#cb51-2" aria-hidden="true"></a><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>)</span></code></pre></div></li>
-<li><p>Use <code>caret</code> to fit an ordinary linear regression model (no splines yet) with the following specifications:</p>
+<li><p>What does it mean for a method to be nonparametric? In general, when might we prefer nonparametric to parametric methods? When might we not?</p></li>
+<li><p>Where do you think trees fall on the parametric/nonparametric spectrum?</p></li>
+</ol>
+</div>
+<div id="exercise-2-core-theme-tuning-parameters-and-the-bvt" class="section level3 unnumbered">
+<h3>Exercise 2: Core theme: Tuning parameters and the BVT</h3>
+<p>The key feature governing complexity of a tree model is the number of splits used in the tree. How is the number of splits related to model complexity, bias, and variance?</p>
+<p>In practice, the number of splits is controlled indirectly through the following tuning parameters. For each, discuss how low/high parameter settings would affect the number of tree splits.</p>
 <ul>
-<li>Use 8-fold CV.</li>
-<li>Use mean absolute error (MAE) to select a final model.</li>
-<li>Select the simplest model for which the metric is within one standard error of the best metric.</li>
+<li><p><code>minsplit</code>: the minimum number of observations that must exist in a node in order for a split to be attempted.</p></li>
+<li><p><code>minbucket</code>: the minimum number of observations in any leaf node.</p></li>
+<li><p><code>cp</code>: complexity parameter. Any split that does not increase node purity by <code>cp</code> is not attempted.</p></li>
+<li><p><code>maxdepth</code>: Set the maximum <strong>depth</strong> of any node of the final tree. The <strong>depth</strong> of a node is the number of branches that need to be followed to get to a given node from the root node. (The root node has depth 0.)</p></li>
 </ul>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="splines.html#cb52-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
-<span id="cb52-2"><a href="splines.html#cb52-2" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb52-3"><a href="splines.html#cb52-3" aria-hidden="true"></a></span>
-<span id="cb52-4"><a href="splines.html#cb52-4" aria-hidden="true"></a>)</span></code></pre></div></li>
-<li><p>Make plots of the residuals vs. the 3 quantitative predictors to evaluate the appropriateness of linear terms.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="splines.html#cb53-1" aria-hidden="true"></a>ls_mod_data &lt;-<span class="st"> </span>college_clean <span class="op">%&gt;%</span></span>
-<span id="cb53-2"><a href="splines.html#cb53-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
-<span id="cb53-3"><a href="splines.html#cb53-3" aria-hidden="true"></a>        <span class="dt">pred =</span> <span class="kw">predict</span>(ls_mod, <span class="dt">newdata =</span> college_clean),</span>
-<span id="cb53-4"><a href="splines.html#cb53-4" aria-hidden="true"></a>        <span class="dt">resid =</span> ___</span>
-<span id="cb53-5"><a href="splines.html#cb53-5" aria-hidden="true"></a>    )</span>
-<span id="cb53-6"><a href="splines.html#cb53-6" aria-hidden="true"></a></span>
-<span id="cb53-7"><a href="splines.html#cb53-7" aria-hidden="true"></a><span class="kw">ggplot</span>(ls_mod_data, ???) <span class="op">+</span></span>
-<span id="cb53-8"><a href="splines.html#cb53-8" aria-hidden="true"></a><span class="st">    </span>___ <span class="op">+</span></span>
-<span id="cb53-9"><a href="splines.html#cb53-9" aria-hidden="true"></a><span class="st">    </span>___ <span class="op">+</span></span>
-<span id="cb53-10"><a href="splines.html#cb53-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div></li>
-</ol>
 </div>
-<div id="exercise-2-evaluating-a-spline-model" class="section level3 unnumbered">
-<h3>Exercise 2: Evaluating a spline model</h3>
-<p>We’ll extend our linear regression model with spline functions of the quantitative predictors (leave <code>Private</code> as is).</p>
-<ol style="list-style-type: lower-alpha">
-<li><p>What tuning parameter is associated with splines? How do high/low values of this parameter relate to bias and variance?</p></li>
-<li><p>Update your code from Exercise 1 to model the 3 quantitative predictors with natural splines that have 2 knots (= 3 degrees of freedom).</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="splines.html#cb54-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
-<span id="cb54-2"><a href="splines.html#cb54-2" aria-hidden="true"></a>spline_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb54-3"><a href="splines.html#cb54-3" aria-hidden="true"></a></span>
-<span id="cb54-4"><a href="splines.html#cb54-4" aria-hidden="true"></a>)</span></code></pre></div></li>
-<li><p>Make plots of the residuals vs. the 3 quantitative predictors to evaluate if splines improved the model.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="splines.html#cb55-1" aria-hidden="true"></a>spline_mod_data &lt;-<span class="st"> </span>___</span>
-<span id="cb55-2"><a href="splines.html#cb55-2" aria-hidden="true"></a></span>
-<span id="cb55-3"><a href="splines.html#cb55-3" aria-hidden="true"></a><span class="co"># Residual plots</span></span></code></pre></div></li>
-</ol>
+<div id="exercise-3-building-trees-in-caret" class="section level3 unnumbered">
+<h3>Exercise 3: Building trees in <code>caret</code></h3>
+<p>Fit a tree model for the <code>class</code> outcome (land type), and allow all possible predictors to be considered (<code>~ .</code> in the model formula).</p>
+<ul>
+<li>Use 10-fold CV.</li>
+<li>Choose a final model whose test overall accuracy is within one standard error of the overall best metric.</li>
+<li>The Gini index impurity measure can be a minimum of zero and has an upper bound of 1. Thus, we’ll try a sequence of 50 <code>cp</code> values from 0 to 0.5.</li>
+</ul>
+<p>Make a plot of test performance versus the <code>cp</code> tuning parameter. Does it look as you expected?</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="trees-part-1.html#cb85-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
+<span id="cb85-2"><a href="trees-part-1.html#cb85-2" aria-hidden="true"></a>tree_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb85-3"><a href="trees-part-1.html#cb85-3" aria-hidden="true"></a></span>
+<span id="cb85-4"><a href="trees-part-1.html#cb85-4" aria-hidden="true"></a>)</span></code></pre></div>
 </div>
-<div id="extra-variable-scaling" class="section level3 unnumbered">
-<h3>Extra! Variable scaling</h3>
-<p>What is your intuition about whether variable scaling matters for the performance of splines?</p>
-<p>Check you intuition by reusing code from Exercise 2, except with <code>preProcess = "scale"</code> inside <code>train()</code>. Call this <code>spline_mod2</code>.</p>
-<p>How do the predictions from <code>spline_mod</code> and <code>spline_mod2</code> compare? You could use a plot to compare or check out the <code>all.equal()</code> function.</p>
+<div id="exercise-4-visualizing-trees" class="section level3 unnumbered">
+<h3>Exercise 4: Visualizing trees</h3>
+<p>Let’s visualize the difference between the trees learned under <code>cp</code> parameters. The code below fits a tree for a lower than optimal <code>cp</code> value (<code>tree_mod_lowcp</code>) and a higher than optimal <code>cp</code> (<code>tree_mod_highcp</code>). We then plot these trees (1st and 3rd) along with our best tree (2nd).</p>
+<p>Look at page 3 of the <code>rpart.plot</code> <a href="http://www.milbo.org/doc/prp.pdf">package vignette</a> (an example-heavy manual) to understand what the plot components mean.</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="trees-part-1.html#cb86-1" aria-hidden="true"></a>tree_mod_lowcp &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb86-2"><a href="trees-part-1.html#cb86-2" aria-hidden="true"></a>    class <span class="op">~</span><span class="st"> </span>.,</span>
+<span id="cb86-3"><a href="trees-part-1.html#cb86-3" aria-hidden="true"></a>    <span class="dt">data =</span> land,</span>
+<span id="cb86-4"><a href="trees-part-1.html#cb86-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;rpart&quot;</span>,</span>
+<span id="cb86-5"><a href="trees-part-1.html#cb86-5" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">cp =</span> <span class="dv">0</span>),</span>
+<span id="cb86-6"><a href="trees-part-1.html#cb86-6" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> <span class="dv">10</span>),</span>
+<span id="cb86-7"><a href="trees-part-1.html#cb86-7" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;Accuracy&quot;</span>,</span>
+<span id="cb86-8"><a href="trees-part-1.html#cb86-8" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
+<span id="cb86-9"><a href="trees-part-1.html#cb86-9" aria-hidden="true"></a>)</span>
+<span id="cb86-10"><a href="trees-part-1.html#cb86-10" aria-hidden="true"></a>tree_mod_highcp &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb86-11"><a href="trees-part-1.html#cb86-11" aria-hidden="true"></a>    class <span class="op">~</span><span class="st"> </span>.,</span>
+<span id="cb86-12"><a href="trees-part-1.html#cb86-12" aria-hidden="true"></a>    <span class="dt">data =</span> land,</span>
+<span id="cb86-13"><a href="trees-part-1.html#cb86-13" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;rpart&quot;</span>,</span>
+<span id="cb86-14"><a href="trees-part-1.html#cb86-14" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">cp =</span> <span class="fl">0.1</span>),</span>
+<span id="cb86-15"><a href="trees-part-1.html#cb86-15" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> <span class="dv">10</span>),</span>
+<span id="cb86-16"><a href="trees-part-1.html#cb86-16" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;Accuracy&quot;</span>,</span>
+<span id="cb86-17"><a href="trees-part-1.html#cb86-17" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
+<span id="cb86-18"><a href="trees-part-1.html#cb86-18" aria-hidden="true"></a>)</span>
+<span id="cb86-19"><a href="trees-part-1.html#cb86-19" aria-hidden="true"></a></span>
+<span id="cb86-20"><a href="trees-part-1.html#cb86-20" aria-hidden="true"></a><span class="co"># Plot all 3 trees in a row</span></span>
+<span id="cb86-21"><a href="trees-part-1.html#cb86-21" aria-hidden="true"></a><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb86-22"><a href="trees-part-1.html#cb86-22" aria-hidden="true"></a><span class="kw">rpart.plot</span>(tree_mod_lowcp<span class="op">$</span>finalModel)</span>
+<span id="cb86-23"><a href="trees-part-1.html#cb86-23" aria-hidden="true"></a><span class="kw">rpart.plot</span>(tree_mod<span class="op">$</span>finalModel)</span>
+<span id="cb86-24"><a href="trees-part-1.html#cb86-24" aria-hidden="true"></a><span class="kw">rpart.plot</span>(tree_mod_highcp<span class="op">$</span>finalModel)</span></code></pre></div>
+<ul>
+<li><p>Verify for a couple of splits the idea of increasing node purity/homogeneity in tree-building. (How is this idea reflected in the numbers in the plot output?)</p></li>
+<li><p>Tuning classification trees (like with the <code>cp</code> parameter) is also referred to as <strong>“pruning”</strong>. Why does this make sense? NOTE: If “pruning” is a new word to you, first Google it.</p></li>
+</ul>
 
 </div>
 </div>
 </div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="knn-regression-and-the-bias-variance-tradeoff.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="local-regression-gams.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="evaluating-classification-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
