@@ -88,7 +88,7 @@ Before proceeding, install the `rpart` and `rpart.plot` packages (for building a
 Our goal will be to classify types of urban land cover in small subregions within a high resolution aerial image of a land region. Data from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover) include the observed type of land cover (determined by human eye) and "spectral, size, shape, and texture information" computed from the image. See [this page](https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover) for the data codebook.
 
 <center>
-    <img src="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg">
+    <img src="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg"><br>
     Source: https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg
 </center>
 

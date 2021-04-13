@@ -28,7 +28,7 @@ land <- land %>%
 ```
 
 
-### Exercise 1: Core theme: parametric/nonparametric {-}
+## Exercise 1: Core theme: parametric/nonparametric
 
 a. What does it mean for a method to be nonparametric? In general, when might we prefer nonparametric to parametric methods? When might we not?
 
@@ -36,7 +36,7 @@ b. Where do you think trees fall on the parametric/nonparametric spectrum?
 
 
 
-### Exercise 2: Core theme: Tuning parameters and the BVT {-}
+## Exercise 2: Core theme: Tuning parameters and the BVT
 
 The key feature governing complexity of a tree model is the number of splits used in the tree. How is the number of splits related to model complexity, bias, and variance?
 
@@ -52,7 +52,7 @@ In practice, the number of splits is controlled indirectly through the following
 
 
 
-### Exercise 3: Building trees in `caret` {-}
+## Exercise 3: Building trees in `caret`
 
 Fit a tree model for the `class` outcome (land type), and allow all possible predictors to be considered (`~ .` in the model formula).
 
@@ -71,7 +71,7 @@ tree_mod <- train(
 
 
 
-### Exercise 4: Visualizing trees {-}
+## Exercise 4: Visualizing trees
 
 Let's visualize the difference between the trees learned under `cp` parameters. The code below fits a tree for a lower than optimal `cp` value (`tree_mod_lowcp`) and a higher than optimal `cp` (`tree_mod_highcp`). We then plot these trees (1st and 3rd) along with our best tree (2nd).
 

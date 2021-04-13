@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="evaluating-classification-models.html"/>
-<link rel="next" href="homework-1.html"/>
+<link rel="next" href="trees-part-2.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -284,6 +284,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="trees-part-1.html"><a href="trees-part-1.html#exercise-4-visualizing-trees"><i class="fa fa-check"></i>Exercise 4: Visualizing trees</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="12" data-path="trees-part-2.html"><a href="trees-part-2.html"><i class="fa fa-check"></i><b>12</b> Trees (Part 2)</a>
+<ul>
+<li class="chapter" data-level="" data-path="trees-part-2.html"><a href="trees-part-2.html#exercises-10"><i class="fa fa-check"></i>Exercises</a>
+<ul>
+<li class="chapter" data-level="" data-path="trees-part-2.html"><a href="trees-part-2.html#context-5"><i class="fa fa-check"></i>Context</a></li>
+<li class="chapter" data-level="" data-path="trees-part-2.html"><a href="trees-part-2.html#exercise-1-predictions-from-trees"><i class="fa fa-check"></i>Exercise 1: Predictions from trees</a></li>
+<li class="chapter" data-level="" data-path="trees-part-2.html"><a href="trees-part-2.html#exercise-2-reinforcing-the-bvt"><i class="fa fa-check"></i>Exercise 2: Reinforcing the BVT</a></li>
+<li class="chapter" data-level="" data-path="trees-part-2.html"><a href="trees-part-2.html#exercise-3-variable-importance-in-trees"><i class="fa fa-check"></i>Exercise 3: Variable importance in trees</a></li>
+<li class="chapter" data-level="" data-path="trees-part-2.html"><a href="trees-part-2.html#exercise-4-regression-trees"><i class="fa fa-check"></i>Exercise 4: Regression trees</a></li>
+<li class="chapter" data-level="" data-path="trees-part-2.html"><a href="trees-part-2.html#extra"><i class="fa fa-check"></i>Extra!</a></li>
+</ul></li>
+</ul></li>
 <li class="part"><span><b>V Homework</b></span></li>
 <li class="chapter" data-level="" data-path="homework-1.html"><a href="homework-1.html"><i class="fa fa-check"></i>Homework 1</a>
 <ul>
@@ -302,6 +314,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="homework-3.html"><a href="homework-3.html#project-work-2"><i class="fa fa-check"></i>Project Work</a></li>
 <li class="chapter" data-level="" data-path="homework-3.html"><a href="homework-3.html#portfolio-work-2"><i class="fa fa-check"></i>Portfolio Work</a></li>
 <li class="chapter" data-level="" data-path="homework-3.html"><a href="homework-3.html#course-engagement-2"><i class="fa fa-check"></i>Course Engagement</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="homework-4.html"><a href="homework-4.html"><i class="fa fa-check"></i>Homework 4</a>
+<ul>
+<li class="chapter" data-level="" data-path="homework-4.html"><a href="homework-4.html#project-work-3"><i class="fa fa-check"></i>Project Work</a></li>
+<li class="chapter" data-level="" data-path="homework-4.html"><a href="homework-4.html#portfolio-work-3"><i class="fa fa-check"></i>Portfolio Work</a></li>
+<li class="chapter" data-level="" data-path="homework-4.html"><a href="homework-4.html#course-engagement-3"><i class="fa fa-check"></i>Course Engagement</a></li>
 </ul></li>
 <li class="part"><span><b>VI Project</b></span></li>
 <li class="chapter" data-level="" data-path="final-project.html"><a href="final-project.html"><i class="fa fa-check"></i>Final Project</a>
@@ -420,7 +438,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Before proceeding, install the <code>rpart</code> and <code>rpart.plot</code> packages (for building and plotting decision trees) by entering <code>install.packages(c("rpart", "rpart.plot"))</code> in the Console.</p>
 <p>Our goal will be to classify types of urban land cover in small subregions within a high resolution aerial image of a land region. Data from the <a href="https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover">UCI Machine Learning Repository</a> include the observed type of land cover (determined by human eye) and “spectral, size, shape, and texture information” computed from the image. See <a href="https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover">this page</a> for the data codebook.</p>
 <center>
-<img src="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg">
+<img src="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg"><br>
 Source: <a href="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg" class="uri">https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg</a>
 </center>
 <div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="trees-part-1.html#cb84-1" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
@@ -504,16 +522,13 @@ Source: <a href="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg" clas
 </div>
 </div>
 </div>
-
-
-
             </section>
 
           </div>
         </div>
       </div>
 <a href="evaluating-classification-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="trees-part-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
