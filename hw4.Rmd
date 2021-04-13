@@ -1,0 +1,119 @@
+```{r hw4_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# Homework 4 {-}
+
+<center>
+**Due Friday, April 16 at midnight CST on [Moodle](https://moodle.macalester.edu/mod/assign/view.php?id=53393)**
+</center>
+
+**Deliverables:** Submit a single PDF containing your responses for Course Engagement.
+
+
+
+<br><br><br>
+
+
+
+## Project Work {-}
+
+No new project work this week.
+
+<br>
+
+
+<br><br><br>
+
+
+
+## Portfolio Work {-}
+
+**Length requirements:** Detailed for each section below.
+
+<span style="color: red;">
+**Organization:** To help the instructor and preceptors grade, please organize your document as shown in [this example](https://docs.google.com/document/d/1lS_7UBmWQkXtS21hd9gb842KV42U24A3QhiifP2nf-E/edit?usp=sharing). Clear section headers and new pages for each method help a lot. Thank you!
+</span>
+
+<span style="color: red;">
+**Deliverables:** Continue writing your responses in the same Google Doc that you set up for Homework 1. We have recorded the URL from past HWs - you don't need to supply it again.
+</span>
+
+**Note:** Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.
+
+<br>
+
+**Revisions:**
+
+- Make any revisions desired to previous concepts.
+    - **Important formatting note:** Please use a comment to mark the text that you want to be reread. (Highlight each span of text you want to be reread, and mark it with the comment "REVISION".)
+
+- Rubrics to past homeworks will be available on Moodle (under the Solutions section). Look at these rubrics to guide your revisions. You can always ask for guidance in office hours as well.
+
+<br>
+
+**New concepts to address:**
+
+<!-- **Synthesis of supervised learning:** -->
+
+**Decision trees:**
+
+- Algorithmic understanding:
+    - Consider a dataset with two predictors: `x1` is categorical with levels A, B, or C. `x2` is quantitative with integer values from 1 to 100. How many different splits must be considered when recursive binary splitting attempts to make a split? Explain. (2 sentences max.)
+    - Explain the "recursive", "binary", and "splitting" parts of the recursive binary splitting algorithm. Make sure to discuss the concept of node (im)purity and how it is measured for classification and regression trees.
+
+- Bias-variance tradeoff: What tuning parameters control the performance of the method? How do low/high values of the tuning parameters relate to bias and variance of the learned model? (3 sentences max.)
+    - Note: There are several specific named tuning parameters as part of the `rpart` method. Don't focus on these. Just discuss the broader feature of trees that these specific parameters affect.
+
+- Parametric / nonparametric: Where (roughly) does this method fall on the parametric-nonparametric spectrum, and why? (3 sentences max.)
+
+- Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method? (3 sentences max.)
+
+- Computational time: Recursive binary splitting does not find the overall optimal sequence of splits for a tree. What type of behavior is this? What method have we seen before that also exhibits this type of behavior? Briefly explain the parallels between these methods and what implications this have for computational time. (5 sentences max.)
+
+- Interpretation of output: Explain the rationale behind the variable importance measures that decision trees provide. (4 sentences max.)
+
+
+**Bagging & Random Forests:**
+
+- Algorithmic understanding: Explain the rationale for extending single decision trees to bagging models and then to random forest models. What specific improvements to predictive performance are being sought? (5 sentences max.)
+
+- Bias-variance tradeoff: What tuning parameters control the performance of the method? How do low/high values of the tuning parameters relate to bias and variance of the learned model? (3 sentences max.)
+
+- Parametric / nonparametric: Where (roughly) does this method fall on the parametric-nonparametric spectrum, and why? (3 sentences max.)
+
+- Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method? (3 sentences max.)
+
+- Computational time: Explain why cross-validation is computationally intensive for many-tree algorithms. What method do we have to reduce this computational burden, and why is it faster? (5 sentences max.)
+
+- Interpretation of output: Explain the rationale behind the variable importance measures that random forest models provide. (4 sentences max.)
+
+
+
+<br><br><br>
+
+
+
+## Course Engagement {-}
+
+The **Ethics** component below is the only required piece. The others are optional depending on the modes of engagement you wish to pursue consistently throughout the module.
+
+<br>
+
+**Ethics: (REQUIRED)** Read the article [How to Support your Data Interpretations](https://weallcount.com/2020/10/24/how-to-support-your-data-interpretations/). Write a short (roughly 250 words), thoughtful response about the ideas that the article brings forth. Which pillar(s) do you think is/are hardest to do well for groups that rely on data analytics, and why?
+
+
+**Reflection:** Write a short, thoughtful reflection about how things went this week. Feel free to use whichever prompts below resonate most with you, but don't feel limited to these prompts.
+
+- How are class-related things going? Is there anything that you need from the instructor?
+- How is your work/life balance going? What do you want to make time for this next week?
+
+
+**Note-taking:** Share link(s) to file(s) where you keep your notes on videos/readings and on code from class.
+
+
+**Q & A:** In one short paragraph, summarize your engagement in at least 2 of the 3 following areas: (1) preceptor / instructor office hours, (2) on Slack, (3) in small groups during synchronous class sessions.
+
+
+
+
