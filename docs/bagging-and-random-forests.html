@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Topic 6 KNN Regression and the Bias-Variance Tradeoff | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 13 Bagging and Random Forests | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Topic 6 KNN Regression and the Bias-Variance Tradeoff | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 13 Bagging and Random Forests | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Topic 6 KNN Regression and the Bias-Variance Tradeoff | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 13 Bagging and Random Forests | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="lasso-shrinkageregularization.html"/>
-<link rel="next" href="splines.html"/>
+<link rel="prev" href="trees-part-2.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -365,195 +365,140 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="knn-regression-and-the-bias-variance-tradeoff" class="section level1" number="6">
-<h1><span class="header-section-number">Topic 6</span> KNN Regression and the Bias-Variance Tradeoff</h1>
-<div id="learning-goals-4" class="section level2 unnumbered">
+<div id="bagging-and-random-forests" class="section level1" number="13">
+<h1><span class="header-section-number">Topic 13</span> Bagging and Random Forests</h1>
+<div id="learning-goals-10" class="section level2 unnumbered">
 <h2>Learning Goals</h2>
 <ul>
-<li>Clearly describe / implement by hand the KNN algorithm for making a regression prediction</li>
-<li>Explain how the number of neighbors relates to the bias-variance tradeoff</li>
-<li>Explain the difference between parametric and nonparametric methods</li>
-<li>Explain how the curse of dimensionality relates to the performance of KNN</li>
+<li>Explain the rationale for bagging</li>
+<li>Explain the rationale for selecting a random subset of predictors at each split (random forests)</li>
+<li>Explain how the size of the random subset of predictors at each split relates to the bias-variance tradeoff</li>
+<li>Explain the rationale for and implement out-of-bag error estimation for both regression and classification</li>
+<li>Explain the rationale behind the random forest variable importance measure and why it is biased towards quantitative predictors</li>
 </ul>
 <p><br></p>
-<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1aNEw_cF4Vj8whvFovEtuU8Eh-qxTejK4DXoiTJGb3Rc/edit?usp=sharing">here</a>.</p>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1DdOWDYDt-fzJ1TIicFyWmdadGRGm_hMIxgAhLQ6fipk/edit?usp=sharing">here</a>.</p>
 <p><br><br><br></p>
 </div>
-<div id="knn-models-in-caret" class="section level2 unnumbered">
-<h2>KNN models in <code>caret</code></h2>
-<p>To build KNN models in <code>caret</code>, first load the package and set the seed for the random number generator to ensure reproducible results:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb43-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
-<span id="cb43-2"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb43-2" aria-hidden="true"></a><span class="kw">set.seed</span>(___) <span class="co"># Pick your favorite number to fill in the parentheses</span></span></code></pre></div>
-<p>Then adapt the following code:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-1" aria-hidden="true"></a>knn_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb44-2"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-2" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>.,</span>
-<span id="cb44-3"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-3" aria-hidden="true"></a>    <span class="dt">data =</span> ___,</span>
-<span id="cb44-4"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-4" aria-hidden="true"></a>    <span class="dt">preProcess =</span> <span class="st">&quot;scale&quot;</span>,</span>
-<span id="cb44-5"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-5" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;knn&quot;</span>,</span>
-<span id="cb44-6"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-6" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">k =</span> <span class="kw">seq</span>(___, ___, <span class="dt">by =</span> ___)),</span>
-<span id="cb44-7"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-7" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> ___, <span class="dt">selectionFunction =</span> ___),</span>
-<span id="cb44-8"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-8" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;MAE&quot;</span>,</span>
-<span id="cb44-9"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-9" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
-<span id="cb44-10"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb44-10" aria-hidden="true"></a>)</span></code></pre></div>
-<table>
-<thead>
-<tr class="header">
-<th align="left">Argument</th>
-<th align="left">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left"><code>y ~ .</code></td>
-<td align="left">Model formula for specifying response and predictors</td>
-</tr>
-<tr class="even">
-<td align="left"><code>data</code></td>
-<td align="left">Sample data</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>preProcess</code></td>
-<td align="left"><code>"scale"</code> indicates that predictor variables should be scaled to have the same variance (Why might this be important? Should we always do this?)</td>
-</tr>
-<tr class="even">
-<td align="left"><code>method</code></td>
-<td align="left"><code>"knn"</code> implements KNN regression (and classification)</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>tuneGrid</code></td>
-<td align="left">A mini-dataset (<code>data.frame</code>) of tuning parameters. <span class="math inline">\(k\)</span> is the KNN neighborhood size. Supply a sequence as <code>seq(begin, end, by = size of step)</code>.</td>
-</tr>
-<tr class="even">
-<td align="left"><code>trControl</code></td>
-<td align="left">Use cross-validation to estimate test performance for each model fit. The process used to pick a final model from among these is indicated by <code>selectionFunction</code>, with options including <code>"best"</code> and <code>"oneSE"</code>.</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>metric</code></td>
-<td align="left">Evaluate and compare competing models with respect to their CV-MAE.</td>
-</tr>
-<tr class="even">
-<td align="left"><code>na.action</code></td>
-<td align="left">Set <code>na.action = na.omit</code> to prevent errors if the data has missing values.</td>
-</tr>
-</tbody>
-</table>
-<p><br></p>
-<p>Note: When including categorical predictors, <code>caret</code> automatically creates the corresponding indicator variables to allow Euclidean distance to still be used. You’ll think about the pros/cons of this in the exercises.</p>
-<p>An alternative to creating indicator variables is to use <strong>Gower distance</strong>. We’ll explore Gower distance more when we talk about clustering.</p>
-<p><br></p>
-<p><strong>Identifying the “best” KNN model</strong></p>
-<p>The “best” model in the sequence of models fit is defined relative to the chosen <code>selectionFunction</code> and <code>metric</code>.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-1" aria-hidden="true"></a><span class="co"># Plot CV-estimated test performance versus the tuning parameter</span></span>
-<span id="cb45-2"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-2" aria-hidden="true"></a><span class="kw">plot</span>(knn_mod)</span>
-<span id="cb45-3"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-3" aria-hidden="true"></a></span>
-<span id="cb45-4"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-4" aria-hidden="true"></a><span class="co"># CV metrics for each model</span></span>
-<span id="cb45-5"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-5" aria-hidden="true"></a>knn_mod<span class="op">$</span>results</span>
-<span id="cb45-6"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-6" aria-hidden="true"></a></span>
-<span id="cb45-7"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-7" aria-hidden="true"></a><span class="co"># Identify which tuning parameter is &quot;best&quot;</span></span>
-<span id="cb45-8"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-8" aria-hidden="true"></a>knn_mod<span class="op">$</span>bestTune</span>
-<span id="cb45-9"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-9" aria-hidden="true"></a></span>
-<span id="cb45-10"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-10" aria-hidden="true"></a><span class="co"># Get information from all CV iterations for the &quot;best&quot; model</span></span>
-<span id="cb45-11"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-11" aria-hidden="true"></a>knn_mod<span class="op">$</span>resample</span>
-<span id="cb45-12"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-12" aria-hidden="true"></a></span>
-<span id="cb45-13"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-13" aria-hidden="true"></a><span class="co"># Use the best model to make predictions</span></span>
-<span id="cb45-14"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-14" aria-hidden="true"></a><span class="co"># newdata should be a data.frame with required predictors</span></span>
-<span id="cb45-15"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb45-15" aria-hidden="true"></a><span class="kw">predict</span>(knn_mod, <span class="dt">newdata =</span> ___)</span></code></pre></div>
-<p><br><br><br></p>
-</div>
-<div id="exercises-4" class="section level2 unnumbered">
+<div id="exercises-11" class="section level2 unnumbered">
 <h2>Exercises</h2>
-<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/06-knn-bvt.Rmd">here</a>.</strong></p>
-<p>We’ll explore KNN regression using the <code>College</code> dataset in the <code>ISLR</code> package (install it with <code>install.packages("caret")</code> in the Console). You can use <code>?College</code> in the Console to look at the data codebook.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
-<span id="cb46-2"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb46-3"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb46-4"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-4" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
-<span id="cb46-5"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-5" aria-hidden="true"></a><span class="kw">library</span>(ISLR)</span>
-<span id="cb46-6"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-6" aria-hidden="true"></a></span>
-<span id="cb46-7"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-7" aria-hidden="true"></a><span class="kw">data</span>(College)</span>
-<span id="cb46-8"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-8" aria-hidden="true"></a></span>
-<span id="cb46-9"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-9" aria-hidden="true"></a><span class="co"># A little data cleaning</span></span>
-<span id="cb46-10"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-10" aria-hidden="true"></a>college_clean &lt;-<span class="st"> </span>College <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb46-11"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">school =</span> <span class="kw">rownames</span>(College)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb46-12"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(Grad.Rate <span class="op">&lt;=</span><span class="st"> </span><span class="dv">100</span>) <span class="co"># Remove one school with grad rate of 118%</span></span>
-<span id="cb46-13"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb46-13" aria-hidden="true"></a><span class="kw">rownames</span>(college_clean) &lt;-<span class="st"> </span><span class="ot">NULL</span> <span class="co"># Remove school names as row names</span></span></code></pre></div>
-<div id="hello-how-are-things" class="section level3 unnumbered">
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/13-bagging-rf.Rmd">here</a>.</strong></p>
+<p>Before proceeding, install the <code>randomForest</code> package by entering <code>install.packages("randomForest")</code> in the Console.</p>
+<p>Our goal will be to classify types of urban land cover in small subregions within a high resolution aerial image of a land region. Data from the <a href="https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover">UCI Machine Learning Repository</a> include the observed type of land cover (determined by human eye) and “spectral, size, shape, and texture information” computed from the image. See <a href="https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover">this page</a> for the data codebook.</p>
+<center>
+<img src="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg"><br>
+Source: <a href="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg" class="uri">https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg</a>
+</center>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="bagging-and-random-forests.html#cb94-1" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
+<span id="cb94-2"><a href="bagging-and-random-forests.html#cb94-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb94-3"><a href="bagging-and-random-forests.html#cb94-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb94-4"><a href="bagging-and-random-forests.html#cb94-4" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
+<span id="cb94-5"><a href="bagging-and-random-forests.html#cb94-5" aria-hidden="true"></a><span class="kw">library</span>(rpart.plot)</span>
+<span id="cb94-6"><a href="bagging-and-random-forests.html#cb94-6" aria-hidden="true"></a><span class="kw">library</span>(randomForest)</span>
+<span id="cb94-7"><a href="bagging-and-random-forests.html#cb94-7" aria-hidden="true"></a></span>
+<span id="cb94-8"><a href="bagging-and-random-forests.html#cb94-8" aria-hidden="true"></a><span class="co"># Read in the data</span></span>
+<span id="cb94-9"><a href="bagging-and-random-forests.html#cb94-9" aria-hidden="true"></a>land &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://www.macalester.edu/~ajohns24/data/land_cover.csv&quot;</span>)</span>
+<span id="cb94-10"><a href="bagging-and-random-forests.html#cb94-10" aria-hidden="true"></a></span>
+<span id="cb94-11"><a href="bagging-and-random-forests.html#cb94-11" aria-hidden="true"></a><span class="co"># There are 9 land types, but we&#39;ll focus on 3 of them</span></span>
+<span id="cb94-12"><a href="bagging-and-random-forests.html#cb94-12" aria-hidden="true"></a>land &lt;-<span class="st"> </span>land <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb94-13"><a href="bagging-and-random-forests.html#cb94-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(class <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;asphalt&quot;</span>, <span class="st">&quot;grass&quot;</span>, <span class="st">&quot;tree&quot;</span>))</span></code></pre></div>
+<div id="hello-how-are-things-2" class="section level3 unnumbered">
 <h3>Hello, how are things?</h3>
-<p>We’re about a week and a half into our last module of the year - how are you feeling? What’s on your mind?</p>
+<p>It’s been a hard week. How are all of you doing? Please check in with each other.</p>
 </div>
-<div id="exercise-1-bias-variance-tradeoff-warmup" class="section level3 unnumbered">
-<h3>Exercise 1: Bias-variance tradeoff warmup</h3>
+<div id="exercise-1-preparing-to-build-a-random-forest" class="section level3 unnumbered">
+<h3>Exercise 1: Preparing to build a random forest</h3>
+<p>You’ll eventually use the <code>train()</code> function from <code>caret</code> package to build a random forest for the classification model of <code>class ~ .</code>. In this exercise, you’ll take some preliminary steps.</p>
+<p>Visit <code>caret</code>’s (extensive) <a href="https://topepo.github.io/caret/available-models.html">manual</a> and search for “random forest” in the top right search bar. There will be <em>many</em> results. Find the entry that only has <code>randomForest</code> listed in the “Libraries” column, and inspect the information in that row. (The instructor is not familiar with the other packages.)</p>
+<ul>
+<li>What <code>method</code> will we use for random forests (e.g., for single trees, we used <code>method = "rpart"</code>)?</li>
+<li>What is the tuning parameter called, and what does it represent?
+<ul>
+<li>To investigate this, pull up the help file for the <code>randomForest()</code> function in the <code>randomForest</code> package by entering <code>?randomForest::randomForest</code> in the Console.</li>
+</ul></li>
+</ul>
+</div>
+<div id="exercise-2-more-preparation-to-build-a-random-forest" class="section level3 unnumbered">
+<h3>Exercise 2: More preparation to build a random forest</h3>
+<p>Suppose we wanted to evaluate the performance of a random forest which uses 500 classification trees.</p>
 <ol style="list-style-type: lower-alpha">
-<li>Think back to the LASSO algorithm which depends upon tuning parameter <span class="math inline">\(\lambda\)</span>.
-<ul>
-<li>For which values of <span class="math inline">\(\lambda\)</span> (small or large) will LASSO be the most biased, and why?</li>
-<li>For which values of <span class="math inline">\(\lambda\)</span> (small or large) will LASSO be the most variable, and why?</li>
-</ul></li>
-<li>The bias-variance tradeoff also comes into play when comparing across algorithms, not just within algorithms. Consider LASSO vs. least squares:
-<ul>
-<li>Which will tend to be more biased?</li>
-<li>Which will tend to be more variable?</li>
-<li>When will LASSO outperform least squares in the bias-variance tradeoff?</li>
-</ul></li>
+<li><p>Describe the 10-fold CV approach to evaluating the random forest. In this process, how many total trees would we need to construct?</p></li>
+<li><p>The <strong>out-of-bag (OOB) error rate</strong> provides an alternative approach to evaluating forests. Unlike CV, OOB summarizes misclassification rates when applying each of the 500 trees to the “test” cases that were not used to build the tree. How many total trees would we need to construct in order to calculate the OOB error estimate?</p></li>
+<li><p>Moving forward, we’ll use OOB and not CV to evaluate forest performance. Explain why.</p></li>
+<li><p>Look at the <code>trainControl()</code> documentation by entering <code>?caret::trainControl</code> in the Console. What is the name of the <code>method</code> to perform OOB error estimation?</p></li>
 </ol>
 </div>
-<div id="exercise-2-impact-of-distance-metric" class="section level3 unnumbered">
-<h3>Exercise 2: Impact of distance metric</h3>
-<p>Consider the 1-nearest neighbor algorithm to predict <code>Grad.Rate</code> on the basis of two predictors: <code>Apps</code> and <code>Private</code>. Let <code>Yes</code> for <code>Private</code> be represented with the value 1 and <code>No</code> with 0.</p>
+<div id="exercise-3-building-the-random-forest" class="section level3 unnumbered">
+<h3>Exercise 3: Building the random forest</h3>
+<p>We can now put together our work from the previous 2 exercises to train our random forest model. Using <code>train()</code> code for previous methods as a guide, build a set of random forest models with the following specifications:</p>
+<ul>
+<li>Set the seed to 253.</li>
+<li>Run the algorithm with the following number of randomly sampled predictors at each split: 2, 12 (roughly <span class="math inline">\(\sqrt{147}\)</span>), 74 (roughly 147/2), and all 147 predictors</li>
+<li>Use <code>"oob"</code> instead of <code>"cv"</code> for model evaluation.
+<ul>
+<li>Hint: The <code>number</code> argument is not necessary. (Why?)</li>
+</ul></li>
+<li>Select the model with the overall best value of estimated test overall accuracy.</li>
+</ul>
+<p>Note: By default, 500 trees are built.</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="bagging-and-random-forests.html#cb95-1" aria-hidden="true"></a>rf_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
+<span id="cb95-2"><a href="bagging-and-random-forests.html#cb95-2" aria-hidden="true"></a></span>
+<span id="cb95-3"><a href="bagging-and-random-forests.html#cb95-3" aria-hidden="true"></a>)</span></code></pre></div>
+</div>
+<div id="exercise-4-preliminary-interpretation" class="section level3 unnumbered">
+<h3>Exercise 4: Preliminary interpretation</h3>
 <ol style="list-style-type: lower-alpha">
-<li><p>We have a test case whose number of applications is 13,530 and is a private school. Suppose that we have the tiny 2-case training set below. What would the 1-nearest neighbor prediction be using Euclidean distance?</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb47-1" aria-hidden="true"></a>college_clean <span class="op">%&gt;%</span></span>
-<span id="cb47-2"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb47-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(school <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Princeton University&quot;</span>, <span class="st">&quot;SUNY at Albany&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb47-3"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb47-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(Apps, Private, Grad.Rate, school)</span></code></pre></div></li>
-<li><p>Do you have any concerns about the resulting prediction? Based on this, comment on the impact of the distance metric chosen on KNN performance. How might you change the distance calculation (or correspondingly rescale the data) to generate a more sensible prediction in this situation?</p></li>
+<li><p>Plot estimated test performance vs. the tuning parameter with <code>plot(rf_mod)</code>. What tuning parameter would you choose?</p></li>
+<li><p>Describe the bias-variance trade-off in tuning this forest. For what values of the tuning parameter will forests be the most biased? The most variable?</p></li>
 </ol>
 </div>
-<div id="exercise-3-implementing-knn-in-caret" class="section level3 unnumbered">
-<h3>Exercise 3: Implementing KNN in <code>caret</code></h3>
-<p>Adapt our general KNN code to “fit” a set of KNN models with the following specifications:</p>
-<ul>
-<li>Use the predictors <code>Private</code>, <code>Top10perc</code> (% of new students from top 10% of high school class), and <code>S.F.Ratio</code> (student/faculty ratio).</li>
-<li>Use 8-fold CV. (Why 8? Take a look at the sample size.)</li>
-<li>Use mean absolute error (MAE) to select a final model.</li>
-<li>Select the simplest model for which the metric is within one standard error of the best metric.</li>
-<li>Use a sequence of <span class="math inline">\(K\)</span> values from 1 to 100 in increments of 5.</li>
-<li>Should you use <code>preProcess = "scale"</code>?</li>
-</ul>
-<p>After adapting the code (but before inspecting any output), answer the following conceptual questions:</p>
-<ul>
-<li>Explain your choice for using or not using <code>preProcess = "scale"</code>.</li>
-<li>Why is “fit” in quotes? Does KNN actually fit a model as part of training? (This feature of KNN is known as “lazy learning”.)</li>
-<li>How is test MAE estimated? What are the steps of the KNN algorithm with cross-validation?</li>
-<li>Draw a picture of how you expect test MAE to vary with <span class="math inline">\(K\)</span>. In terms of the bias-variance tradeoff, why do you expect the plot to look this way?</li>
-</ul>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb48-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">2021</span>)</span>
-<span id="cb48-2"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb48-2" aria-hidden="true"></a>knn_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb48-3"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb48-3" aria-hidden="true"></a>    </span>
-<span id="cb48-4"><a href="knn-regression-and-the-bias-variance-tradeoff.html#cb48-4" aria-hidden="true"></a>)</span></code></pre></div>
+<div id="exercise-5-evaluating-the-forest" class="section level3 unnumbered">
+<h3>Exercise 5: Evaluating the forest</h3>
+<p>The code below prints information pertaining to the “best” forest model.</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="bagging-and-random-forests.html#cb96-1" aria-hidden="true"></a>rf_mod<span class="op">$</span>finalModel</span></code></pre></div>
+<ol style="list-style-type: lower-alpha">
+<li><p>Report and interpret the <code>OOB estimate of error rate</code>. (How does this match up with the plot from the previous exercise?)</p></li>
+<li><p>The output includes an OOB test confusion matrix (as opposed to a training confusion matrix). Rows are true classes, and columns are predicted classes. How do you think this is constructed? Why is the test confusion matrix preferable to a training confusion matrix?</p></li>
+<li><p>Further inspecting the test confusion matrix, which type of land use is most accurately classified by our forest? Which type of land use is least accurately classified by our forest? Why do you think this is?</p></li>
+<li><p>In our previous activities, our best tree had a cross-validated accuracy rate of around 85%. How does the forest performance compare?</p></li>
+</ol>
 </div>
-<div id="exercise-4-inspecting-the-results" class="section level3 unnumbered">
-<h3>Exercise 4: Inspecting the results</h3>
-<ul>
-<li>Use <code>plot(knn_mod)</code> to verify your expectations about the plot of test MAE vs. <span class="math inline">\(K\)</span>.</li>
-<li>Contextually interpret the test MAE.</li>
-<li>How else could you evaluate the KNN model?</li>
-<li>Does your KNN model help you understand which predictors of graduation rate are most important? Why or why not?</li>
-</ul>
-</div>
-<div id="exercise-5-curse-of-dimensionality" class="section level3 unnumbered">
-<h3>Exercise 5: Curse of dimensionality</h3>
-<p>Just as with parametric models, we could keep going and add more and more predictors. However, the KNN algorithm is known to suffer from the “curse of dimensionality”. Why? <strong>Hint:</strong> First do a quick Google search of this new idea.</p>
+<div id="exercise-6-variable-importance-measures" class="section level3 unnumbered">
+<h3>Exercise 6: Variable importance measures</h3>
+<p>Because bagging and random forests use tons of trees, the nice interpretability of single decision trees is lost. However, we can still get a measure of how important the different predictors were in this classification task. For each of the 147 predictors, the code below gives the “total decrease in node impurities (as measured by the Gini index) from splitting on the variable, averaged over all trees” (package documentation).</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="bagging-and-random-forests.html#cb97-1" aria-hidden="true"></a>var_imp_rf &lt;-<span class="st"> </span>randomForest<span class="op">::</span><span class="kw">importance</span>(rf_mod_oob<span class="op">$</span>finalModel)</span>
+<span id="cb97-2"><a href="bagging-and-random-forests.html#cb97-2" aria-hidden="true"></a></span>
+<span id="cb97-3"><a href="bagging-and-random-forests.html#cb97-3" aria-hidden="true"></a><span class="co"># Sort by importance with dplyr&#39;s arrange()</span></span>
+<span id="cb97-4"><a href="bagging-and-random-forests.html#cb97-4" aria-hidden="true"></a>var_imp_rf &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb97-5"><a href="bagging-and-random-forests.html#cb97-5" aria-hidden="true"></a>        <span class="dt">predictor =</span> <span class="kw">rownames</span>(var_imp_rf),</span>
+<span id="cb97-6"><a href="bagging-and-random-forests.html#cb97-6" aria-hidden="true"></a>        <span class="dt">MeanDecreaseGini =</span> var_imp_rf[,<span class="st">&quot;MeanDecreaseGini&quot;</span>]</span>
+<span id="cb97-7"><a href="bagging-and-random-forests.html#cb97-7" aria-hidden="true"></a>    ) <span class="op">%&gt;%</span></span>
+<span id="cb97-8"><a href="bagging-and-random-forests.html#cb97-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(MeanDecreaseGini))</span>
+<span id="cb97-9"><a href="bagging-and-random-forests.html#cb97-9" aria-hidden="true"></a></span>
+<span id="cb97-10"><a href="bagging-and-random-forests.html#cb97-10" aria-hidden="true"></a><span class="co"># Top 20</span></span>
+<span id="cb97-11"><a href="bagging-and-random-forests.html#cb97-11" aria-hidden="true"></a><span class="kw">head</span>(var_imp_rf, <span class="dv">20</span>)</span>
+<span id="cb97-12"><a href="bagging-and-random-forests.html#cb97-12" aria-hidden="true"></a></span>
+<span id="cb97-13"><a href="bagging-and-random-forests.html#cb97-13" aria-hidden="true"></a><span class="co"># Bottom 10</span></span>
+<span id="cb97-14"><a href="bagging-and-random-forests.html#cb97-14" aria-hidden="true"></a><span class="kw">tail</span>(var_imp_rf, <span class="dv">10</span>)</span></code></pre></div>
+<ol style="list-style-type: lower-alpha">
+<li><p>Check out the codebook for these variables <a href="https://archive.ics.uci.edu/ml/datasets/Urban+Land+Cover">here</a>. The descriptions of the variables aren’t the greatest, but does this ranking make some contextual sense?</p></li>
+<li><p>Construct some visualizations of the 1 most and 1 least important predictors that support your conclusion in a.</p></li>
+<li><p>It has been found that this random forest measure of variable importance can tend to favor predictors with a lot of unique values. Explain briefly why it makes sense that this can happen by thinking about the recursive binary splitting algorithm for a single tree. (Note: similar cautions arise for variable importance in single trees.)</p></li>
+</ol>
 
 </div>
 </div>
 </div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="lasso-shrinkageregularization.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="splines.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="trees-part-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

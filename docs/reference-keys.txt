@@ -10,3 +10,4 @@ logistic-regression
 evaluating-classification-models
 trees-part-1
 trees-part-2
+bagging-and-random-forests
