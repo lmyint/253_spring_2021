@@ -89,6 +89,7 @@ We can now put together our work from the previous 2 exercises to train our rand
 
 - Set the seed to 253.
 - Run the algorithm with the following number of randomly sampled predictors at each split: 2, 12 (roughly $\sqrt{147}$), 74 (roughly 147/2), and all 147 predictors
+    - You can generate a sequence of numbers with `c()`. e.g., `c(2,3)`.
 - Use `"oob"` instead of `"cv"` for model evaluation.
     - Hint: The `number` argument is not necessary. (Why?)
 - Select the model with the overall best value of estimated test overall accuracy.

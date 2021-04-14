@@ -433,7 +433,10 @@ Source: <a href="https://ncap.org.uk/sites/default/files/EK_land_use_0.jpg" clas
 <p>We can now put together our work from the previous 2 exercises to train our random forest model. Using <code>train()</code> code for previous methods as a guide, build a set of random forest models with the following specifications:</p>
 <ul>
 <li>Set the seed to 253.</li>
-<li>Run the algorithm with the following number of randomly sampled predictors at each split: 2, 12 (roughly <span class="math inline">\(\sqrt{147}\)</span>), 74 (roughly 147/2), and all 147 predictors</li>
+<li>Run the algorithm with the following number of randomly sampled predictors at each split: 2, 12 (roughly <span class="math inline">\(\sqrt{147}\)</span>), 74 (roughly 147/2), and all 147 predictors
+<ul>
+<li>You can generate a sequence of numbers with <code>c()</code>. e.g., <code>c(2,3)</code>.</li>
+</ul></li>
 <li>Use <code>"oob"</code> instead of <code>"cv"</code> for model evaluation.
 <ul>
 <li>Hint: The <code>number</code> argument is not necessary. (Why?)</li>
