@@ -119,7 +119,7 @@ d. In our previous activities, our best tree had a cross-validated accuracy rate
 Because bagging and random forests use tons of trees, the nice interpretability of single decision trees is lost. However, we can still get a measure of how important the different predictors were in this classification task. For each of the 147 predictors, the code below gives the "total decrease in node impurities (as measured by the Gini index) from splitting on the variable, averaged over all trees" (package documentation).
 
 ```{r}
-var_imp_rf <- randomForest::importance(rf_mod_oob$finalModel)
+var_imp_rf <- randomForest::importance(rf_mod$finalModel)
 
 # Sort by importance with dplyr's arrange()
 var_imp_rf <- data.frame(
