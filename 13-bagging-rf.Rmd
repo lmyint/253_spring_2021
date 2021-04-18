@@ -108,7 +108,7 @@ rf_mod <- train(
 
 a. Plot estimated test performance vs. the tuning parameter with `plot(rf_mod)`. What tuning parameter would you choose?
 
-b. Describe the bias-variance trade-off in tuning this forest. For what values of the tuning parameter will forests be the most biased? The most variable?
+b. Describe the bias-variance tradeoff in tuning this forest. For what values of the tuning parameter will forests be the most biased? The most variable?
 
 
 
