@@ -1,0 +1,145 @@
+```{r hw5_setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+```
+
+# Homework 5 {-}
+
+<center>
+**Due Thursday, April 29 at midnight CST on [Moodle](https://moodle.macalester.edu/mod/assign/view.php?id=56332)**
+</center>
+
+**Deliverables:** Because Course Engagement is not required for this HW, you will only have file submissions if you want intermediate feedback on project work. (See below.) We will keep looking at your original Portfolio Google Doc - no need to submit the link again.
+
+
+
+<br><br><br>
+
+
+
+## Project Work {-}
+
+Look at the final requirements on the [Final Project] page. There is nothing you must submit for this homework assignment, but you should start on the following:
+
+- Explore 2 different classification models to answer your classification research question
+- Put together slides to summarize the regression investigations from HW3
+- Consolidate code into one final Rmd file.
+
+If you would like feedback on any part of the final deliverables, you may submit them with HW5, but this is not a requirement for HW5.
+
+<br>
+
+
+<br><br><br>
+
+
+
+## Portfolio Work {-}
+
+**Length requirements:** Detailed for each section below.
+
+<span style="color: red;">
+**Organization:** To help the instructor and preceptors grade, please organize your document as shown in [this example](https://docs.google.com/document/d/1lS_7UBmWQkXtS21hd9gb842KV42U24A3QhiifP2nf-E/edit?usp=sharing). Clear section headers and new pages for each method help a lot. Thank you!
+</span>
+
+<span style="color: red;">
+**Deliverables:** Continue writing your responses in the same Google Doc that you set up for Homework 1. We have recorded the URL from past HWs - you don't need to supply it again.
+</span>
+
+**Note:** Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.
+
+<br>
+
+**Revisions:**
+
+- Make any revisions desired to previous concepts.
+    - **Important formatting note:** Please use a comment to mark the text that you want to be reread. (Highlight each span of text you want to be reread, and mark it with the comment "REVISION".)
+
+- Rubrics to past homeworks will be available on Moodle (under the Solutions section). Look at these rubrics to guide your revisions. You can always ask for guidance in office hours as well.
+
+<br>
+
+**New concepts to address:**
+
+**K-Means Clustering:**
+
+- Algorithmic understanding: Perform two iterations of k-means with k = 2 on the dataset below. The data has just 1 variable `x1`, and the random initial cluster assignment is shown in the `cluster` column. Show your work: in particular, show the centroids computed for iterations 1 and 2 and the updated cluster assignments for iterations 1 and 2.
+
+```
+ x1   cluster
+---- ---------
+  1      1
+  1      2
+  3      2
+  4      1
+  5      1
+```
+
+- Bias-variance tradeoff: (This is a prompt about clustering in general, but put your response in the K-Means section.) In clustering, we don't quite have the same concepts of bias and variance as we do with supervised learning methods, but a similar type of tradeoff exists. Discuss the pros and cons of high vs. low number of clusters in terms of (1) ease of learning more about each cluster and (2) within-cluster homogeneity (closeness of cases within clusters). (5 sentences max.)
+
+- Parametric / nonparametric: SKIP
+
+- Scaling of variables: (This is a prompt that pertains to both k-means and hierarchical clustering, but put your response in the K-Means section.) Does the scale on which variables are measured matter for the performance of clustering? Why or why not? If scale does matter, how should this be addressed? (3 sentences max.)
+
+- Computational time: Consider a single round of the cluster reassignment step of k-means with $n$ cases and $k$ clusters. How many distance calculations are required in this step? Explain in at most 2 sentences.
+
+- Interpretation of output: (This is a prompt about clustering in general, but put your response in the K-Means section.) Describe data explorations we could use to interpret / learn more about the cluster assignments that clustering algorithms produce.
+
+<br>
+
+**Hierarchical clustering:**
+
+- Algorithmic understanding: We have a dataset with 4 cases, and the Euclidean distance between every pair of cases is shown below. (The column labeled `1` gives the distances of case 1 to cases 2, 3, and 4 from top to bottom.) Draw the dendrogram that would result from single-linkage clustering. Clearly label what cases are at each leaf and the heights at which fusions occur. Show any intermediate work.
+
+```
+     |   1       2       3
+-----|------- ------- -------
+  2  |  0.69       
+  3  |  1.23    0.55 
+  4  |  0.94    1.39    1.75
+```
+
+- Bias-variance tradeoff: How does the tree cutting height relate to the tradeoff you discussed in the K-Means section? (2 sentences max.)
+
+- Parametric / nonparametric: SKIP
+
+- Scaling of variables: SKIP
+
+- Computational time: Consider the very first step of hierarchical clustering in which all $n$ cases are in their own cluster. How many distance calculations are required as a function of $n$? (Note: $1 + 2 + \cdots + n = n(n+1)/2$.) Explain in at most 2 sentences.
+
+- Interpretation of output: SKIP
+
+<br>
+
+**Principal components analysis:**
+
+<span style="color: red;">
+The PCA Portfolio section is **optional**. If you decide to complete it, you can choose which concepts (if any) are included in the final Portfolio grade. To do so, leave a comment in your Google Doc on the PCA section header like this: "Only consider grades for concepts that have a grade of at least A/B/C/etc." (Pick the grade level desired.)
+</span>
+
+- Algorithmic understanding: In no more than 4 sentences, summarize the goal of principal components analysis and how it allows us to perform dimension reduction. Use the following terms / ideas in your response: linear combination, variance.
+
+- Bias-variance tradeoff: How is dimension reduction related to the bias-variance tradeoff for some of the supervised methods we've covered? How is the use of the scree plot from PCA related to the tradeoff?
+
+- Parametric / nonparametric: SKIP
+
+- Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method? (3 sentences max.)
+
+- Computational time: SKIP
+
+- Interpretation of output: What information can we gain by looking at the loadings of the first few principal components? Explain in at most 3 sentences.
+
+
+
+<br><br><br>
+
+
+
+## Course Engagement {-}
+
+This section is not required for this last HW. Take time for yourself. (Everyone will receive a free Meets Expectations on all areas for this assignment.)
+
+In case it's of interest and you have the bandwidth for it, the article ["Race," Racism, and the Practice of Epidemiology](https://academic.oup.com/aje/article/154/4/299/61900) is a very illuminating one.
+
+
+
+

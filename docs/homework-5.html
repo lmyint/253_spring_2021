@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Topic 4 Variable Subset Selection | STAT 253: Statistical Machine Learning</title>
+  <title>Homework 5 | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Topic 4 Variable Subset Selection | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Homework 5 | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Topic 4 Variable Subset Selection | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Homework 5 | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="overfitting-cross-validation.html"/>
-<link rel="next" href="lasso-shrinkageregularization.html"/>
+<link rel="prev" href="homework-4.html"/>
+<link rel="next" href="final-project.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -372,159 +372,113 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="variable-subset-selection" class="section level1" number="4">
-<h1><span class="header-section-number">Topic 4</span> Variable Subset Selection</h1>
-<div id="learning-goals-2" class="section level2 unnumbered">
-<h2>Learning Goals</h2>
+<div id="homework-5" class="section level1 unnumbered">
+<h1>Homework 5</h1>
+<center>
+<strong>Due Thursday, April 29 at midnight CST on <a href="https://moodle.macalester.edu/mod/assign/view.php?id=56332">Moodle</a></strong>
+</center>
+<p><strong>Deliverables:</strong> Because Course Engagement is not required for this HW, you will only have file submissions if you want intermediate feedback on project work. (See below.) We will keep looking at your original Portfolio Google Doc - no need to submit the link again.</p>
+<p><br><br><br></p>
+<div id="project-work-4" class="section level2 unnumbered">
+<h2>Project Work</h2>
+<p>Look at the final requirements on the <a href="final-project.html#final-project">Final Project</a> page. There is nothing you must submit for this homework assignment, but you should start on the following:</p>
 <ul>
-<li>Clearly describe the forward and backward stepwise selection algorithm and why they are examples of greedy algorithms</li>
-<li>Compare best subset and stepwise algorithms in terms of optimality of output and computational time</li>
-<li>Describe how selection algorithms can give a measure of <em>variable importance</em></li>
+<li>Explore 2 different classification models to answer your classification research question</li>
+<li>Put together slides to summarize the regression investigations from HW3</li>
+<li>Consolidate code into one final Rmd file.</li>
+</ul>
+<p>If you would like feedback on any part of the final deliverables, you may submit them with HW5, but this is not a requirement for HW5.</p>
+<p><br></p>
+<p><br><br><br></p>
+</div>
+<div id="portfolio-work-4" class="section level2 unnumbered">
+<h2>Portfolio Work</h2>
+<p><strong>Length requirements:</strong> Detailed for each section below.</p>
+<p><span style="color: red;">
+<strong>Organization:</strong> To help the instructor and preceptors grade, please organize your document as shown in <a href="https://docs.google.com/document/d/1lS_7UBmWQkXtS21hd9gb842KV42U24A3QhiifP2nf-E/edit?usp=sharing">this example</a>. Clear section headers and new pages for each method help a lot. Thank you!
+</span></p>
+<p><span style="color: red;">
+<strong>Deliverables:</strong> Continue writing your responses in the same Google Doc that you set up for Homework 1. We have recorded the URL from past HWs - you don’t need to supply it again.
+</span></p>
+<p><strong>Note:</strong> Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.</p>
+<p><br></p>
+<p><strong>Revisions:</strong></p>
+<ul>
+<li>Make any revisions desired to previous concepts.
+<ul>
+<li><strong>Important formatting note:</strong> Please use a comment to mark the text that you want to be reread. (Highlight each span of text you want to be reread, and mark it with the comment “REVISION”.)</li>
+</ul></li>
+<li>Rubrics to past homeworks will be available on Moodle (under the Solutions section). Look at these rubrics to guide your revisions. You can always ask for guidance in office hours as well.</li>
+</ul>
+<p><br></p>
+<p><strong>New concepts to address:</strong></p>
+<p><strong>K-Means Clustering:</strong></p>
+<ul>
+<li>Algorithmic understanding: Perform two iterations of k-means with k = 2 on the dataset below. The data has just 1 variable <code>x1</code>, and the random initial cluster assignment is shown in the <code>cluster</code> column. Show your work: in particular, show the centroids computed for iterations 1 and 2 and the updated cluster assignments for iterations 1 and 2.</li>
+</ul>
+<pre><code> x1   cluster
+---- ---------
+  1      1
+  1      2
+  3      2
+  4      1
+  5      1</code></pre>
+<ul>
+<li><p>Bias-variance tradeoff: (This is a prompt about clustering in general, but put your response in the K-Means section.) In clustering, we don’t quite have the same concepts of bias and variance as we do with supervised learning methods, but a similar type of tradeoff exists. Discuss the pros and cons of high vs. low number of clusters in terms of (1) ease of learning more about each cluster and (2) within-cluster homogeneity (closeness of cases within clusters). (5 sentences max.)</p></li>
+<li><p>Parametric / nonparametric: SKIP</p></li>
+<li><p>Scaling of variables: (This is a prompt that pertains to both k-means and hierarchical clustering, but put your response in the K-Means section.) Does the scale on which variables are measured matter for the performance of clustering? Why or why not? If scale does matter, how should this be addressed? (3 sentences max.)</p></li>
+<li><p>Computational time: Consider a single round of the cluster reassignment step of k-means with <span class="math inline">\(n\)</span> cases and <span class="math inline">\(k\)</span> clusters. How many distance calculations are required in this step? Explain in at most 2 sentences.</p></li>
+<li><p>Interpretation of output: (This is a prompt about clustering in general, but put your response in the K-Means section.) Describe data explorations we could use to interpret / learn more about the cluster assignments that clustering algorithms produce.</p></li>
+</ul>
+<p><br></p>
+<p><strong>Hierarchical clustering:</strong></p>
+<ul>
+<li>Algorithmic understanding: We have a dataset with 4 cases, and the Euclidean distance between every pair of cases is shown below. (The column labeled <code>1</code> gives the distances of case 1 to cases 2, 3, and 4 from top to bottom.) Draw the dendrogram that would result from single-linkage clustering. Clearly label what cases are at each leaf and the heights at which fusions occur. Show any intermediate work.</li>
+</ul>
+<pre><code>     |   1       2       3
+-----|------- ------- -------
+  2  |  0.69       
+  3  |  1.23    0.55 
+  4  |  0.94    1.39    1.75</code></pre>
+<ul>
+<li><p>Bias-variance tradeoff: How does the tree cutting height relate to the tradeoff you discussed in the K-Means section? (2 sentences max.)</p></li>
+<li><p>Parametric / nonparametric: SKIP</p></li>
+<li><p>Scaling of variables: SKIP</p></li>
+<li><p>Computational time: Consider the very first step of hierarchical clustering in which all <span class="math inline">\(n\)</span> cases are in their own cluster. How many distance calculations are required as a function of <span class="math inline">\(n\)</span>? (Note: <span class="math inline">\(1 + 2 + \cdots + n = n(n+1)/2\)</span>.) Explain in at most 2 sentences.</p></li>
+<li><p>Interpretation of output: SKIP</p></li>
+</ul>
+<p><br></p>
+<p><strong>Principal components analysis:</strong></p>
+<p><span style="color: red;">
+The PCA Portfolio section is <strong>optional</strong>. If you decide to complete it, you can choose which concepts (if any) are included in the final Portfolio grade. To do so, leave a comment in your Google Doc on the PCA section header like this: “Only consider grades for concepts that have a grade of at least A/B/C/etc.” (Pick the grade level desired.)
+</span></p>
+<ul>
+<li><p>Algorithmic understanding: In no more than 4 sentences, summarize the goal of principal components analysis and how it allows us to perform dimension reduction. Use the following terms / ideas in your response: linear combination, variance.</p></li>
+<li><p>Bias-variance tradeoff: How is dimension reduction related to the bias-variance tradeoff for some of the supervised methods we’ve covered? How is the use of the scree plot from PCA related to the tradeoff?</p></li>
+<li><p>Parametric / nonparametric: SKIP</p></li>
+<li><p>Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method? (3 sentences max.)</p></li>
+<li><p>Computational time: SKIP</p></li>
+<li><p>Interpretation of output: What information can we gain by looking at the loadings of the first few principal components? Explain in at most 3 sentences.</p></li>
 </ul>
 <p><br><br><br></p>
 </div>
-<div id="exercises-2" class="section level2 unnumbered">
-<h2>Exercises</h2>
-<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/04-subset-selection.Rmd">here</a>.</strong></p>
-<p>We’ll continue using the body fat dataset to explore subset selection methods.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="variable-subset-selection.html#cb21-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
-<span id="cb21-2"><a href="variable-subset-selection.html#cb21-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb21-3"><a href="variable-subset-selection.html#cb21-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb21-4"><a href="variable-subset-selection.html#cb21-4" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
-<span id="cb21-5"><a href="variable-subset-selection.html#cb21-5" aria-hidden="true"></a>bodyfat &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;http://www.macalester.edu/~ajohns24/data/bodyfatsub.csv&quot;</span>)</span>
-<span id="cb21-6"><a href="variable-subset-selection.html#cb21-6" aria-hidden="true"></a></span>
-<span id="cb21-7"><a href="variable-subset-selection.html#cb21-7" aria-hidden="true"></a><span class="co"># Take out the redundant Density and HeightFt variables</span></span>
-<span id="cb21-8"><a href="variable-subset-selection.html#cb21-8" aria-hidden="true"></a>bodyfat &lt;-<span class="st"> </span>bodyfat <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-9"><a href="variable-subset-selection.html#cb21-9" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>Density, <span class="op">-</span>HeightFt)</span></code></pre></div>
-<div id="exercise-1-backward-stepwise-selection-by-hand" class="section level3 unnumbered">
-<h3>Exercise 1: Backward stepwise selection: by hand</h3>
-<p>In the backward stepwise procedure, we start with the full model, <code>full_model</code>, with <em>all</em> predictors:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="variable-subset-selection.html#cb22-1" aria-hidden="true"></a>full_model &lt;-<span class="st"> </span><span class="kw">lm</span>(BodyFat <span class="op">~</span><span class="st"> </span>Age <span class="op">+</span><span class="st"> </span>Weight <span class="op">+</span><span class="st"> </span>Height <span class="op">+</span><span class="st"> </span>Neck <span class="op">+</span><span class="st"> </span>Chest <span class="op">+</span><span class="st"> </span>Abdomen <span class="op">+</span><span class="st"> </span>Hip <span class="op">+</span><span class="st"> </span>Thigh <span class="op">+</span><span class="st"> </span>Knee <span class="op">+</span><span class="st"> </span>Ankle <span class="op">+</span><span class="st"> </span>Biceps <span class="op">+</span><span class="st"> </span>Forearm <span class="op">+</span><span class="st"> </span>Wrist, <span class="dt">data =</span> bodyfat)</span></code></pre></div>
-<p>To practice the backward selection algorithm, step through a few steps of the algorithm using p-values as a selection criterion:</p>
-<ul>
-<li><p>Identify which predictor contributes the <em>least</em> to the model. One (problematic) approach is to identify the least significant predictor.</p></li>
-<li><p>Fit a new model which eliminates this predictor.</p></li>
-<li><p>Identify the least significant predictor in this model.</p></li>
-<li><p>Fit a new model which eliminates this predictor.</p></li>
-<li><p>Repeat 1 more time to get the hang of it.</p></li>
-</ul>
-<p>(We discussed in the video how the use of p-values for selection is problematic, but for now you’re just getting a handle on the algorithm. You’ll think about the problems with p-values in the next exercise.)</p>
-</div>
-<div id="exercise-2-interpreting-the-results" class="section level3 unnumbered">
-<h3>Exercise 2: Interpreting the results</h3>
-<p>Examine which predictors remain after the previous exercise. Are you surprised that, for example, <code>Wrist</code> is still in the model but <code>Weight</code> is not? Does this mean that <code>Wrist</code> is a better predictor of body fat percentage than <code>Weight</code> is? What statistical idea is relevant here?</p>
-</div>
-<div id="exercise-3-planning-forward-selection-using-cv" class="section level3 unnumbered">
-<h3>Exercise 3: Planning forward selection using CV</h3>
-<p>Using p-values to perform stepwise selection has problems, as was discussed in the video. A better alternative to target predictive accuracy is to evaluate the models using cross-validation.</p>
-<p>Fully outline the steps required to use cross-validation to perform <strong>forward</strong> selection. Make sure to provide enough detail such that the stepwise selection and CV algorithms are made clear.</p>
-</div>
-<div id="exercise-4-stepwise-selection-in-caret" class="section level3 unnumbered">
-<h3>Exercise 4: Stepwise selection in <code>caret</code></h3>
-<p>Run <code>install.packages("leaps")</code> in the Console to install the <code>leaps</code> package before proceeding.</p>
-<p>Complete the <code>caret</code> code below to perform backward stepwise selection with cross-validation. The following points will help you complete the code:</p>
-<ul>
-<li>In R model formulas, <code>y ~ .</code> sets <code>y</code> as the outcome and all other predictors in the dataset as predictors.</li>
-<li>The specific method name for backward selection is <code>"leapBackward"</code>.</li>
-<li>The <code>tuneGrid</code> argument is already filled in. It allows us to input <strong>tuning parameters</strong> into the fitting process. The tuning parameters for subset selection are the number of variables included in the models explored (<code>nvmax</code>). This can vary from 1 to 13 (the maximum number of predictors possible).</li>
-<li>Use 10-fold CV to estimate test performance of the models.</li>
-<li>Use <code>"MAE"</code> as the evaluation <code>metric</code> to choose how the best of the 1-variable, 2-variable, etc. models will be chosen.</li>
-</ul>
-<p>(<strong>Note:</strong> CV is only used to pick among the best 1, 2, 3, …, and 13 variable models. To find the best 1, 2, 3, …, and 13 variable models, training MSE is used. <code>caret</code> uses training MSE because within a subset size, all models have the same number of coefficients, which makes both ordinary R-squared and training MSE ok for comparing models.)</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="variable-subset-selection.html#cb23-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">23</span>)</span>
-<span id="cb23-2"><a href="variable-subset-selection.html#cb23-2" aria-hidden="true"></a></span>
-<span id="cb23-3"><a href="variable-subset-selection.html#cb23-3" aria-hidden="true"></a>back_step_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb23-4"><a href="variable-subset-selection.html#cb23-4" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>x,</span>
-<span id="cb23-5"><a href="variable-subset-selection.html#cb23-5" aria-hidden="true"></a>    <span class="dt">data =</span> bodyfat,</span>
-<span id="cb23-6"><a href="variable-subset-selection.html#cb23-6" aria-hidden="true"></a>    <span class="dt">method =</span> ___,</span>
-<span id="cb23-7"><a href="variable-subset-selection.html#cb23-7" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">nvmax =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">13</span>),</span>
-<span id="cb23-8"><a href="variable-subset-selection.html#cb23-8" aria-hidden="true"></a>    <span class="dt">trControl =</span> ___,</span>
-<span id="cb23-9"><a href="variable-subset-selection.html#cb23-9" aria-hidden="true"></a>    <span class="dt">metric =</span> ___,</span>
-<span id="cb23-10"><a href="variable-subset-selection.html#cb23-10" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
-<span id="cb23-11"><a href="variable-subset-selection.html#cb23-11" aria-hidden="true"></a>)</span></code></pre></div>
-</div>
-<div id="exercise-5-exploring-the-results" class="section level3 unnumbered">
-<h3>Exercise 5: Exploring the results</h3>
-<p>There are a number of ways to examine and use the output of the selection algorithm, which we’ll explore here. (It would be useful to make notes along the way - perhaps on your code note sheet.)</p>
-<div id="part-a" class="section level4 unnumbered">
-<h4>Part a</h4>
-<p>Let’s first examine the sequence of models explored. The stars in the table at the bottom indicate the variables included in the 1-variable, 2-variable, etc. models.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="variable-subset-selection.html#cb24-1" aria-hidden="true"></a><span class="kw">summary</span>(back_step_mod)</span></code></pre></div>
-<ul>
-<li><p>Of the 13 models in the sequence, R only prints out the 11 smallest models (since, for reasons we’ll discuss below, it determines the 11 predictor model to be “best”).</p></li>
-<li><p>Which predictor is the last to remain in the model? Second-to-last to remain? How do you think we could use these results to identify which predictors were most/least important in predicting the outcome of body fat percentage?</p></li>
-</ul>
-</div>
-<div id="part-b" class="section level4 unnumbered">
-<h4>Part b</h4>
-<p>Examine the 10-fold CV MAE for each of the 13 models in the backward stepwise sequence:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="variable-subset-selection.html#cb25-1" aria-hidden="true"></a><span class="co"># Plot metrics for each model in the sequence</span></span>
-<span id="cb25-2"><a href="variable-subset-selection.html#cb25-2" aria-hidden="true"></a><span class="kw">plot</span>(back_step_mod)</span>
-<span id="cb25-3"><a href="variable-subset-selection.html#cb25-3" aria-hidden="true"></a></span>
-<span id="cb25-4"><a href="variable-subset-selection.html#cb25-4" aria-hidden="true"></a><span class="co"># Look at accuracy/error metrics for the different subset sizes</span></span>
-<span id="cb25-5"><a href="variable-subset-selection.html#cb25-5" aria-hidden="true"></a>back_step_mod<span class="op">$</span>results</span></code></pre></div>
-<ul>
-<li>Which size model has the lowest CV MAE?</li>
-<li>Which size model would you pick? Why?</li>
-</ul>
-</div>
-<div id="part-c" class="section level4 unnumbered">
-<h4>Part c</h4>
-<p>In our model code, we used <code>selectionFunction = "best"</code> by default inside <code>trainControl()</code>. By doing so, we indicated that we wanted to find which model minimizes the CV MAE (i.e., has the “best” MAE). With respect to this criterion:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="variable-subset-selection.html#cb26-1" aria-hidden="true"></a><span class="co"># What tuning parameter gave the best performance?</span></span>
-<span id="cb26-2"><a href="variable-subset-selection.html#cb26-2" aria-hidden="true"></a><span class="co"># i.e. What subset size gave the best model?</span></span>
-<span id="cb26-3"><a href="variable-subset-selection.html#cb26-3" aria-hidden="true"></a>back_step_mod<span class="op">$</span>bestTune</span>
-<span id="cb26-4"><a href="variable-subset-selection.html#cb26-4" aria-hidden="true"></a></span>
-<span id="cb26-5"><a href="variable-subset-selection.html#cb26-5" aria-hidden="true"></a><span class="co"># Obtain the coefficients for the best model</span></span>
-<span id="cb26-6"><a href="variable-subset-selection.html#cb26-6" aria-hidden="true"></a><span class="kw">coef</span>(back_step_mod<span class="op">$</span>finalModel, <span class="dt">id =</span> back_step_mod<span class="op">$</span>bestTune<span class="op">$</span>nvmax)</span>
-<span id="cb26-7"><a href="variable-subset-selection.html#cb26-7" aria-hidden="true"></a></span>
-<span id="cb26-8"><a href="variable-subset-selection.html#cb26-8" aria-hidden="true"></a><span class="co"># Obtain the coefficients of any size model with at most as many variables as the overall best model (e.g., the 2-predictor model)</span></span>
-<span id="cb26-9"><a href="variable-subset-selection.html#cb26-9" aria-hidden="true"></a><span class="kw">coef</span>(back_step_mod<span class="op">$</span>finalModel, <span class="dt">id =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p>Another sensible choice for the selection function is to not choose the model with the lowest estimated error but to account for the uncertainty in the estimation of that test error by picking the smallest model for which the CV MAE is within one standard error of the minimum CV MAE. What do you think the rationale for this is?</p>
-<p>(We’ll explore the code for this formally later, or you can try it out below in the Digging Deeper section.)</p>
-</div>
-<div id="part-d" class="section level4 unnumbered">
-<h4>Part d</h4>
-<p>We should end by evaluating our final chosen model.</p>
-<ul>
-<li>Contextually interpret (with units) the CV MAE for the model.</li>
-<li>Make residual plots for the chosen model in one of 2 ways: (1) use <code>lm()</code> to fit the model with the chosen predictors or (2) use the following code to create a dataset called <code>back_step_mod_out</code> which contains the original data as well as predicted values and residuals (<code>fitted</code> and <code>resid</code>).</li>
-</ul>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="variable-subset-selection.html#cb27-1" aria-hidden="true"></a>back_step_mod_out &lt;-<span class="st"> </span>bodyfat <span class="op">%&gt;%</span></span>
-<span id="cb27-2"><a href="variable-subset-selection.html#cb27-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
-<span id="cb27-3"><a href="variable-subset-selection.html#cb27-3" aria-hidden="true"></a>        <span class="dt">fitted =</span> <span class="kw">predict</span>(back_step_mod, <span class="dt">newdata =</span> bodyfat),</span>
-<span id="cb27-4"><a href="variable-subset-selection.html#cb27-4" aria-hidden="true"></a>        <span class="dt">resid =</span> BodyFat <span class="op">-</span><span class="st"> </span>fitted</span>
-<span id="cb27-5"><a href="variable-subset-selection.html#cb27-5" aria-hidden="true"></a>    )</span></code></pre></div>
-</div>
-</div>
-<div id="digging-deeper-1" class="section level3 unnumbered">
-<h3>Digging deeper</h3>
-<ol style="list-style-type: decimal">
-<li>As mentioned in Exercise 5c, we have another choice for the <code>selectionFunction</code> used to choose from many possible models. The use of <code>selectionFunction = "oneSE"</code> below picks the simplest model for which the CV MAE is within one standard error of the minimum CV MAE. Compare the output you obtain here with your best model from Exercise 5.</li>
-</ol>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="variable-subset-selection.html#cb28-1" aria-hidden="true"></a>back_step_mod_1se &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb28-2"><a href="variable-subset-selection.html#cb28-2" aria-hidden="true"></a>    BodyFat <span class="op">~</span><span class="st"> </span>.,</span>
-<span id="cb28-3"><a href="variable-subset-selection.html#cb28-3" aria-hidden="true"></a>    <span class="dt">data =</span> bodyfat,</span>
-<span id="cb28-4"><a href="variable-subset-selection.html#cb28-4" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;leapBackward&quot;</span>,</span>
-<span id="cb28-5"><a href="variable-subset-selection.html#cb28-5" aria-hidden="true"></a>    <span class="dt">tuneGrid =</span> <span class="kw">data.frame</span>(<span class="dt">nvmax =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">13</span>),</span>
-<span id="cb28-6"><a href="variable-subset-selection.html#cb28-6" aria-hidden="true"></a>    <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, <span class="dt">number =</span> <span class="dv">10</span>, <span class="dt">selectionFunction =</span> <span class="st">&quot;oneSE&quot;</span>),</span>
-<span id="cb28-7"><a href="variable-subset-selection.html#cb28-7" aria-hidden="true"></a>    <span class="dt">metric =</span> <span class="st">&quot;MAE&quot;</span>,</span>
-<span id="cb28-8"><a href="variable-subset-selection.html#cb28-8" aria-hidden="true"></a>    <span class="dt">na.action =</span> na.omit</span>
-<span id="cb28-9"><a href="variable-subset-selection.html#cb28-9" aria-hidden="true"></a>)</span></code></pre></div>
-<ol start="2" style="list-style-type: decimal">
-<li>Forward selection can be implemented in <code>caret</code> with analogous code, except that the method name is <code>"leapForward"</code>. Try implementing forward selection and comparing your results.</li>
-</ol>
+<div id="course-engagement-4" class="section level2 unnumbered">
+<h2>Course Engagement</h2>
+<p>This section is not required for this last HW. Take time for yourself. (Everyone will receive a free Meets Expectations on all areas for this assignment.)</p>
+<p>In case it’s of interest and you have the bandwidth for it, the article <a href="https://academic.oup.com/aje/article/154/4/299/61900">“Race,” Racism, and the Practice of Epidemiology</a> is a very illuminating one.</p>
 
 </div>
 </div>
-</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="overfitting-cross-validation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="lasso-shrinkageregularization.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="homework-4.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="final-project.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

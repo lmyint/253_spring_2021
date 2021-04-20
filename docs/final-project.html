@@ -29,7 +29,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="homework-4.html"/>
+<link rel="prev" href="homework-5.html"/>
 <link rel="next" href="r-resources.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -335,10 +335,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="homework-4.html"><a href="homework-4.html#portfolio-work-3"><i class="fa fa-check"></i>Portfolio Work</a></li>
 <li class="chapter" data-level="" data-path="homework-4.html"><a href="homework-4.html#course-engagement-3"><i class="fa fa-check"></i>Course Engagement</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="homework-5.html"><a href="homework-5.html"><i class="fa fa-check"></i>Homework 5</a>
+<ul>
+<li class="chapter" data-level="" data-path="homework-5.html"><a href="homework-5.html#project-work-4"><i class="fa fa-check"></i>Project Work</a></li>
+<li class="chapter" data-level="" data-path="homework-5.html"><a href="homework-5.html#portfolio-work-4"><i class="fa fa-check"></i>Portfolio Work</a></li>
+<li class="chapter" data-level="" data-path="homework-5.html"><a href="homework-5.html#course-engagement-4"><i class="fa fa-check"></i>Course Engagement</a></li>
+</ul></li>
 <li class="part"><span><b>VI Project</b></span></li>
 <li class="chapter" data-level="" data-path="final-project.html"><a href="final-project.html"><i class="fa fa-check"></i>Final Project</a>
 <ul>
 <li class="chapter" data-level="" data-path="final-project.html"><a href="final-project.html#requirements"><i class="fa fa-check"></i>Requirements</a></li>
+<li class="chapter" data-level="" data-path="final-project.html"><a href="final-project.html#grading-rubric"><i class="fa fa-check"></i>Grading Rubric</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="r-resources.html"><a href="r-resources.html"><i class="fa fa-check"></i>R Resources</a>
 <ul>
@@ -369,18 +376,106 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1>Final Project</h1>
 <div id="requirements" class="section level2 unnumbered">
 <h2>Requirements</h2>
-<p>You will be analyzing a dataset using a regression, classification, and unsupervised learning analysis.</p>
-<ol style="list-style-type: decimal">
-<li>You must complete the Project Work parts of the 4 weekly homework assignments. These are incremental investigations that build from our applied class exercises.</li>
-<li>You will synthesize these investigations at the end of the module.</li>
-</ol>
+<p>You will be analyzing a dataset using a regression and a classification analysis. An unsupervised learning analysis is no longer required for the project.</p>
 <p><strong>Collaboration:</strong></p>
 <ul>
 <li>You may work in teams of up to 3 members. Individual work is fine.</li>
 <li>The weekly homework assignments will note whether work for that week should be submitted individually or if just one team member should submit work.</li>
-<li>There will be a required synthesis of the weekly homework investigations at the end of the course (e.g., a final report and/or presentation). If working on a team, this should be done in groups, rather than individually.
+<li>There will be a required synthesis of the weekly homework investigations at the end of the course. If working on a team, this should be done in groups, rather than individually.</li>
+</ul>
+<p><br><br></p>
+<p><strong>Final deliverables:</strong></p>
+<p>Only one team member has to submit these materials to <a href="https://moodle.macalester.edu/mod/assign/view.php?id=56491">Moodle</a>. <strong>The due date is Friday, May 7 at midnight CST.</strong></p>
 <ul>
-<li>Still being determined. Updates will appear on this page later in the course.</li>
+<li>Submit a final knitted HTML file (must knit without errors) and corresponding Rmd file containing code for your analysis</li>
+<li>Include a 10-15 minute video presentation of your project that addresses the items in the Grading Rubric below. (Recording the presentation over Zoom is a good option for creating the video. You can record to your computer or to the cloud.)
+<ul>
+<li>Can upload the video itself to Moodle if it’s small enough.</li>
+<li>Can share a link to the video</li>
+<li>All team members should have an equal speaking role in the presentation.</li>
+</ul></li>
+<li>If a video presentation would be difficult for you and your team to make, you may instead submit an annotated set of slides. The speaker notes beneath each slide should contain what you would have said in the video presentation.</li>
+</ul>
+<p><br><br></p>
+</div>
+<div id="grading-rubric" class="section level2 unnumbered">
+<h2>Grading Rubric</h2>
+<ul>
+<li>Data context (10 points)
+<ul>
+<li>Clearly describe what the cases in the final clean dataset represent.</li>
+<li>Broadly describe the variables used in your analyses.</li>
+<li>Who collected the data? When, why, and how? Answer as much of this as the available information allows.</li>
+</ul></li>
+<li>Research questions (10 points)
+<ul>
+<li>Research question(s) for the regression task make clear the outcome variable and its units.</li>
+<li>Research question(s) for the classification task make clear the outcome variable and its possible categories.</li>
+</ul></li>
+<li>HW3 investigations - Methods (10 points)
+<ul>
+<li>Describe the models used in your HW3 project work investigations.</li>
+<li>Describe what you did to evaluate models.
+<ul>
+<li>Indicate how you estimated quantitative evaluation metrics.</li>
+<li>Indicate what plots you used to evaluate models.</li>
+</ul></li>
+<li>Describe the goals / purpose of the methods used in the overall context of your research investigations.</li>
+</ul></li>
+<li>HW3 investigations - Results - Variable Importance (10 points)
+<ul>
+<li>Summarize results from HW3 Investigations 1 (and 2, if applicable) on variable importance measures.
+<ul>
+<li>Note: Investigation 2 won’t be applicable to your project if you only have categorical predictors.</li>
+</ul></li>
+<li>Summarization should show evidence of acknowledging the data context in thinking about the sensibility of these results.</li>
+</ul></li>
+<li>HW3 investigations - Summary (10 points)
+<ul>
+<li>If it was appropriate to fit a GAM for your investigations (having some quantitative predictors), show plots of estimated functions for each predictor, and provide some general interpretations.</li>
+<li>Compare the different models tried in HW3 in light of evaluation metrics, plots, variable importance, and data context.
+<ul>
+<li>Display evaluation metrics for different models in a clean, organized way. This display should include both the estimated metric as well as its standard deviation. (Hint: you should be using <code>caret_mod$results</code>.)</li>
+<li>Broadly summarize conclusions from looking at these evaluation metrics and their measures of uncertainty.</li>
+<li>Summarize conclusions from residual plots from initial models (don’t have to display them though).</li>
+</ul></li>
+<li>Decide an overall most preferable model.
+<ul>
+<li>Show and interpret some representative examples of residual plots for your final model. Does the model show acceptable results in terms of any systematic biases?</li>
+<li>Interpret evaluation metric(s) for the final model in context with units. Does the model show an acceptable amount of error?</li>
+</ul></li>
+</ul></li>
+<li>Classification analysis - Methods (10 points)
+<ul>
+<li>Indicate 2 different methods used to answer your classification research question.</li>
+<li>Describe what you did to evaluate the 2 models explored.
+<ul>
+<li>Indicate how you estimated quantitative evaluation metrics.</li>
+</ul></li>
+<li>Describe the goals / purpose of the methods used in the overall context of your research investigations.</li>
+</ul></li>
+<li>Classification analysis - Results - Variable Importance (10 points)
+<ul>
+<li>Summarize results about variable importance measures in your classification analysis.</li>
+<li>Summarization should show evidence of acknowledging the data context in thinking about the sensibility of these results.</li>
+</ul></li>
+<li>Classification analysis - Summary (10 points)
+<ul>
+<li>Compare the 2 different classification models tried in light of evaluation metrics, variable importance, and data context.
+<ul>
+<li>Display evaluation metrics for different models in a clean, organized way. This display should include both the estimated metric as well as its standard deviation. (This won’t be available from OOB error estimation. If using OOB, don’t worry about reporting the SD.)</li>
+<li>Broadly summarize conclusions from looking at these evaluation metrics and their measures of uncertainty.</li>
+</ul></li>
+<li>Decide an overall most preferable model.
+<ul>
+<li>Interpret evaluation metric(s) for the final model in context. Does the model show an acceptable amount of error?</li>
+<li>If using OOB error estimation, display the test (OOB) confusion matrix, and use it to interpret the strengths and weaknesses of the final model.</li>
+</ul></li>
+</ul></li>
+<li>Code (20 points)
+<ul>
+<li>Knitted, error-free HTML and corresponding Rmd file submitted</li>
+<li>Code corresponding to all analyses above is present and correct</li>
 </ul></li>
 </ul>
 
@@ -391,7 +486,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="homework-4.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-5.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="r-resources.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
