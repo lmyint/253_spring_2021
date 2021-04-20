@@ -11,3 +11,4 @@ evaluating-classification-models
 trees-part-1
 trees-part-2
 bagging-and-random-forests
+k-means-clustering

@@ -99,3 +99,12 @@ Learning objectives for our course topics are listed below. Use these to guide y
 - Explain the rationale for and implement out-of-bag error estimation for both regression and classification
 - Explain the rationale behind the random forest variable importance measure and why it is biased towards quantitative predictors (in class)
 
+<br>
+
+**K-means clustering**
+
+- Clearly describe / implement by hand the k-means algorithm
+- Describe the rationale for how clustering algorithms work in terms of within-cluster variation
+- Describe the tradeoff of more vs. less clusters in terms of interpretability
+- Implement strategies for interpreting / contextualizing the clusters
+

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Topic 7 Splines | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 14 K-Means Clustering | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Topic 7 Splines | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 14 K-Means Clustering | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Topic 7 Splines | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 14 K-Means Clustering | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="knn-regression-and-the-bias-variance-tradeoff.html"/>
-<link rel="next" href="local-regression-gams.html"/>
+<link rel="prev" href="bagging-and-random-forests.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -386,124 +386,146 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="splines" class="section level1" number="7">
-<h1><span class="header-section-number">Topic 7</span> Splines</h1>
-<div id="learning-goals-5" class="section level2 unnumbered">
+<div id="k-means-clustering" class="section level1" number="14">
+<h1><span class="header-section-number">Topic 14</span> K-Means Clustering</h1>
+<div id="learning-goals-11" class="section level2 unnumbered">
 <h2>Learning Goals</h2>
 <ul>
-<li>Explain the advantages of splines over global transformations and other types of piecewise polynomials</li>
-<li>Explain how splines are constructed by drawing connections to variable transformations and least squares</li>
-<li>Explain how the number of knots relates to the bias-variance tradeoff</li>
+<li>Clearly describe / implement by hand the k-means algorithm</li>
+<li>Describe the rationale for how clustering algorithms work in terms of within-cluster variation</li>
+<li>Describe the tradeoff of more vs. less clusters in terms of interpretability</li>
+<li>Implement strategies for interpreting / contextualizing the clusters</li>
 </ul>
 <p><br></p>
-<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1A1QrmwmAXMYSIEwhNGgHRf0GH7vqukcJFemlWLA3yuQ/edit?usp=sharing">here</a>.</p>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1PrpCUuSnKI4Ot623O4SL0Sl1IMB8EGnAFEOIKUb1K1w/edit?usp=sharing">here</a>.</p>
 <p><br><br><br></p>
 </div>
-<div id="splines-in-caret" class="section level2 unnumbered">
-<h2>Splines in <code>caret</code></h2>
-<p>To build models with splines in <code>caret</code>, we proceed with the same structure for <code>train()</code> as we use for ordinary linear regression models. (Why can we just use least squares?) Refer to code from Topic 3: Overfitting &amp; CV for a refresher.</p>
-<p>To work with splines, we’ll use the <code>splines</code> package. The <code>ns()</code> function in that package creates the transformations needed to create a spline function for a quantitative predictor. This involves a small update to the <em>formula</em>:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="splines.html#cb49-1" aria-hidden="true"></a><span class="co"># Before: all linear terms</span></span>
-<span id="cb49-2"><a href="splines.html#cb49-2" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb49-3"><a href="splines.html#cb49-3" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span>quant_x1 <span class="op">+</span><span class="st"> </span>quant_x2,</span>
-<span id="cb49-4"><a href="splines.html#cb49-4" aria-hidden="true"></a>    ...</span>
-<span id="cb49-5"><a href="splines.html#cb49-5" aria-hidden="true"></a>)</span>
-<span id="cb49-6"><a href="splines.html#cb49-6" aria-hidden="true"></a></span>
-<span id="cb49-7"><a href="splines.html#cb49-7" aria-hidden="true"></a><span class="co"># With splines</span></span>
-<span id="cb49-8"><a href="splines.html#cb49-8" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb49-9"><a href="splines.html#cb49-9" aria-hidden="true"></a>    y <span class="op">~</span><span class="st"> </span><span class="kw">ns</span>(quant_x1, <span class="dt">df =</span> <span class="dv">3</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ns</span>(quant_x2, <span class="dt">df =</span> <span class="dv">3</span>),</span>
-<span id="cb49-10"><a href="splines.html#cb49-10" aria-hidden="true"></a>    ...</span>
-<span id="cb49-11"><a href="splines.html#cb49-11" aria-hidden="true"></a>)</span></code></pre></div>
-<ul>
-<li>The <code>df</code> argument in <code>ns()</code> stands for degrees of freedom:
-<ul>
-<li><code>df = # knots + 1</code></li>
-<li>The degrees of freedom are the number of coefficients in the transformation functions that are free to vary (essentially the number of underlying parameters behind the transformations).</li>
-</ul></li>
-</ul>
-<p><br><br><br></p>
-</div>
-<div id="exercises-5" class="section level2 unnumbered">
+<div id="exercises-12" class="section level2 unnumbered">
 <h2>Exercises</h2>
-<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/07-splines.Rmd">here</a>.</strong></p>
-<p>Before proceeding, install the <code>splines</code> package by entering <code>install.packages("splines")</code> in the Console.</p>
-<p>We’ll continue using the <code>College</code> dataset in the <code>ISLR</code> package to explore splines. You can use <code>?College</code> in the Console to look at the data codebook.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="splines.html#cb50-1" aria-hidden="true"></a><span class="kw">library</span>(caret)</span>
-<span id="cb50-2"><a href="splines.html#cb50-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb50-3"><a href="splines.html#cb50-3" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb50-4"><a href="splines.html#cb50-4" aria-hidden="true"></a><span class="kw">library</span>(readr)</span>
-<span id="cb50-5"><a href="splines.html#cb50-5" aria-hidden="true"></a><span class="kw">library</span>(ISLR)</span>
-<span id="cb50-6"><a href="splines.html#cb50-6" aria-hidden="true"></a><span class="kw">library</span>(splines)</span>
-<span id="cb50-7"><a href="splines.html#cb50-7" aria-hidden="true"></a></span>
-<span id="cb50-8"><a href="splines.html#cb50-8" aria-hidden="true"></a><span class="kw">data</span>(College)</span>
-<span id="cb50-9"><a href="splines.html#cb50-9" aria-hidden="true"></a></span>
-<span id="cb50-10"><a href="splines.html#cb50-10" aria-hidden="true"></a><span class="co"># A little data cleaning</span></span>
-<span id="cb50-11"><a href="splines.html#cb50-11" aria-hidden="true"></a>college_clean &lt;-<span class="st"> </span>College <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb50-12"><a href="splines.html#cb50-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">school =</span> <span class="kw">rownames</span>(College)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb50-13"><a href="splines.html#cb50-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(Grad.Rate <span class="op">&lt;=</span><span class="st"> </span><span class="dv">100</span>) <span class="co"># Remove one school with grad rate of 118%</span></span>
-<span id="cb50-14"><a href="splines.html#cb50-14" aria-hidden="true"></a><span class="kw">rownames</span>(college_clean) &lt;-<span class="st"> </span><span class="ot">NULL</span> <span class="co"># Remove school names as row names</span></span></code></pre></div>
-<div id="exercise-1-evaluating-a-fully-linear-model" class="section level3 unnumbered">
-<h3>Exercise 1: Evaluating a fully linear model</h3>
-<p>We will model <code>Grad.Rate</code> as a function of 4 predictors: <code>Private</code>, <code>Terminal</code>, <code>Expend</code>, and <code>S.F.Ratio</code>.</p>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/14-kmeans.Rmd">here</a>.</strong></p>
+<p>In <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081">this paper</a>, Gorman et al. study characteristics of penguin populations in the Antarctic. We’ll be looking at a dataset of penguin body measurements available in the <code>palmerpenguins</code> package. (Make sure to install this package before beginning.)</p>
+<p>Our goal in using this data is to better understand the following questions: What similarities are there among the penguins? Do there appear to be different species? If so, how many species are there?</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="k-means-clustering.html#cb98-1" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb98-2"><a href="k-means-clustering.html#cb98-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb98-3"><a href="k-means-clustering.html#cb98-3" aria-hidden="true"></a><span class="kw">library</span>(palmerpenguins)</span>
+<span id="cb98-4"><a href="k-means-clustering.html#cb98-4" aria-hidden="true"></a><span class="kw">data</span>(penguins)</span>
+<span id="cb98-5"><a href="k-means-clustering.html#cb98-5" aria-hidden="true"></a></span>
+<span id="cb98-6"><a href="k-means-clustering.html#cb98-6" aria-hidden="true"></a><span class="co"># Remove observations with missing data on key variables</span></span>
+<span id="cb98-7"><a href="k-means-clustering.html#cb98-7" aria-hidden="true"></a>penguins &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb98-8"><a href="k-means-clustering.html#cb98-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(bill_length_mm), <span class="op">!</span><span class="kw">is.na</span>(bill_depth_mm), <span class="op">!</span><span class="kw">is.na</span>(flipper_length_mm))</span></code></pre></div>
+<p><br></p>
+<div id="exercise-1-visual-explorations" class="section level3 unnumbered">
+<h3>Exercise 1: Visual explorations</h3>
+<p>We’ll first explore clustering based on characteristics of the penguins’ bills/beaks. There are two variables that measure the length and depth of the penguins’ bills (in mm): <code>bill_length_mm</code> and <code>bill_depth_mm</code>.</p>
 <ol style="list-style-type: lower-alpha">
-<li><p>Make scatterplots with 2 different smoothing lines to explore potential nonlinearity. Adding the following to the normal scatterplot code will create a smooth (curved) blue trend line and a red linear trend line.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="splines.html#cb51-1" aria-hidden="true"></a><span class="kw">geom_smooth</span>(<span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
-<span id="cb51-2"><a href="splines.html#cb51-2" aria-hidden="true"></a><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>)</span></code></pre></div></li>
-<li><p>Use <code>caret</code> to fit an ordinary linear regression model (no splines yet) with the following specifications:</p>
-<ul>
-<li>Use 8-fold CV.</li>
-<li>Use mean absolute error (MAE) to select a final model.</li>
-<li>Select the simplest model for which the metric is within one standard error of the best metric.</li>
-</ul>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="splines.html#cb52-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
-<span id="cb52-2"><a href="splines.html#cb52-2" aria-hidden="true"></a>ls_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb52-3"><a href="splines.html#cb52-3" aria-hidden="true"></a></span>
-<span id="cb52-4"><a href="splines.html#cb52-4" aria-hidden="true"></a>)</span></code></pre></div></li>
-<li><p>Make plots of the residuals vs. the 3 quantitative predictors to evaluate the appropriateness of linear terms.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="splines.html#cb53-1" aria-hidden="true"></a>ls_mod_data &lt;-<span class="st"> </span>college_clean <span class="op">%&gt;%</span></span>
-<span id="cb53-2"><a href="splines.html#cb53-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
-<span id="cb53-3"><a href="splines.html#cb53-3" aria-hidden="true"></a>        <span class="dt">pred =</span> <span class="kw">predict</span>(ls_mod, <span class="dt">newdata =</span> college_clean),</span>
-<span id="cb53-4"><a href="splines.html#cb53-4" aria-hidden="true"></a>        <span class="dt">resid =</span> ___</span>
-<span id="cb53-5"><a href="splines.html#cb53-5" aria-hidden="true"></a>    )</span>
-<span id="cb53-6"><a href="splines.html#cb53-6" aria-hidden="true"></a></span>
-<span id="cb53-7"><a href="splines.html#cb53-7" aria-hidden="true"></a><span class="kw">ggplot</span>(ls_mod_data, ???) <span class="op">+</span></span>
-<span id="cb53-8"><a href="splines.html#cb53-8" aria-hidden="true"></a><span class="st">    </span>___ <span class="op">+</span></span>
-<span id="cb53-9"><a href="splines.html#cb53-9" aria-hidden="true"></a><span class="st">    </span>___ <span class="op">+</span></span>
-<span id="cb53-10"><a href="splines.html#cb53-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div></li>
+<li>Make a scatterplot of these two measurements. If you had to visually designate 3 different penguin clusters (possible species), how would you designate them?</li>
+</ol>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="k-means-clustering.html#cb99-1" aria-hidden="true"></a><span class="kw">ggplot</span>(penguins, <span class="kw">aes</span>(???)) <span class="op">+</span></span>
+<span id="cb99-2"><a href="k-means-clustering.html#cb99-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>()</span></code></pre></div>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Based on the plot, are there any differences in scale that</li>
 </ol>
 </div>
-<div id="exercise-2-evaluating-a-spline-model" class="section level3 unnumbered">
-<h3>Exercise 2: Evaluating a spline model</h3>
-<p>We’ll extend our linear regression model with spline functions of the quantitative predictors (leave <code>Private</code> as is).</p>
+<div id="exercise-2-k-means-clustering-on-bill-length-and-depth" class="section level3 unnumbered">
+<h3>Exercise 2: K-means clustering on bill length and depth</h3>
+<p>The <code>kmeans()</code> function in R performs k-means clustering.</p>
 <ol style="list-style-type: lower-alpha">
-<li><p>What tuning parameter is associated with splines? How do high/low values of this parameter relate to bias and variance?</p></li>
-<li><p>Update your code from Exercise 1 to model the 3 quantitative predictors with natural splines that have 2 knots (= 3 degrees of freedom).</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="splines.html#cb54-1" aria-hidden="true"></a><span class="kw">set.seed</span>(___)</span>
-<span id="cb54-2"><a href="splines.html#cb54-2" aria-hidden="true"></a>spline_mod &lt;-<span class="st"> </span><span class="kw">train</span>(</span>
-<span id="cb54-3"><a href="splines.html#cb54-3" aria-hidden="true"></a></span>
-<span id="cb54-4"><a href="splines.html#cb54-4" aria-hidden="true"></a>)</span></code></pre></div></li>
-<li><p>Make plots of the residuals vs. the 3 quantitative predictors to evaluate if splines improved the model.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="splines.html#cb55-1" aria-hidden="true"></a>spline_mod_data &lt;-<span class="st"> </span>___</span>
-<span id="cb55-2"><a href="splines.html#cb55-2" aria-hidden="true"></a></span>
-<span id="cb55-3"><a href="splines.html#cb55-3" aria-hidden="true"></a><span class="co"># Residual plots</span></span></code></pre></div></li>
+<li>Use the code below to run k-means for <span class="math inline">\(k = 3\)</span> clusters. Why is it important to use <code>set.seed()</code>? (In practice, it’s best to run the algorithm for many values of the seed and compare results.)</li>
 </ol>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="k-means-clustering.html#cb100-1" aria-hidden="true"></a><span class="co"># Select just the bill length and depth variables</span></span>
+<span id="cb100-2"><a href="k-means-clustering.html#cb100-2" aria-hidden="true"></a>penguins_sub &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb100-3"><a href="k-means-clustering.html#cb100-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(bill_length_mm, bill_depth_mm)</span>
+<span id="cb100-4"><a href="k-means-clustering.html#cb100-4" aria-hidden="true"></a></span>
+<span id="cb100-5"><a href="k-means-clustering.html#cb100-5" aria-hidden="true"></a><span class="co"># Run k-means for k = centers = 3</span></span>
+<span id="cb100-6"><a href="k-means-clustering.html#cb100-6" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">253</span>)</span>
+<span id="cb100-7"><a href="k-means-clustering.html#cb100-7" aria-hidden="true"></a>kclust_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">kmeans</span>(penguins_sub, <span class="dt">centers =</span> <span class="dv">3</span>)</span>
+<span id="cb100-8"><a href="k-means-clustering.html#cb100-8" aria-hidden="true"></a></span>
+<span id="cb100-9"><a href="k-means-clustering.html#cb100-9" aria-hidden="true"></a><span class="co"># Display the cluter assignments</span></span>
+<span id="cb100-10"><a href="k-means-clustering.html#cb100-10" aria-hidden="true"></a>kclust_<span class="dv">3</span><span class="op">$</span>cluster</span>
+<span id="cb100-11"><a href="k-means-clustering.html#cb100-11" aria-hidden="true"></a></span>
+<span id="cb100-12"><a href="k-means-clustering.html#cb100-12" aria-hidden="true"></a><span class="co"># Add a variable (kclust_3) to the original dataset </span></span>
+<span id="cb100-13"><a href="k-means-clustering.html#cb100-13" aria-hidden="true"></a><span class="co"># containing the cluster assignments</span></span>
+<span id="cb100-14"><a href="k-means-clustering.html#cb100-14" aria-hidden="true"></a>penguins &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb100-15"><a href="k-means-clustering.html#cb100-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb100-16"><a href="k-means-clustering.html#cb100-16" aria-hidden="true"></a>        <span class="dt">kclust_3 =</span> <span class="kw">factor</span>(kclust_<span class="dv">3</span><span class="op">$</span>cluster)</span>
+<span id="cb100-17"><a href="k-means-clustering.html#cb100-17" aria-hidden="true"></a>    )</span></code></pre></div>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Update your original scatterplot to add a color aesthetic that corresponds to the <code>kclust_3</code> variable created above. Do the cluster assignments correspond to your intuition from exercise 1? Why might this be?</li>
+</ol>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="k-means-clustering.html#cb101-1" aria-hidden="true"></a><span class="co"># Visualize the cluster assignments on the original scatterplot</span></span></code></pre></div>
 </div>
-<div id="extra-variable-scaling" class="section level3 unnumbered">
-<h3>Extra! Variable scaling</h3>
-<p>What is your intuition about whether variable scaling matters for the performance of splines?</p>
-<p>Check you intuition by reusing code from Exercise 2, except with <code>preProcess = "scale"</code> inside <code>train()</code>. Call this <code>spline_mod2</code>.</p>
-<p>How do the predictions from <code>spline_mod</code> and <code>spline_mod2</code> compare? You could use a plot to compare or check out the <code>all.equal()</code> function.</p>
+<div id="exercise-3-addressing-variable-scale" class="section level3 unnumbered">
+<h3>Exercise 3: Addressing variable scale</h3>
+<p>We can use the code below to rerun k-means clustering on the scaled data. The scaled data have been rescaled so that the standard deviation of each variable is 1. Remake the scatterplot to visualize the updated cluster assignments. Do the cluster assignments correspond to your intuition from exercise 1?</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="k-means-clustering.html#cb102-1" aria-hidden="true"></a><span class="co"># Run k-means on the *scaled* data (all variables have SD = 1)</span></span>
+<span id="cb102-2"><a href="k-means-clustering.html#cb102-2" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">253</span>)</span>
+<span id="cb102-3"><a href="k-means-clustering.html#cb102-3" aria-hidden="true"></a>kclust_<span class="dv">3</span>_scale &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">scale</span>(penguins_sub), <span class="dt">centers =</span> <span class="dv">3</span>)</span>
+<span id="cb102-4"><a href="k-means-clustering.html#cb102-4" aria-hidden="true"></a>penguins &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb102-5"><a href="k-means-clustering.html#cb102-5" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb102-6"><a href="k-means-clustering.html#cb102-6" aria-hidden="true"></a>        <span class="dt">kclust_3_scale =</span> <span class="kw">factor</span>(kclust_<span class="dv">3</span>_scale<span class="op">$</span>cluster)</span>
+<span id="cb102-7"><a href="k-means-clustering.html#cb102-7" aria-hidden="true"></a>    )</span>
+<span id="cb102-8"><a href="k-means-clustering.html#cb102-8" aria-hidden="true"></a></span>
+<span id="cb102-9"><a href="k-means-clustering.html#cb102-9" aria-hidden="true"></a><span class="co"># Visualize the new cluster assignments</span></span></code></pre></div>
+</div>
+<div id="exercise-4-clustering-on-more-variables" class="section level3 unnumbered">
+<h3>Exercise 4: Clustering on more variables</h3>
+<p>We can use as many variables in our clustering as makes sense given our goals. The dataset contains another body measurement variable of interest to us: <code>flipper_length_mm</code> (flipper length in mm).</p>
+<p>Complete the code below to cluster on bill length and depth as well as flipper length. Looking at the summary statistics, do you think it would be best to scale the variables?</p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="k-means-clustering.html#cb103-1" aria-hidden="true"></a><span class="co"># Select the variables to be used in clustering</span></span>
+<span id="cb103-2"><a href="k-means-clustering.html#cb103-2" aria-hidden="true"></a>penguins_sub &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb103-3"><a href="k-means-clustering.html#cb103-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(???)</span>
+<span id="cb103-4"><a href="k-means-clustering.html#cb103-4" aria-hidden="true"></a></span>
+<span id="cb103-5"><a href="k-means-clustering.html#cb103-5" aria-hidden="true"></a><span class="co"># Look at summary statistics of the 3 variables</span></span>
+<span id="cb103-6"><a href="k-means-clustering.html#cb103-6" aria-hidden="true"></a><span class="kw">summary</span>(penguins_sub)</span>
+<span id="cb103-7"><a href="k-means-clustering.html#cb103-7" aria-hidden="true"></a></span>
+<span id="cb103-8"><a href="k-means-clustering.html#cb103-8" aria-hidden="true"></a><span class="co"># Perform clustering: should you use scale()?</span></span>
+<span id="cb103-9"><a href="k-means-clustering.html#cb103-9" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">253</span>)</span>
+<span id="cb103-10"><a href="k-means-clustering.html#cb103-10" aria-hidden="true"></a>kclust_<span class="dv">3</span>_3vars &lt;-<span class="st"> </span><span class="kw">kmeans</span>(???)</span>
+<span id="cb103-11"><a href="k-means-clustering.html#cb103-11" aria-hidden="true"></a></span>
+<span id="cb103-12"><a href="k-means-clustering.html#cb103-12" aria-hidden="true"></a>penguins &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb103-13"><a href="k-means-clustering.html#cb103-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb103-14"><a href="k-means-clustering.html#cb103-14" aria-hidden="true"></a>        <span class="dt">kclust_3_3vars =</span> <span class="kw">factor</span>(kclust_<span class="dv">3</span>_3vars<span class="op">$</span>cluster)</span>
+<span id="cb103-15"><a href="k-means-clustering.html#cb103-15" aria-hidden="true"></a>    )</span></code></pre></div>
+</div>
+<div id="exercise-5-interpreting-the-clusters" class="section level3 unnumbered">
+<h3>Exercise 5: Interpreting the clusters</h3>
+<p>One way to interpet the resulting clusters is to explore how variables differ across the clusters. We can look at the 3 variables used in the clustering as well as a body mass variable available in the dataset.</p>
+<p>Run the code below to look at the mean bill length, bill depth, flipper length, and body mass across the 3 clusters. What characterizes each of the 3 clusters? Try to come up with contextual “names” for the clusters (e.g., “big beaks” or “small penguins”).</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="k-means-clustering.html#cb104-1" aria-hidden="true"></a>penguins <span class="op">%&gt;%</span></span>
+<span id="cb104-2"><a href="k-means-clustering.html#cb104-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">group_by</span>(kclust_<span class="dv">3</span>_3vars) <span class="op">%&gt;%</span></span>
+<span id="cb104-3"><a href="k-means-clustering.html#cb104-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">summarize</span>(<span class="kw">across</span>(<span class="kw">c</span>(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g), mean))</span></code></pre></div>
+</div>
+<div id="exercise-6-picking-k" class="section level3 unnumbered">
+<h3>Exercise 6: Picking <span class="math inline">\(k\)</span></h3>
+<p>We’ve been using <span class="math inline">\(k = 3\)</span> so far, but how can we pick <span class="math inline">\(k\)</span> using a data-driven approach. One strategy is to compare the <strong>total squared distance of each case from its assigned centroid</strong> for different values of <span class="math inline">\(k\)</span>. (This measure is available within the <code>$tot.withinss</code> component of objects resulting from <code>kmeans()</code>.)</p>
+<p>Run the code below to create this plot for choices of <span class="math inline">\(k\)</span> from 1 to 15. Using this plot and thinking about data context and our scientific goals, what are some reasonable choices for the number of clusters?</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="k-means-clustering.html#cb105-1" aria-hidden="true"></a><span class="co"># Create storage vector for total within-cluster sum of squares</span></span>
+<span id="cb105-2"><a href="k-means-clustering.html#cb105-2" aria-hidden="true"></a>tot_wc_ss &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">15</span>)</span>
+<span id="cb105-3"><a href="k-means-clustering.html#cb105-3" aria-hidden="true"></a></span>
+<span id="cb105-4"><a href="k-means-clustering.html#cb105-4" aria-hidden="true"></a><span class="co"># Loop</span></span>
+<span id="cb105-5"><a href="k-means-clustering.html#cb105-5" aria-hidden="true"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">15</span>) {</span>
+<span id="cb105-6"><a href="k-means-clustering.html#cb105-6" aria-hidden="true"></a>    <span class="co"># Perform clustering</span></span>
+<span id="cb105-7"><a href="k-means-clustering.html#cb105-7" aria-hidden="true"></a>    kclust &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">scale</span>(penguins_sub), <span class="dt">centers =</span> k)</span>
+<span id="cb105-8"><a href="k-means-clustering.html#cb105-8" aria-hidden="true"></a></span>
+<span id="cb105-9"><a href="k-means-clustering.html#cb105-9" aria-hidden="true"></a>    <span class="co"># Store the total within-cluster sum of squares</span></span>
+<span id="cb105-10"><a href="k-means-clustering.html#cb105-10" aria-hidden="true"></a>    tot_wc_ss[k] &lt;-<span class="st"> </span>kclust<span class="op">$</span>tot.withinss</span>
+<span id="cb105-11"><a href="k-means-clustering.html#cb105-11" aria-hidden="true"></a>}</span>
+<span id="cb105-12"><a href="k-means-clustering.html#cb105-12" aria-hidden="true"></a></span>
+<span id="cb105-13"><a href="k-means-clustering.html#cb105-13" aria-hidden="true"></a><span class="kw">plot</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>, tot_wc_ss, <span class="dt">xlab =</span> <span class="st">&quot;Number of clusters&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Total within-cluster sum of squares&quot;</span>)</span></code></pre></div>
 
 </div>
 </div>
 </div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="knn-regression-and-the-bias-variance-tradeoff.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="local-regression-gams.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bagging-and-random-forests.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
