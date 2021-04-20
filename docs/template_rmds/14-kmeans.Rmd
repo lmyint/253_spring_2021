@@ -38,7 +38,7 @@ ggplot(penguins, aes(???)) +
     geom_point()
 ```
 
-b. Based on the plot, are there any differences in scale that 
+b. Based on the plot, are there any differences in scale that you might be concerned about?
 
 
 
