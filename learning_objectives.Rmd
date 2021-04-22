@@ -108,3 +108,16 @@ Learning objectives for our course topics are listed below. Use these to guide y
 - Describe the tradeoff of more vs. less clusters in terms of interpretability
 - Implement strategies for interpreting / contextualizing the clusters
 
+<br>
+
+**Hierarchical clustering**
+
+- Clearly describe / implement by hand the hierarchical clustering algorithm
+- Compare and contrast k-means and hierarchical clustering in their outputs and algorithms
+- Interpret cuts of the dendrogram for single and complete linkage
+- Describe the rationale for how clustering algorithms work in terms of within-cluster variation
+- Describe the tradeoff of more vs. less clusters in terms of interpretability
+- Implement strategies for interpreting / contextualizing the clusters
+
+
+

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Homework 5 | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 15 Hierarchical Clustering | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Homework 5 | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 15 Hierarchical Clustering | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Homework 5 | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 15 Hierarchical Clustering | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="homework-4.html"/>
-<link rel="next" href="final-project.html"/>
+<link rel="prev" href="k-means-clustering.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -398,101 +398,169 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="homework-5" class="section level1 unnumbered">
-<h1>Homework 5</h1>
-<center>
-<strong>Due Thursday, April 29 at midnight CST on <a href="https://moodle.macalester.edu/mod/assign/view.php?id=56332">Moodle</a></strong>
-</center>
-<p><strong>Deliverables:</strong> Because Course Engagement is not required for this HW, you will only have file submissions if you want intermediate feedback on project work. (See below.) We will keep looking at your original Portfolio Google Doc - no need to submit the link again.</p>
-<p><br><br><br></p>
-<div id="project-work-4" class="section level2 unnumbered">
-<h2>Project Work</h2>
-<p>Look at the final requirements on the <a href="final-project.html#final-project">Final Project</a> page. There is nothing you must submit for this homework assignment, but you should start on the following:</p>
+<div id="hierarchical-clustering" class="section level1" number="15">
+<h1><span class="header-section-number">Topic 15</span> Hierarchical Clustering</h1>
+<div id="learning-goals-12" class="section level2 unnumbered">
+<h2>Learning Goals</h2>
 <ul>
-<li>Explore 2 different classification models to answer your classification research question</li>
-<li>Put together slides to summarize the regression investigations from HW3</li>
-<li>Consolidate code into one final Rmd file.</li>
+<li>Clearly describe / implement by hand the hierarchical clustering algorithm</li>
+<li>Compare and contrast k-means and hierarchical clustering in their outputs and algorithms</li>
+<li>Interpret cuts of the dendrogram for single and complete linkage</li>
+<li>Describe the rationale for how clustering algorithms work in terms of within-cluster variation</li>
+<li>Describe the tradeoff of more vs. less clusters in terms of interpretability</li>
+<li>Implement strategies for interpreting / contextualizing the clusters</li>
 </ul>
-<p>If you would like feedback on any part of the final deliverables, you may submit them with HW5, but this is not a requirement for HW5.</p>
 <p><br></p>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1PPvEB3fXf08a8smUAgkct-rz2FDA2BZY3YsOb3GksV0/edit?usp=sharing">here</a>.</p>
 <p><br><br><br></p>
 </div>
-<div id="portfolio-work-4" class="section level2 unnumbered">
-<h2>Portfolio Work</h2>
-<p><strong>Length requirements:</strong> Detailed for each section below.</p>
-<p><span style="color: red;">
-<strong>Organization:</strong> To help the instructor and preceptors grade, please organize your document as shown in <a href="https://docs.google.com/document/d/1lS_7UBmWQkXtS21hd9gb842KV42U24A3QhiifP2nf-E/edit?usp=sharing">this example</a>. Clear section headers and new pages for each method help a lot. Thank you!
-</span></p>
-<p><span style="color: red;">
-<strong>Deliverables:</strong> Continue writing your responses in the same Google Doc that you set up for Homework 1. We have recorded the URL from past HWs - you don’t need to supply it again.
-</span></p>
-<p><strong>Note:</strong> Some prompts below may seem very open-ended. This is intentional. Crafting good responses requires looking back through our material to organize the concepts in a coherent, thematic way, which is extremely useful for your learning.</p>
+<div id="exercises-13" class="section level2 unnumbered">
+<h2>Exercises</h2>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/15-hclust.Rmd">here</a>.</strong></p>
+<p>In <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081">this paper</a>, Gorman et al. study characteristics of penguin populations in the Antarctic. We’ll be looking at a dataset of penguin body measurements available in the <code>palmerpenguins</code> package. (Make sure to install this package before beginning.)</p>
+<p>Our goal in using this data is to better understand the following questions: What similarities are there among the penguins? Do there appear to be different species? If so, how many species are there?</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="hierarchical-clustering.html#cb106-1" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb106-2"><a href="hierarchical-clustering.html#cb106-2" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb106-3"><a href="hierarchical-clustering.html#cb106-3" aria-hidden="true"></a><span class="kw">library</span>(palmerpenguins)</span>
+<span id="cb106-4"><a href="hierarchical-clustering.html#cb106-4" aria-hidden="true"></a><span class="kw">data</span>(penguins)</span>
+<span id="cb106-5"><a href="hierarchical-clustering.html#cb106-5" aria-hidden="true"></a></span>
+<span id="cb106-6"><a href="hierarchical-clustering.html#cb106-6" aria-hidden="true"></a><span class="co"># Remove observations with missing data on key variables</span></span>
+<span id="cb106-7"><a href="hierarchical-clustering.html#cb106-7" aria-hidden="true"></a>penguins &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb106-8"><a href="hierarchical-clustering.html#cb106-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(bill_length_mm), <span class="op">!</span><span class="kw">is.na</span>(bill_depth_mm), <span class="op">!</span><span class="kw">is.na</span>(flipper_length_mm))</span></code></pre></div>
 <p><br></p>
-<p><strong>Revisions:</strong></p>
-<ul>
-<li>Make any revisions desired to previous concepts.
-<ul>
-<li><strong>Important formatting note:</strong> Please use a comment to mark the text that you want to be reread. (Highlight each span of text you want to be reread, and mark it with the comment “REVISION”.)</li>
-</ul></li>
-<li>Rubrics to past homeworks will be available on Moodle (under the Solutions section). Look at these rubrics to guide your revisions. You can always ask for guidance in office hours as well.</li>
-</ul>
-<p><br></p>
-<p><strong>New concepts to address:</strong></p>
-<p><strong>K-Means Clustering:</strong></p>
-<ul>
-<li>Algorithmic understanding: Perform two iterations of k-means with k = 2 on the dataset below. The data has just 1 variable <code>x1</code>, and the random initial cluster assignment is shown in the <code>cluster</code> column. Show your work: in particular, show the centroids computed for iterations 1 and 2 and the updated cluster assignments for iterations 1 and 2.</li>
-</ul>
-<pre><code> x1   cluster
----- ---------
-  1      1
-  1      2
-  3      2
-  4      1
-  5      1</code></pre>
-<ul>
-<li><p>Bias-variance tradeoff: (This is a prompt about clustering in general, but put your response in the K-Means section.) In clustering, we don’t quite have the same concepts of bias and variance as we do with supervised learning methods, but a similar type of tradeoff exists. Discuss the pros and cons of high vs. low number of clusters in terms of (1) ease of learning more about each cluster and (2) within-cluster homogeneity (closeness of cases within clusters). (5 sentences max.)</p></li>
-<li><p>Parametric / nonparametric: SKIP</p></li>
-<li><p>Scaling of variables: (This is a prompt that pertains to both k-means and hierarchical clustering, but put your response in the K-Means section.) Does the scale on which variables are measured matter for the performance of clustering? Why or why not? If scale does matter, how should this be addressed? (3 sentences max.)</p></li>
-<li><p>Computational time: Consider a single round of the cluster reassignment step of k-means with <span class="math inline">\(n\)</span> cases and <span class="math inline">\(k\)</span> clusters. How many distance calculations are required in this step? Explain in at most 2 sentences.</p></li>
-<li><p>Interpretation of output: (This is a prompt about clustering in general, but put your response in the K-Means section.) Describe data explorations we could use to interpret / learn more about the cluster assignments that clustering algorithms produce.</p></li>
-</ul>
-<p><br></p>
-<p><strong>Hierarchical clustering:</strong></p>
-<ul>
-<li>Algorithmic understanding: We have a dataset with 4 cases, and the Euclidean distance between every pair of cases is shown below. (The column labeled <code>1</code> gives the distances of case 1 to cases 2, 3, and 4 from top to bottom.) Draw the dendrogram that would result from single-linkage clustering. Clearly label what cases are at each leaf and the heights at which fusions occur. Show any intermediate work.</li>
-</ul>
-<pre><code>     |   1       2       3
------|------- ------- -------
-  2  |  0.69       
-  3  |  1.23    0.55 
-  4  |  0.94    1.39    1.75</code></pre>
-<ul>
-<li><p>Bias-variance tradeoff: How does the tree cutting height relate to the tradeoff you discussed in the K-Means section? (2 sentences max.)</p></li>
-<li><p>Parametric / nonparametric: SKIP</p></li>
-<li><p>Scaling of variables: SKIP</p></li>
-<li><p>Computational time: Consider the very first step of hierarchical clustering in which all <span class="math inline">\(n\)</span> cases are in their own cluster. How many distance calculations are required as a function of <span class="math inline">\(n\)</span>? (Note: <span class="math inline">\(1 + 2 + \cdots + n = n(n+1)/2\)</span>.) Explain in at most 2 sentences.</p></li>
-<li><p>Interpretation of output: SKIP</p></li>
-</ul>
-<p><br></p>
-<p><strong>Principal components analysis:</strong></p>
-<p><span style="color: red;">
-The PCA Portfolio section is <strong>optional</strong>. If you decide to complete it, you can choose which concepts (if any) are included in the final Portfolio grade. To do so, leave a comment in your Google Doc on the PCA section header like this: “Only consider grades for concepts that have a grade of at least A/B/C/etc.” (Pick the grade level desired.)
-</span></p>
-<ul>
-<li><p>Algorithmic understanding: In no more than 4 sentences, summarize the goal of principal components analysis and how it allows us to perform dimension reduction. Use the following terms / ideas in your response: linear combination, variance.</p></li>
-<li><p>Bias-variance tradeoff: How is dimension reduction related to the bias-variance tradeoff for some of the supervised methods we’ve covered? How is the use of the scree plot from PCA related to the tradeoff?</p></li>
-<li><p>Parametric / nonparametric: SKIP</p></li>
-<li><p>Scaling of variables: Does the scale on which variables are measured matter for the performance of this algorithm? Why or why not? If scale does matter, how should this be addressed when using this method? (3 sentences max.)</p></li>
-<li><p>Computational time: SKIP</p></li>
-<li><p>Interpretation of output: What information can we gain by looking at the loadings of the first few principal components? Explain in at most 3 sentences.</p></li>
-</ul>
-<p><br><br><br></p>
+<div id="exercise-1-hierarchical-clustering-by-hand" class="section level3 unnumbered">
+<h3>Exercise 1: Hierarchical clustering by hand</h3>
+<p>To practice the hierarchical clustering algorithm, let’s look at a small example. Suppose we collect the following bill depth and length measurements from 5 penguins:</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="hierarchical-clustering.html#cb107-1" aria-hidden="true"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: these data are already scaled!</span></span>
+<span id="cb107-2"><a href="hierarchical-clustering.html#cb107-2" aria-hidden="true"></a>penguins_small &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb107-3"><a href="hierarchical-clustering.html#cb107-3" aria-hidden="true"></a>    <span class="dt">depth =</span> <span class="kw">c</span>(<span class="fl">2.5</span>, <span class="fl">2.7</span>, <span class="fl">3.2</span>, <span class="fl">3.5</span>, <span class="fl">3.6</span>),</span>
+<span id="cb107-4"><a href="hierarchical-clustering.html#cb107-4" aria-hidden="true"></a>    <span class="dt">length =</span> <span class="kw">c</span>(<span class="fl">5.5</span>, <span class="fl">6.0</span>, <span class="fl">4.5</span>, <span class="fl">5.0</span>, <span class="fl">4.7</span>)</span>
+<span id="cb107-5"><a href="hierarchical-clustering.html#cb107-5" aria-hidden="true"></a>)</span>
+<span id="cb107-6"><a href="hierarchical-clustering.html#cb107-6" aria-hidden="true"></a>penguins_small</span>
+<span id="cb107-7"><a href="hierarchical-clustering.html#cb107-7" aria-hidden="true"></a></span>
+<span id="cb107-8"><a href="hierarchical-clustering.html#cb107-8" aria-hidden="true"></a><span class="kw">ggplot</span>(penguins_small, <span class="kw">aes</span>(<span class="dt">x =</span> depth, <span class="dt">y =</span> length)) <span class="op">+</span></span>
+<span id="cb107-9"><a href="hierarchical-clustering.html#cb107-9" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb107-10"><a href="hierarchical-clustering.html#cb107-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>), <span class="dt">vjust =</span> <span class="fl">1.5</span>)</span></code></pre></div>
+<p>In the exercises below, you’ll draw a dendrogram for these 5 penguins by hand. Sketch the following plotting frame on some scrap paper:</p>
+<p><strong>Step 1: First fusion</strong></p>
+<p>Calculate the distance between each pair of penguins:</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="hierarchical-clustering.html#cb108-1" aria-hidden="true"></a><span class="kw">round</span>(<span class="kw">dist</span>(penguins_small), <span class="dv">2</span>)</span></code></pre></div>
+<p>Which pair of penguins 1-5 is most similar? Draw the fusion between this pair of leaves on your plot. Clearly indicate the height at which you draw this fusion.</p>
+<p><strong>Step 2: Second fusion</strong></p>
+<p>Construct a new distance matrix reflecting the distances between each pair of branches (where 4 and 5 have now been fused). Use <strong>complete linkage</strong>. That is, the distance between one branch and another is the <em>maximum</em> distance between any pair of leaves in those branches. We can do this by taking the distances from the distance matrix above and using the complete linkage strategy to obtain distances to the 4+5 cluster.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4 &amp; 5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td align="center">xxxx</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td align="center">xxxx</td>
+<td align="center">xxxx</td>
+<td align="center">0</td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td>4 &amp; 5</td>
+<td align="center">xxxx</td>
+<td align="center">xxxx</td>
+<td align="center">xxxx</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>Which pair of branches is most similar? Draw the fusion between this pair on the plot.</p>
+<p><strong>Step 3: Third fusion</strong></p>
+<p>Repeat! Construct a new distance matrix reflecting the distances between each pair of branches, those that have been fused already and those that have not.</p>
+<p>Which pair of branches is most similar? Draw the fusion between this pair on the plot.</p>
+<p><strong>Step 4: Final fusion</strong></p>
+<p>At this point, you should have 2 penguins in one cluster and 3 in another. The final step is to combine these into the tree trunk. Draw this fusion.</p>
+<p><strong>Final step:</strong> Check your work in R:</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="hierarchical-clustering.html#cb109-1" aria-hidden="true"></a>penguin_cluster &lt;-<span class="st"> </span><span class="kw">hclust</span>(<span class="kw">dist</span>(penguins_small), <span class="dt">method =</span> <span class="st">&quot;complete&quot;</span>)</span>
+<span id="cb109-2"><a href="hierarchical-clustering.html#cb109-2" aria-hidden="true"></a><span class="kw">plot</span>(penguin_cluster)</span></code></pre></div>
 </div>
-<div id="course-engagement-4" class="section level2 unnumbered">
-<h2>Course Engagement</h2>
-<p>This section is not required for this last HW. Take time for yourself. (Everyone will receive a free Meets Expectations on all areas for this assignment.)</p>
-<p>In case it’s of interest and you have the bandwidth for it, the article <a href="https://academic.oup.com/aje/article/154/4/299/61900">“Race,” Racism, and the Practice of Epidemiology</a> is a very illuminating one.</p>
+<div id="exercise-2-exploring-penguin-dendrograms" class="section level3 unnumbered">
+<h3>Exercise 2: Exploring penguin dendrograms</h3>
+<p>Let’s use hierarchical clustering under different linkage strategies to look at nestings of clusters for the full set of penguins. We’ll continue to cluster based on bill length and depth as well as flipper length. (We’ll use a smaller random subset of 50 penguins for ease of visualization.)</p>
+<ul>
+<li>Remind yourselves about the importance of considering variable scaling by looking at the summary statistics for the 3 variables.</li>
+<li>In looking at the dendrograms under the different linkage types, do you notice any particular features of how the dendrograms look (as mentioned in the video for single and centroid linkage)?</li>
+</ul>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="hierarchical-clustering.html#cb110-1" aria-hidden="true"></a><span class="co"># Random subsample of 50 penguins</span></span>
+<span id="cb110-2"><a href="hierarchical-clustering.html#cb110-2" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">253</span>)</span>
+<span id="cb110-3"><a href="hierarchical-clustering.html#cb110-3" aria-hidden="true"></a>penguins &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb110-4"><a href="hierarchical-clustering.html#cb110-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">slice_sample</span>(<span class="dt">n =</span> <span class="dv">50</span>)</span>
+<span id="cb110-5"><a href="hierarchical-clustering.html#cb110-5" aria-hidden="true"></a></span>
+<span id="cb110-6"><a href="hierarchical-clustering.html#cb110-6" aria-hidden="true"></a><span class="co"># Select the variables to be used in clustering</span></span>
+<span id="cb110-7"><a href="hierarchical-clustering.html#cb110-7" aria-hidden="true"></a>penguins_sub &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb110-8"><a href="hierarchical-clustering.html#cb110-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(bill_length_mm, bill_depth_mm, flipper_length_mm)</span>
+<span id="cb110-9"><a href="hierarchical-clustering.html#cb110-9" aria-hidden="true"></a></span>
+<span id="cb110-10"><a href="hierarchical-clustering.html#cb110-10" aria-hidden="true"></a><span class="co"># Summary statistics for the variables</span></span>
+<span id="cb110-11"><a href="hierarchical-clustering.html#cb110-11" aria-hidden="true"></a><span class="kw">summary</span>(penguins_sub)</span>
+<span id="cb110-12"><a href="hierarchical-clustering.html#cb110-12" aria-hidden="true"></a></span>
+<span id="cb110-13"><a href="hierarchical-clustering.html#cb110-13" aria-hidden="true"></a><span class="co"># Compute a distance matrix on the scaled data</span></span>
+<span id="cb110-14"><a href="hierarchical-clustering.html#cb110-14" aria-hidden="true"></a>dist_mat_scaled &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">scale</span>(penguins_sub))</span>
+<span id="cb110-15"><a href="hierarchical-clustering.html#cb110-15" aria-hidden="true"></a></span>
+<span id="cb110-16"><a href="hierarchical-clustering.html#cb110-16" aria-hidden="true"></a><span class="co"># The (scaled) distance matrix is the input to hclust()</span></span>
+<span id="cb110-17"><a href="hierarchical-clustering.html#cb110-17" aria-hidden="true"></a><span class="co"># The method argument indicates the linkage type</span></span>
+<span id="cb110-18"><a href="hierarchical-clustering.html#cb110-18" aria-hidden="true"></a>hc_complete &lt;-<span class="st"> </span><span class="kw">hclust</span>(dist_mat_scaled, <span class="dt">method =</span> <span class="st">&quot;complete&quot;</span>)</span>
+<span id="cb110-19"><a href="hierarchical-clustering.html#cb110-19" aria-hidden="true"></a>hc_single &lt;-<span class="st"> </span><span class="kw">hclust</span>(dist_mat_scaled, <span class="dt">method =</span> <span class="st">&quot;single&quot;</span>)</span>
+<span id="cb110-20"><a href="hierarchical-clustering.html#cb110-20" aria-hidden="true"></a>hc_average &lt;-<span class="st"> </span><span class="kw">hclust</span>(dist_mat_scaled, <span class="dt">method =</span> <span class="st">&quot;average&quot;</span>)</span>
+<span id="cb110-21"><a href="hierarchical-clustering.html#cb110-21" aria-hidden="true"></a>hc_centroid &lt;-<span class="st"> </span><span class="kw">hclust</span>(dist_mat_scaled, <span class="dt">method =</span> <span class="st">&quot;centroid&quot;</span>)</span>
+<span id="cb110-22"><a href="hierarchical-clustering.html#cb110-22" aria-hidden="true"></a></span>
+<span id="cb110-23"><a href="hierarchical-clustering.html#cb110-23" aria-hidden="true"></a><span class="co"># Plot dendrograms</span></span>
+<span id="cb110-24"><a href="hierarchical-clustering.html#cb110-24" aria-hidden="true"></a><span class="kw">plot</span>(hc_complete)</span>
+<span id="cb110-25"><a href="hierarchical-clustering.html#cb110-25" aria-hidden="true"></a><span class="kw">plot</span>(hc_single)</span>
+<span id="cb110-26"><a href="hierarchical-clustering.html#cb110-26" aria-hidden="true"></a><span class="kw">plot</span>(hc_average)</span>
+<span id="cb110-27"><a href="hierarchical-clustering.html#cb110-27" aria-hidden="true"></a><span class="kw">plot</span>(hc_centroid)</span></code></pre></div>
+</div>
+<div id="exercise-3-interpreting-the-clusters-visually" class="section level3 unnumbered">
+<h3>Exercise 3: Interpreting the clusters visually</h3>
+<p>Let’s continue exploring the dendrogram from complete linkage. The <code>plot()</code> function for <code>hclust()</code> output allows a <code>labels</code> argument which can show custom labels for the leaves (cases). The code below labels the leaves with the species of each penguin.</p>
+<ul>
+<li>What do you notice about the clustering in relation to the actual penguin species?</li>
+<li>Try changing the labels to show the <code>sex</code> of the penguin. What do you notice?</li>
+</ul>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="hierarchical-clustering.html#cb111-1" aria-hidden="true"></a><span class="kw">plot</span>(hc_complete, <span class="dt">labels =</span> penguins<span class="op">$</span>species)</span></code></pre></div>
+</div>
+<div id="exercise-4-tree-cutting-and-interpretation" class="section level3 unnumbered">
+<h3>Exercise 4: Tree-cutting and interpretation</h3>
+<p>When we cut a dendrogram at a given height, we indicate that the branches that have fused before (below) that point should be distinct clusters.</p>
+<ul>
+<li><p>For the complete linkage dendrogram, say that we cut the tree at a height of 3? How many clusters should result (eyeball from dendrogram)? How can we interpret this cut in terms of the distances between cases in the resulting clusters?</p></li>
+<li><p>We can add new variables containing cluster assignments with <code>mutate()</code> and <code>cutree()</code>, as below. Using either set of cluster assignments, make some visualizations to explore how variables of interest are related to the cluster assignments.</p></li>
+</ul>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="hierarchical-clustering.html#cb112-1" aria-hidden="true"></a>penguins &lt;-<span class="st"> </span>penguins <span class="op">%&gt;%</span></span>
+<span id="cb112-2"><a href="hierarchical-clustering.html#cb112-2" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb112-3"><a href="hierarchical-clustering.html#cb112-3" aria-hidden="true"></a>        <span class="dt">hclust_height3 =</span> <span class="kw">factor</span>(<span class="kw">cutree</span>(hc_complete, <span class="dt">h =</span> <span class="dv">3</span>)), <span class="co"># Cut at height (h) 3</span></span>
+<span id="cb112-4"><a href="hierarchical-clustering.html#cb112-4" aria-hidden="true"></a>        <span class="dt">hclust_num6 =</span> <span class="kw">factor</span>(<span class="kw">cutree</span>(hc_complete, <span class="dt">k =</span> <span class="dv">6</span>)) <span class="co"># Cut into 6 clusters (k)</span></span>
+<span id="cb112-5"><a href="hierarchical-clustering.html#cb112-5" aria-hidden="true"></a>    )</span></code></pre></div>
+</div>
+<div id="exercise-5-k-means-vs.-hierarchical" class="section level3 unnumbered">
+<h3>Exercise 5: K-means vs. hierarchical</h3>
+<p>Brainstorm some pros/cons of hierarchical clustering vs. k-means in terms of their algorithms and the output produced.</p>
 
+</div>
 </div>
 </div>
 
@@ -503,8 +571,8 @@ The PCA Portfolio section is <strong>optional</strong>. If you decide to complet
           </div>
         </div>
       </div>
-<a href="homework-4.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="final-project.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="k-means-clustering.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
