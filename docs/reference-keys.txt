@@ -13,3 +13,4 @@ trees-part-2
 bagging-and-random-forests
 k-means-clustering
 hierarchical-clustering
+principal-components-analysis

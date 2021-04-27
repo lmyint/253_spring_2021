@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Learning Objectives | STAT 253: Statistical Machine Learning</title>
+  <title>Topic 16 Principal Components Analysis | STAT 253: Statistical Machine Learning</title>
   <meta name="description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Learning Objectives | STAT 253: Statistical Machine Learning" />
+  <meta property="og:title" content="Topic 16 Principal Components Analysis | STAT 253: Statistical Machine Learning" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="lmyint/253_spring_2021" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Learning Objectives | STAT 253: Statistical Machine Learning" />
+  <meta name="twitter:title" content="Topic 16 Principal Components Analysis | STAT 253: Statistical Machine Learning" />
   
   <meta name="twitter:description" content="This is the class website for Statistical Machine Learning at Macalester College." />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="schedule.html"/>
-<link rel="next" href="r-and-rstudio-setup.html"/>
+<link rel="prev" href="hierarchical-clustering.html"/>
+<link rel="next" href="homework-1.html"/>
 <script src="libs/header-attrs-2.6.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -410,122 +410,106 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="learning-objectives" class="section level1 unnumbered">
-<h1>Learning Objectives</h1>
-<p>Learning objectives for our course topics are listed below. Use these to guide your synthesis of video and reading material.</p>
-<p><strong>Introduction to Statistical Machine Learning</strong></p>
+<div id="principal-components-analysis" class="section level1" number="16">
+<h1><span class="header-section-number">Topic 16</span> Principal Components Analysis</h1>
+<div id="learning-goals-13" class="section level2 unnumbered">
+<h2>Learning Goals</h2>
 <ul>
-<li>Formulate research questions that align with regression, classification, or unsupervised learning tasks</li>
+<li>Explain the goal of dimension reduction and how this can be useful in a supervised learning setting</li>
+<li>Interpret and use the information provided by principal component loadings and scores</li>
+<li>Interpret and use a scree plot to guide dimension reduction</li>
 </ul>
 <p><br></p>
-<p><strong>Evaluating Regression Models</strong></p>
-<ul>
-<li>Create and interpret residuals vs. fitted, residuals vs. predictor plots to identify improvements in modeling and address ethical concerns</li>
-<li>Interpret MSE, RMSE, MAE, and R-squared in a contextually meaningful way</li>
-</ul>
-<p><br></p>
-<p><strong>Overfitting and cross-validation</strong></p>
-<ul>
-<li>Explain why training/in-sample model evaluation metrics can provide a misleading view of true test/out-of-sample performance</li>
-<li>Accurately describe all steps of cross-validation to estimate the test/out-of-sample version of a model evaluation metric</li>
-<li>Explain what role CV has in a predictive modeling analysis and its connection to overfitting</li>
-<li>Explain the pros/cons of higher vs. lower k in k-fold CV in terms of sample size and computing time</li>
-</ul>
-<p><br></p>
-<p><strong>Subset selection</strong></p>
-<ul>
-<li>Clearly describe the forward and backward stepwise selection algorithm and why they are examples of greedy algorithms</li>
-<li>Compare best subset and stepwise algorithms in terms of optimality of output and computational time</li>
-</ul>
-<p><br></p>
-<p><strong>LASSO (shrinkage/regularization)</strong></p>
-<ul>
-<li>Explain how ordinary and penalized least squares are similar and different with regard to (1) the form of the objective function and (2) the goal of variable selection</li>
-<li>Explain how the lambda tuning parameter affects model performance and how this is related to overfitting</li>
-</ul>
-<p><br></p>
-<p><strong>KNN Regression and the Bias-Variance Tradeoff</strong></p>
-<ul>
-<li>Clearly describe / implement by hand the KNN algorithm for making a regression prediction</li>
-<li>Explain how the number of neighbors relates to the bias-variance tradeoff</li>
-<li>Explain the difference between parametric and nonparametric methods</li>
-<li>Explain how the curse of dimensionality relates to the performance of KNN (not in the video–will be discussed in class)</li>
-</ul>
-<p><br></p>
-<p><strong>Modeling Nonlinearity: Polynomial Regression and Splines</strong></p>
-<ul>
-<li>Explain the advantages of splines over global transformations and other types of piecewise polynomials</li>
-<li>Explain how splines are constructed by drawing connections to variable transformations and least squares</li>
-<li>Explain how the number of knots relates to the bias-variance tradeoff</li>
-</ul>
-<p><br></p>
-<p><strong>Local Regression and Generalized Additive Models</strong></p>
-<ul>
-<li>Clearly describe the local regression algorithm for making a prediction</li>
-<li>Explain how bandwidth (span) relate to the bias-variance tradeoff</li>
-<li>Describe some different formulations for a GAM (how the arbitrary functions are represented)</li>
-<li>Explain how to make a prediction from a GAM</li>
-<li>Interpret the output from a GAM</li>
-</ul>
-<p><br></p>
-<p><strong>Logistic regression</strong></p>
-<ul>
-<li>Use a logistic regression model to make hard (class) and soft (probability) predictions</li>
-<li>Interpret non-intercept coefficients from logistic regression models in the data context</li>
-</ul>
-<p><br></p>
-<p><strong>Evaluating classification models</strong></p>
-<ul>
-<li>Calculate (by hand from confusion matrices) and contextually interpret overall accuracy, sensitivity, and specificity</li>
-<li>Construct and interpret plots of predicted probabilities across classes</li>
-<li>Explain how a ROC curve is constructed and the rationale behind AUC as an evaluation metric</li>
-<li>Appropriately use and interpret the no-information rate to evaluate accuracy metrics</li>
-</ul>
-<p><br></p>
-<p><strong>Decision trees</strong></p>
-<ul>
-<li>Clearly describe the recursive binary splitting algorithm for tree building for both regression and classification</li>
-<li>Compute the weighted average Gini index to measure the quality of a classification tree split</li>
-<li>Compute the sum of squared residuals to measure the quality of a regression tree split</li>
-<li>Explain how recursive binary splitting is a greedy algorithm</li>
-<li>Explain how different tree parameters relate to the bias-variance tradeoff</li>
-</ul>
-<p><br></p>
-<p><strong>Bagging and random forests</strong></p>
-<ul>
-<li>Explain the rationale for bagging</li>
-<li>Explain the rationale for selecting a random subset of predictors at each split (random forests)</li>
-<li>Explain how the size of the random subset of predictors at each split relates to the bias-variance tradeoff</li>
-<li>Explain the rationale for and implement out-of-bag error estimation for both regression and classification</li>
-<li>Explain the rationale behind the random forest variable importance measure and why it is biased towards quantitative predictors (in class)</li>
-</ul>
-<p><br></p>
-<p><strong>K-means clustering</strong></p>
-<ul>
-<li>Clearly describe / implement by hand the k-means algorithm</li>
-<li>Describe the rationale for how clustering algorithms work in terms of within-cluster variation</li>
-<li>Describe the tradeoff of more vs. less clusters in terms of interpretability</li>
-<li>Implement strategies for interpreting / contextualizing the clusters</li>
-</ul>
-<p><br></p>
-<p><strong>Hierarchical clustering</strong></p>
-<ul>
-<li>Clearly describe / implement by hand the hierarchical clustering algorithm</li>
-<li>Compare and contrast k-means and hierarchical clustering in their outputs and algorithms</li>
-<li>Interpret cuts of the dendrogram for single and complete linkage</li>
-<li>Describe the rationale for how clustering algorithms work in terms of within-cluster variation</li>
-<li>Describe the tradeoff of more vs. less clusters in terms of interpretability</li>
-<li>Implement strategies for interpreting / contextualizing the clusters</li>
-</ul>
+<p>Slides from today are available <a href="https://docs.google.com/presentation/d/1l-aWarH-N4DWj8vdT__Fs6VT52eIF71AJ01jhgqo0NA/edit?usp=sharing">here</a>.</p>
+<p><br><br><br></p>
+</div>
+<div id="exercises-14" class="section level2 unnumbered">
+<h2>Exercises</h2>
+<p><strong>You can download a template RMarkdown file to start from <a href="template_rmds/16-pca.Rmd">here</a>.</strong></p>
+<div id="exercise-1-core-concepts" class="section level3 unnumbered">
+<h3>Exercise 1: Core concepts</h3>
+<p>For this first exercise, we will work through some key ideas and terminology related to PCA using the information below, which comes from a small dataset of 3 variables: <span class="math inline">\(x_1, x_2, x_3\)</span>.</p>
+<p><span class="math display">\[ \text{PC1} = 0.672 x_1 - 0.287 x_2 - 0.683 x_3 \]</span>
+<span class="math display">\[ \text{PC2} = -0.244 x_1 - 0.956 x_2 + 0.162 x_3 \]</span>
+<span class="math display">\[ \text{PC3} = 0.699 x_1 - 0.058 x_2 - 0.713 x_3 \]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>What are the loadings of principal components 1 to 3? In general, what information does a loading give us?</p></li>
+<li><p>What are the two most important variables for forming PC1? PC2? PC3?</p></li>
+<li><p>A case has variable values <span class="math inline">\((x_1, x_2, x_3) = (1, 1, 1)\)</span>. What are the PC1, PC2, and PC3 scores for this case? How can we interpret these scores?</p></li>
+<li><p>What can be said about the amount of variation in the dataset explained by the 3 PCs?</p></li>
+<li><p>In thinking about the PCs as defining new “directions”, how are PCs 2 and above selected relative to the first ones?</p></li>
+</ol>
+<p><br><br><br></p>
+<p>Now let’s use PCA to explore a gene expression dataset. The <code>Khan</code> dataset in the <code>ISLR</code> package contains gene expression measurements in cancer tissue samples. (Khan is the first author’s last name.) Such data are commonly part of biological studies to better understand the molecular basis for disease. You can find information about this dataset by entering <code>?Khan</code> in the Console.</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="principal-components-analysis.html#cb113-1" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb113-2"><a href="principal-components-analysis.html#cb113-2" aria-hidden="true"></a><span class="kw">library</span>(ISLR)</span>
+<span id="cb113-3"><a href="principal-components-analysis.html#cb113-3" aria-hidden="true"></a><span class="kw">data</span>(Khan)</span>
+<span id="cb113-4"><a href="principal-components-analysis.html#cb113-4" aria-hidden="true"></a></span>
+<span id="cb113-5"><a href="principal-components-analysis.html#cb113-5" aria-hidden="true"></a><span class="co"># train_data contains 2308 gene expression measurements for 63 samples</span></span>
+<span id="cb113-6"><a href="principal-components-analysis.html#cb113-6" aria-hidden="true"></a>train_data &lt;-<span class="st"> </span>Khan<span class="op">$</span>xtrain</span>
+<span id="cb113-7"><a href="principal-components-analysis.html#cb113-7" aria-hidden="true"></a></span>
+<span id="cb113-8"><a href="principal-components-analysis.html#cb113-8" aria-hidden="true"></a><span class="co"># Rename the variables to be gene1, gene2, etc.</span></span>
+<span id="cb113-9"><a href="principal-components-analysis.html#cb113-9" aria-hidden="true"></a><span class="kw">colnames</span>(train_data) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;gene&quot;</span>, <span class="kw">seq_len</span>(<span class="kw">ncol</span>(train_data)))</span>
+<span id="cb113-10"><a href="principal-components-analysis.html#cb113-10" aria-hidden="true"></a></span>
+<span id="cb113-11"><a href="principal-components-analysis.html#cb113-11" aria-hidden="true"></a><span class="co"># train_labels contains information on which of 4 cancer subtypes each sample comes from</span></span>
+<span id="cb113-12"><a href="principal-components-analysis.html#cb113-12" aria-hidden="true"></a>train_labels &lt;-<span class="st"> </span>Khan<span class="op">$</span>ytrain</span></code></pre></div>
+</div>
+<div id="exercise-2-exploring-pc-loadings" class="section level3 unnumbered">
+<h3>Exercise 2: Exploring PC loadings</h3>
+<p>The <code>prcomp()</code> function performs PCA. Look at the help page for the <code>prcomp()</code> function under the “Value” section, and recall that <code>$</code> extracts named components of objects (e.g., <code>list_object$name_of_component</code>).</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="principal-components-analysis.html#cb114-1" aria-hidden="true"></a>pca_out &lt;-<span class="st"> </span><span class="kw">prcomp</span>(train_data, <span class="dt">center =</span> <span class="ot">TRUE</span>, <span class="dt">scale =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<ol style="list-style-type: lower-alpha">
+<li>Use the <code>head()</code> function to display the first few rows of the loadings matrix.</li>
+<li>Using just the first 3 genes, write out the equation for principal component 4.</li>
+<li>Describe how you would use the loadings matrix to find the genes that contribute most to the largest source of variation in the dataset.</li>
+<li>In R, we can extract the first column of a matrix object <code>mat</code> using <code>mat[,1]</code>. Use the <code>head()</code>, <code>sort()</code>, and <code>abs()</code> functions to display the 10 most important genes that contribute to the largest source of variation.</li>
+</ol>
+</div>
+<div id="exercise-3-exploring-pc-scores" class="section level3 unnumbered">
+<h3>Exercise 3: Exploring PC scores</h3>
+<p>We can plot the PC1 and PC2 scores against each other in a scatterplot to see if these new variables cluster the cases according to some other information. For example, in this data, we have tumor type labels for each case. (4 tumor types)</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>The <code>x</code> component of <code>pca_out</code> contains these scores. Complete the code below to make a scatterplot of the PC2 scores versus the PC1 scores.</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="principal-components-analysis.html#cb115-1" aria-hidden="true"></a><span class="co"># col = train_labels: color the points by the information in train_labels (the 4 cancer subtypes present)</span></span>
+<span id="cb115-2"><a href="principal-components-analysis.html#cb115-2" aria-hidden="true"></a><span class="kw">plot</span>(<span class="dt">x =</span> ???, <span class="dt">y =</span> ???, <span class="dt">pch =</span> <span class="dv">16</span>, <span class="dt">xlab =</span> <span class="st">&quot;PC1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;PC2&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;&quot;</span>, <span class="dt">col =</span> train_labels)</span>
+<span id="cb115-3"><a href="principal-components-analysis.html#cb115-3" aria-hidden="true"></a><span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">paste</span>(<span class="st">&quot;Class&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>), <span class="dt">pch =</span> <span class="dv">16</span>, <span class="dt">col =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div></li>
+<li><p>Do you notice any clustering by tumor type?</p></li>
+<li><p>How could we use k-means and hierarchical clustering to see whether the cases (tissue samples) cluster by tumor type?</p></li>
+<li><p>How can we use loadings and the information in the score plot to understand what genes drive groupings of the tissue samples?</p></li>
+</ol>
+</div>
+<div id="exercise-4-scree-plots-and-dimension-reduction" class="section level3 unnumbered">
+<h3>Exercise 4: Scree plots and dimension reduction</h3>
+<p>Let’s explore how to use PCA for dimension reduction.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>The <code>sdev</code> component of <code>pca_out</code> gives the standard deviation explained by each principal component. Explain what the first 2 lines of code below are doing.</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="principal-components-analysis.html#cb116-1" aria-hidden="true"></a>var_explained &lt;-<span class="st"> </span>pca_out<span class="op">$</span>sdev<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb116-2"><a href="principal-components-analysis.html#cb116-2" aria-hidden="true"></a>pve &lt;-<span class="st"> </span>var_explained<span class="op">/</span><span class="kw">sum</span>(var_explained)</span>
+<span id="cb116-3"><a href="principal-components-analysis.html#cb116-3" aria-hidden="true"></a><span class="co"># Construct scree plots</span></span>
+<span id="cb116-4"><a href="principal-components-analysis.html#cb116-4" aria-hidden="true"></a><span class="kw">plot</span>(pve, <span class="dt">xlab =</span> <span class="st">&quot;Principal Component&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Proportion of variance explained&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb116-5"><a href="principal-components-analysis.html#cb116-5" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">cumsum</span>(pve), <span class="dt">xlab =</span> <span class="st">&quot;Principal Component&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Cumulative proportion of variance explained&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;b&quot;</span>)</span></code></pre></div></li>
+<li><p>Explain why the plots above look the way they do. (These plots are called <strong>scree plots</strong>.)</p></li>
+<li><p>We can think of principal components as new variables. PCA allows us to perform dimension reduction to use a smaller set of variables, often to accompany supervised learning. How can we use the plots above to guide a choice about the number of PCs to use?</p></li>
+<li><p>Carefully describe how we could also use cross-validation to pick the number of PCs. (For concreteness, suppose that we’re in a linear regression setting.)</p></li>
+</ol>
+</div>
+<div id="exercise-5-variable-scaling" class="section level3 unnumbered">
+<h3>Exercise 5: Variable scaling</h3>
+<p>You likely noticed the <code>scale = TRUE</code> within <code>prcomp()</code> above. This scales the variables to all have unit variance. Explain why this is often advisable by thinking generally about the ranges of different variables. In what other methods would scaling be important?</p>
 
 </div>
+</div>
+</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="schedule.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="r-and-rstudio-setup.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="hierarchical-clustering.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="homework-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
